@@ -1,0 +1,10 @@
+/Web/client/node_modules
+/Web/client/.next
+/Web/client/next.jsconfig.mjs
+/Web/client/jsconfig.jsconfig
+/Web/client/package-lock.json
+
+
+/Web/server/node_modules
+/Web/server/Config/config.env
+/Web/server/package-lock.json
