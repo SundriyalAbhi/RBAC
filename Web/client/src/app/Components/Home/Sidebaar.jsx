@@ -21,14 +21,17 @@ export const Sidebaar = () => {
   ];
 
   return (
-    <div className="flex">
+    <div  className="flex">
       <motion.div
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
         animate={{ width: isOpen ? 250 : 80 }}
         transition={{ duration: 0.3, type: 'tween' }}
         className="bg-[#090e22fd] h-[90vh] p-4 text-white shadow-lg flex flex-col overflow-hidden"
       >
 
-        <nav className="flex flex-col space-y-3">
+        <nav onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)} className="flex flex-col space-y-3 bg-yellow-300">
         <a
               href="#"
               className="flex items-center gap-4 px-3 py-2 rounded-md hover:bg-white hover:text-red-600 transition duration-200"
