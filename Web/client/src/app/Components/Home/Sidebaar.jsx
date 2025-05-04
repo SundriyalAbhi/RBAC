@@ -11,7 +11,7 @@ import { MdGridView } from 'react-icons/md';
 import { motion } from 'framer-motion';
 
 export const Sidebaar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
     { icon: <FaHome />, label: 'Home' },
@@ -31,7 +31,7 @@ export const Sidebaar = () => {
       >
 
         <nav onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)} className="flex flex-col space-y-3 bg-yellow-300">
+      onMouseLeave={() => setIsOpen(false)} className="flex flex-col space-y-3">
         <a
               href="#"
               className="flex items-center gap-4 px-3 py-2 rounded-md hover:bg-white hover:text-red-600 transition duration-200"
