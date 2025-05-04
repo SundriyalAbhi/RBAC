@@ -11,7 +11,7 @@ import { MdGridView } from 'react-icons/md';
 import { motion } from 'framer-motion';
 
 export const Sidebaar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
     { icon: <FaHome />, label: 'Home' },
