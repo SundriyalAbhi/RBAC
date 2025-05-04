@@ -1,72 +1,42 @@
 import React from "react";
 import "@/app/style.css";
+import { HorizontalBarChart } from "../Charts/HorizontalBarChart";
+import { TreeChart } from "../Charts/TreeChart";
+import { AreaResponsiveChart } from "../Charts/AreaResponsiveChart";
+import { Map } from "../Map/Map";
 
 export default function Dashboard() {
   return (
-<>
-  <div className="flex flex-col md:flex-row p-2 gap-2 overflow-y-auto">
-    
-    {/* Left Column: Chart + MAP */}
-    <div className="flex flex-col gap-2 w-full md:w-1/2" style={{ height: "900px" }}>
-      <div className="w-full bg-yellow-300 rounded-lg p-2 shadow-inner border-2 border-yellow-500 flex-1 flex items-center justify-center">
-        <div className="bg-black text-white p-2 rounded">Chart Placeholder</div>
-      </div>
-      <div className="w-full bg-blue-300 rounded-lg p-2 shadow-lg border-2 border-blue-500 flex-1 flex items-center justify-center">
-        <div className="bg-black text-white p-2 rounded">Map Placeholder</div>
-      </div>
-    </div>
+    <div className="p-4 space-y-4 h-screen overflow-y-auto bg-[rgba(7,26,46,255)]">
 
-    {/* Middle Column: Div 1–4 + Table Div */}
-    <div className="flex flex-col gap-2 w-full md:w-1/3">
-      <div className="h-40 bg-pink-300 rounded shadow text-center p-2 flex items-center justify-center">
-        <div className="bg-black text-white p-2 rounded">Div 1 Placeholder</div>
-      </div>
-      <div className="h-40 bg-indigo-300 rounded shadow text-center p-2 flex items-center justify-center">
-        <div className="bg-black text-white p-2 rounded">Div 2 Placeholder</div>
-      </div>
-      <div className="h-40 bg-emerald-300 rounded shadow text-center p-2 flex items-center justify-center">
-        <div className="bg-black text-white p-2 rounded">Div 3 Placeholder</div>
-      </div>
-      <div className="h-40 bg-orange-300 rounded shadow text-center p-2 flex items-center justify-center">
-        <div className="bg-black text-white p-2 rounded">Div 4 Placeholder</div>
-      </div>
-      <div className="bg-purple-300 rounded-lg p-2 shadow-md border-2 border-purple-500 flex items-center justify-center" style={{ height: "200px" }}>
-        <div className="bg-black text-white p-2 rounded">Table Placeholder</div>
-      </div>
-    </div>
+      <div className="flex gap-4 h-[50%]">
 
-    {/* Right Column: Right Divs */}
-    <div className="flex flex-col gap-2 w-full md:w-1/4">
-      <div className="flex flex-col gap-2">
-        <div className="h-52 bg-pink-400 rounded shadow-md text-center p-2 flex items-center justify-center">
-          <div className="bg-black text-white p-2 rounded">Right Div 1 Placeholder</div>
+        <div className="flex-1 bg-[rgba(1,31,61,255)] rounded p-2 flex items-center justify-center text-white font-bold text-lg">
+          <HorizontalBarChart/>
         </div>
-        <div className="h-52 bg-cyan-400 rounded shadow-md text-center p-2 flex items-center justify-center">
-          <div className="bg-black text-white p-2 rounded">Right Div 2 Placeholder</div>
+
+        <div className="flex-1 bg-[rgba(1,31,61,255)] rounded p-4 flex items-center justify-center text-white font-bold text-lg">
+          <TreeChart/>
         </div>
-        <div className="h-52 bg-lime-400 rounded shadow-md text-center p-2 flex items-center justify-center">
-          <div className="bg-black text-white p-2 rounded">Right Div 3 Placeholder</div>
+
+        <div className="flex flex-col gap-4 w-1/6">
+          {["Report", "Report", "Report", "Report"].map((label, idx) => (
+            <div key={idx} className="bg-gray-700 h-1/4 rounded p-2 flex items-center justify-center text-white font-bold text-sm">
+              {label}
+            </div>
+          ))}
         </div>
-        <div className="h-52 bg-rose-400 rounded shadow-md text-center p-2 flex items-center justify-center">
-          <div className="bg-black text-white p-2 rounded">Right Div 4 Placeholder</div>
+      </div>
+
+      <div className="flex gap-4 h-[45%]">
+        <div className="flex-1 bg-gray-700 rounded p-4 flex items-center justify-center text-white font-bold text-lg">
+          <Map/>
+        </div>
+
+        <div className="flex-1 bg-[rgba(1,31,61,255)] rounded p-4 flex items-center justify-center text-white font-bold text-lg">
+          <AreaResponsiveChart/>
         </div>
       </div>
     </div>
-
-  </div>
-</>
-
-
-
-
-
-
-
-
-
-
-
-
-  
   );
 }

@@ -2,23 +2,23 @@ import React from 'react';
 import { Treemap, ResponsiveContainer } from 'recharts';
 
 const data = [
-  { name: 'elf', size: 1 },
-  { name: 'mozi', size: 1 },
-  { name: '32-bit', size: 1 },
-  { name: 'mips', size: 1 },
-  { name: 'mirai', size: 1 },
-  { name: 'geofenced', size: 1 },
-  { name: 'qakbot', size: 1 },
-  { name: 'usa', size: 1 },
-  { name: 'quakbot', size: 1 },
+  { name: 'elf', size: 50.92 },
+  { name: 'mozi', size: 50.98 },
+  { name: '32-bit', size: 50.43 },
+  { name: 'mips', size: 51.03 },
+  { name: 'mirai', size: 50.07 },
+  { name: 'geofenced', size: 50.89 },
+  { name: 'qakbot', size: 50.26 },
+  { name: 'usa', size: 50.4 },
+  { name: 'quakbot', size: 50.32 },
 ];
 
 const colors = [
-  '#556B2F', '#1E2A38', '#3C5A92', '#8B0000',
-  '#A52A2A', '#B22222', '#2E8B57', '#228B22', '#4B0082'
+  '#303e2a', '#182739', '#304a6d', '#302039',
+  '#4d3839', '#45202b', '#45202b', '#2a4746', '#382469'
 ];
 
-const formatSize = (value) => (value * 100).toFixed(2) + 'K';
+const formatSize = (value) => (value * 10).toFixed(2) + 'K';
 
 const CustomizedContent = (props) => {
   const { x, y, width, height, index, name, size } = props;
@@ -32,8 +32,9 @@ const CustomizedContent = (props) => {
         y={y + height / 2 - 5}
         textAnchor="middle"
         fill="#fff"
-        fontSize={16}
+        fontSize={18}
         fontWeight="bold"
+        pointerEvents="none"
       >
         {formatSize(size)}
       </text>
@@ -42,7 +43,8 @@ const CustomizedContent = (props) => {
         y={y + height / 2 + 15}
         textAnchor="middle"
         fill="#ccc"
-        fontSize={13}
+        fontSize={14}
+        pointerEvents="none"
       >
         {name}
       </text>
@@ -52,15 +54,21 @@ const CustomizedContent = (props) => {
 
 export const TreeChart = () => {
   return (
-    <div style={{ width: 400, height: 300, padding: 16 }}>
-      <ResponsiveContainer>
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#011f3d',
+        borderRadius: '16px',
+        padding: '10px',
+      }}
+    >
+      <ResponsiveContainer width="100%" height={300}>
         <Treemap
-          width={600}
-          height={600}
           data={data}
           dataKey="size"
           type="flat"
-          stroke="#333"
+          stroke="#0c1b2a"
           content={<CustomizedContent />}
         />
       </ResponsiveContainer>
