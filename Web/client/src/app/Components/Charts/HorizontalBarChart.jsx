@@ -24,22 +24,21 @@ const data = [
   { name: 'TR', value: 10000 },
 ];
 
-const COLORS = ['#f59e0b', '#ef4444', '#10b981']; // Yellow, Red, Green
 
 export const HorizontalBarChart = () => {
   return (
-    <div style={{ width: 800, height: 300, backgroundColor: '#0e1a25'}}>
+    <div style={{ width: 700, height: 300, backgroundColor: '#011f3d',borderRadius:"10px" }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
           layout="vertical"
-          margin={{ top: 20, right: 40, left: 0, bottom: 20 }}
+          margin={{ top: 20, right: 80, left: -80, bottom: 20 }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#2c3e50" />
           <XAxis type="number" tick={{ fill: '#aaa' }} />
-          <YAxis dataKey="name" type="category" tick={{ fill: '#fff' }} width={150} />
+          <YAxis dataKey="name" type="category" tick={{ fill: '#fff' }} width={150} fontSize={8} />
           <Tooltip />
-          <Bar dataKey="value" fill="#f59e0b">
+          <Bar dataKey="value" fill="#f59e0b" radius={[0, 10, 10, 0]}>
             <LabelList dataKey="value" position="right" fill="#fff" />
           </Bar>
         </BarChart>
