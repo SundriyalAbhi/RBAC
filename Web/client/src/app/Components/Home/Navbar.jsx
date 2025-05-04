@@ -1,6 +1,7 @@
 import React from "react";
 import "@/app/style.css";
 import { IoSearch } from "react-icons/io5";
+import style from "./NavStyle.css"
 export const Navbar = () => {
   return (
     <nav className="bg-[rgba(31,62,90,255)] h-[10vh] flex items-center justify-between px-6 shadow-md">
