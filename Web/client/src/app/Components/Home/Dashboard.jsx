@@ -6,6 +6,7 @@ import { AreaResponsiveChart } from "../Charts/AreaResponsiveChart";
 // import { RadarChart } from "../Charts/RadarChart"; // assumed import
 import { Map } from "../Map/Map";
 import ThreatTable from "../ThreatTable/ThreatTable";
+import RadarChart from "../Charts/RadarChart";
 
 
 // import { DataTable } from "../Table/DataTable"; // assumed import
@@ -50,8 +51,8 @@ export default function Dashboard() {
   </div>
 
 
-        <div className="flex-1 bg-[#f59e0b] rounded p-4 flex items-center justify-center text-black font-bold text-lg">
-          RadarChart 
+        <div className="flex-1 bg-[#1C2541] rounded p-4 flex items-center justify-center text-black font-bold text-lg">
+          <RadarChart/>
         </div>
       </div>
     </div>
