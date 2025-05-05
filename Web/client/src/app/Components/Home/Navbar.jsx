@@ -4,8 +4,8 @@ import { IoSearch } from "react-icons/io5";
 import style from "./NavStyle.css"
 export const Navbar = () => {
   return (
-    <nav className="bg-[rgba(31,62,90,255)] h-[10vh] flex items-center justify-between px-6 shadow-md">
-      <h1 className="text-white text-2xl font-serif">Global Threat</h1>
+    <nav className="bg-[#1E293B] h-[10vh] flex items-center justify-between px-6 shadow-md">
+      <h1 className="text-white text-2xl font-serif ">Global Threat</h1>
 
       <div className="cursor-pointer flex gap-4 items-center">
         <form className="flex items-center space-x-2">

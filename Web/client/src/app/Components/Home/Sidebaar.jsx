@@ -27,7 +27,7 @@ export const Sidebaar = () => {
       onMouseLeave={() => setIsOpen(false)}
         animate={{ width: isOpen ? 250 : 80 }}
         transition={{ duration: 0.3, type: 'tween' }}
-        className="bg-[#090e22fd]  p-4 text-white shadow-lg flex flex-col overflow-hidden"
+        className={` bg-[${isOpen?"#8A1C1C":"#111827"}] p-4 text-white shadow-lg flex flex-col overflow-hidden`}
       >
 
         <nav onMouseEnter={() => setIsOpen(true)}

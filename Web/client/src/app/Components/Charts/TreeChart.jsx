@@ -58,17 +58,19 @@ export const TreeChart = () => {
       style={{
         width: '100%',
         height: '100%',
-        backgroundColor: '#011f3d',
+        background: 'linear-gradient(145deg, #0b1f33, #081a2a)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
         borderRadius: '16px',
         padding: '10px',
+       
       }}
     >
-      <ResponsiveContainer width="100%" height={300}>
+      <ResponsiveContainer width="100%" height={250}>
         <Treemap
           data={data}
           dataKey="size"
           type="flat"
-          stroke="#0c1b2a"
+          stroke="#F59E0B"
           content={<CustomizedContent />}
         />
       </ResponsiveContainer>

@@ -45,7 +45,6 @@ const threatsData = [
   },
 ];
 
-// A mapping for priority ranking: Higher number means higher priority
 const priorityRank = {
   High: 3,
   Medium: 2,
@@ -53,88 +52,84 @@ const priorityRank = {
 };
 
 function ThreatTable() {
-  const [sortType, setSortType] = useState("time"); // "time" or "priority"
+  const [sortType, setSortType] = useState("time");
 
-  // Create a sorted copy of the threats array based on the selected sort type.
   const sortedThreats = [...threatsData].sort((a, b) => {
     if (sortType === "time") {
-      // Sort in descending order (latest first)
       return new Date(b.timestamp) - new Date(a.timestamp);
     } else if (sortType === "priority") {
-      // Sort in descending order using our priority mapping
       return priorityRank[b.threatPriority] - priorityRank[a.threatPriority];
     }
     return 0;
   });
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Sorting buttons */}
-      <div className="flex justify-center space-x-4 mb-4">
+    <div className="w-full overflow-x-auto" style={{scrollbarWidth: "none"}}>
+      {/* Sorting Controls */}
+      <div className="flex justify-center gap-4 mb-4">
         <button
           onClick={() => setSortType("time")}
-          className={`px-4 py-2 rounded ${
-            sortType === "time" ? "bg-red-600" : "bg-gray-600"
-          } text-black`}
+          className={`px-3 py-1 rounded-md text-sm transition-all duration-200 ${
+            sortType === "time" ? "bg-red-500 text-white" : "bg-gray-700 text-white/70"
+          }`}
         >
           Sort by Time
         </button>
         <button
           onClick={() => setSortType("priority")}
-          className={`px-4 py-2 rounded ${
-            sortType === "priority" ? "bg-blue-600" : "bg-gray-600"
-          } text-black`}
+          className={`px-3 py-1 rounded-md text-sm transition-all duration-200 ${
+            sortType === "priority" ? "bg-blue-500 text-white" : "bg-gray-700 text-white/70"
+          }`}
         >
           Sort by Priority
         </button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="shadow-lg bg-[#090E22] text-white rounded-lg overflow-hidden">
-          <thead>
-            <tr className="  bg-[#a1a2b3]">
-              <th className="px-4 py-2 text-center">ThreatID</th>
-              <th className="px-4 py-2 ">Threat Name</th>
-              <th className="px-4 py-2 ">Threat Priority</th>
-              <th className="px-4 py-2">Threat Location</th>
-              <th className="px-4 py-2 ">Date</th>
-              <th className="px-4 py-2">Time</th>
+      {/* Table */}
+      <table className="w-full table-auto text-sm rounded-md overflow-hidden shadow-md">
+        <thead>
+          <tr className="bg-[#334155] text-white text-center">
+            <th className="py-2 px-3">ID</th>
+            <th className="py-2 px-3">Threat Name</th>
+            <th className="py-2 px-3">Priority</th>
+            <th className="py-2 px-3">Location</th>
+            <th className="py-2 px-3">Date</th>
+            <th className="py-2 px-3">Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedThreats.map((threat) => (
+            <tr
+              key={threat.threatId}
+              className="text-center border-b border-[#1e293b] hover:bg-[#1e293b]/40"
+            >
+              <td className="py-2 px-3 text-white/90">{threat.threatId}</td>
+              <td className="py-2 px-3">{threat.threatName}</td>
+              <td
+                className={`py-2 px-3 font-semibold ${
+                  threat.threatPriority === "High"
+                    ? "text-red-400"
+                    : threat.threatPriority === "Medium"
+                    ? "text-yellow-300"
+                    : "text-green-400"
+                }`}
+              >
+                {threat.threatPriority}
+              </td>
+              <td className="py-2 px-3 text-white/90">{threat.threatLocation}</td>
+              <td className="py-2 px-3 text-white/80">
+                {new Date(threat.timestamp).toLocaleDateString()}
+              </td>
+              <td className="py-2 px-3 text-white/80">
+                {new Date(threat.timestamp).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {sortedThreats.map((threat) => (
-              <tr key={threat.threatId}>
-                <td className="px-4 py-2 text-center  bg-[#090E22]">
-                  {threat.threatId}
-                </td>
-                <td className="px-4 py-2 text-center bg-[#090E22]">
-                  {threat.threatName}
-                </td>
-                <td
-                  className={`px-4 py-2 text-center font-semibold ${
-                    threat.threatPriority === "High"
-                      ? "text-red-400"
-                      : threat.threatPriority === "Medium"
-                      ? "text-yellow-400"
-                      : "text-green-400"
-                  }`}
-                >
-                  {threat.threatPriority}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  {threat.threatLocation}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  {new Date(threat.timestamp).toLocaleDateString()}
-                </td>
-                <td className="px-4 py-2 text-center">
-                  {new Date(threat.timestamp).toLocaleTimeString()}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
