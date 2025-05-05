@@ -50,7 +50,7 @@ export const Map = () => {
   return (
     <div
       style={{
-        height: "300px",
+        height: "250px",
         width: "100%",
         borderRadius: "12px",
         overflow: "hidden",
