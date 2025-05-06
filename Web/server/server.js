@@ -5,6 +5,7 @@ const morgan = require("morgan")
 const dotenv = require("dotenv")
 const { connectdb } = require("./Config/db")
 const AuthRouter = require("./routes/AuthRouter")
+const OTPRouter = require("./routes/OTPRoute")
 // const { app, server } = require("./SOCKETIO/socketio")
 dotenv.config({path:"./Config/config.env"})
 const app = express()
@@ -29,6 +30,7 @@ app.get("/",(req,res)=>{
   }
 })
 app.use("/auth",AuthRouter)
+app.use("/otp",OTPRouter)
 
 app.listen(process.env.PORT,()=>{
     console.log("server is running");

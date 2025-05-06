@@ -1,18 +1,20 @@
 const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
-const OTP = require("../models/OTP");
+const OTPModel = require("../Models/OTPModel");
+
 dotenv.config({path:"./Config/config.env"})
 
 
 
 exports.sendOTP =async(req,res)=> {
+  console.log(req.body);
     try {
         const { UserEmail } = req.body;
  const otp = Math.floor(100000 + Math.random() * 900000)
  const transporter = nodemailer.createTransport({
   service: "gmail",
   port: 465,
-  secure: true, // true for port 465, false for other ports
+  secure: true, 
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
@@ -21,10 +23,10 @@ exports.sendOTP =async(req,res)=> {
 
 
   const mailOptions = {
-    from: 'tobi909144@gmail.com', // sender address
-    to: `${UserEmail}`, // list of receivers
-    subject: "Reset Password OTP", // Subject line
-    text: `Enter ${otp} in the app to reset your password. OTP expires in 5 mins.`, // plain text body
+    from: 'tobi909144@gmail.com', 
+    to: `${UserEmail}`,
+    subject: "Reset Password OTP", 
+    text: `Enter ${otp} in the app to reset your password. OTP expires in 5 mins.`,
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
@@ -36,7 +38,7 @@ exports.sendOTP =async(req,res)=> {
     }
   });
 
-    const otpInstance = new OTP({
+    const otpInstance = new OTPModel({
       email:UserEmail,
       otp,
       expiresAt: new Date(Date.now() + 5 * 60 * 1000)  // OTP valid for 5 minutes
@@ -55,7 +57,7 @@ exports.verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
     
-    const otpRecord = await OTP.findOne({ email });
+    const otpRecord = await OTPModel.findOne({ email });
 
     if (!otpRecord) {
       return res.send({ msg: "No OTP found for this email" });
@@ -69,8 +71,8 @@ exports.verifyOTP = async (req, res) => {
       return res.send({ msg: "Invalid OTP" });
     }
 
-    // OTP is valid, delete from DB
-    await OTP.deleteOne({ email });
+  
+    await OTPModel.deleteOne({ email });
 
     res.status(200).send({ msg: "OTP verified successfully" });
   } catch (error) {

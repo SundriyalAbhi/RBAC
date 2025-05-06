@@ -1,7 +1,9 @@
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const dotenv = require("dotenv");
 const User = require("../Models/UserModel")
 const cloudinary = require('cloudinary').v2;
+dotenv.config({path:"./Config/config.env"})
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.API_KEY,
