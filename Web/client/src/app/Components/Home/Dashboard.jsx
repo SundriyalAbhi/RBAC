@@ -69,6 +69,44 @@ export default function Dashboard() {
           <RadarChart />
         </div>
       </div>
+
+      <div className="flex flex-col md:flex-row gap-4 h-[50%] ">
+        <div
+          className="flex-1 rounded-xl p-4 flex flex-col text-white text-sm "
+          style={{
+            background: "linear-gradient(145deg, #0b1f33, #081a2a)",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
+            width: "50%",
+          }}
+        >
+          <h2 className="text-center text-lg font-semibold mb-4">
+            Recent Threats
+          </h2>
+          {/* You can add internal content here */}
+        </div>
+
+        <div style={{ width: "50%"  }} className="flex flex-row gap-4">
+        <div className="flex-1 flex flex-col bg-[#1f2937] rounded-xl  h-full text-white">
+          {/* Vertical child layout inside */}
+          <div className="flex-1 bg-[#334155] rounded-md mb-2 p-2"  style={{
+            background: "linear-gradient(145deg, #0b1f33, #081a2a)",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
+          }}>
+            Vertical Box 1
+          </div>
+        </div>
+
+        <div className="flex-1 flex flex-col bg-[#1f2937] rounded-xl  h-full text-white">
+          {/* Another vertical child layout */}
+          <div className="flex-1 bg-[#334155] rounded-md mb-2 p-2"  style={{
+            background: "linear-gradient(145deg, #0b1f33, #081a2a)",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
+          }}>
+            Vertical Box A
+          </div>
+        </div>
+        </div>
+      </div>
     </div>
   );
 }
