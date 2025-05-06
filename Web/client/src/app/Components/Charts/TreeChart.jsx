@@ -32,7 +32,7 @@ const CustomizedContent = (props) => {
         y={y + height / 2 - 5}
         textAnchor="middle"
         fill="#fff"
-        fontSize={18}
+        fontSize={14}
         fontWeight="bold"
         pointerEvents="none"
       >
@@ -40,10 +40,10 @@ const CustomizedContent = (props) => {
       </text>
       <text
         x={x + width / 2}
-        y={y + height / 2 + 15}
+        y={y + height / 2 + 12}
         textAnchor="middle"
         fill="#ccc"
-        fontSize={14}
+        fontSize={12}
         pointerEvents="none"
       >
         {name}
@@ -58,19 +58,21 @@ export const TreeChart = () => {
       style={{
         width: '100%',
         height: '100%',
+        minHeight: '250px',
         background: 'linear-gradient(145deg, #0b1f33, #081a2a)',
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
         borderRadius: '16px',
         padding: '10px',
-       
+        display: 'flex',
+        alignItems: 'center',
       }}
     >
-      <ResponsiveContainer width="100%" height={250}>
+      <ResponsiveContainer width="100%" height="100%">
         <Treemap
           data={data}
           dataKey="size"
           type="flat"
-          stroke="#F59E0B"
+          stroke=""
           content={<CustomizedContent />}
         />
       </ResponsiveContainer>
