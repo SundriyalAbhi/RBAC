@@ -95,15 +95,14 @@ export default function RadarChart() {
   return (
     <div
       style={{
-        width: 550,
-        height: 300,
+        width: '100%',
+        height: '100%',
         padding: '1rem',
         borderRadius: '16px',
         background: 'linear-gradient(145deg, #0b1f33, #081a2a)',
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
         color: 'white',
         fontFamily: 'Segoe UI, Roboto, sans-serif',
-        borderColor: '#334155',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -124,7 +123,8 @@ export default function RadarChart() {
       <div
         style={{
           width: '100%',
-          height: '85%',
+          height: '100%',
+          minHeight: '250px', // optional, ensure minimum size
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -135,3 +135,4 @@ export default function RadarChart() {
     </div>
   );
 }
+
