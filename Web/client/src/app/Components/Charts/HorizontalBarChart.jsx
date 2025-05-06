@@ -61,7 +61,7 @@ export const HorizontalBarChart = () => {
           <CartesianGrid strokeDasharray="3 3" stroke="#1f2d3d" />
           <XAxis
             type="number"
-            stroke="#F59E0B"
+            stroke="white"
             tick={{ fontSize: 10 }}
             axisLine={false}
             tickLine={false}
@@ -69,7 +69,7 @@ export const HorizontalBarChart = () => {
           <YAxis
             dataKey="name"
             type="category"
-            stroke="#F59E0B"
+            stroke="white"
             width={130}
             tick={{ fontSize: 10 }}
             axisLine={false}
@@ -87,7 +87,7 @@ export const HorizontalBarChart = () => {
             }}
             cursor={{ fill: "#06b5d411" }}
           />
-          <Bar dataKey="value" fill="#f59e0b" radius={[0, 10, 10, 0]}>
+          <Bar dataKey="value" fill="#1B96B3" radius={[0, 10, 10, 0]}>
             <LabelList dataKey="value" position="right" fill="#fff" fontSize={10} />
           </Bar>
         </BarChart>
