@@ -36,25 +36,39 @@
 // );
 
 
-"use client"; // If you're using Next.js App Router
+
+"use client"; // If using Next.js App Router
 
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import L from "leaflet";
 
 export const Map = () => {
+  const mapRef = useRef(null);
+
+  // Optional: Fix resizing bug on sidebar toggle
   useEffect(() => {
-    import("leaflet/dist/leaflet.css");
+    const handleResize = () => {
+      const map = mapRef.current;
+      if (map) {
+        map.invalidateSize();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
     <div
       style={{
-        height: "250px",
-        width: "100%",
+        height: "100%",         // Flexible height
+        minHeight: "250px",     // Minimum height for small screens
+        width: "100%",          // Full width of parent
         borderRadius: "12px",
         overflow: "hidden",
-        backgroundColor: "#0c1b2a", // fallback background
+        backgroundColor: "#0c1b2a",
       }}
     >
       <MapContainer
@@ -62,8 +76,10 @@ export const Map = () => {
         zoom={2}
         scrollWheelZoom={false}
         style={{ height: "100%", width: "100%" }}
+        whenCreated={(mapInstance) => {
+          mapRef.current = mapInstance;
+        }}
       >
-        {/* Dark tile layer with country outlines */}
         <TileLayer
           attribution='&copy; <a href="https://carto.com/">CARTO</a>'
           url="https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -72,6 +88,7 @@ export const Map = () => {
     </div>
   );
 };
+
 
 
 
