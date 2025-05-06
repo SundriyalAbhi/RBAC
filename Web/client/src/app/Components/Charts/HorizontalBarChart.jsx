@@ -27,15 +27,17 @@ export const HorizontalBarChart = () => {
   return (
     <div
       style={{
-        width: 550,
-        height: 300,
+        width: '100%', // Use 100% of the parent container
+        height: '300px', // Set a fixed height or allow it to be responsive as well
         padding: '1rem',
         borderRadius: '16px',
         background: 'linear-gradient(145deg, #0b1f33, #081a2a)',
         boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
         color: 'white',
         fontFamily: 'Segoe UI, Roboto, sans-serif',
-        borderColor:'#334155'
+        borderColor: '#334155',
+        maxWidth: '600px', // Optional: max-width for better scaling on larger screens
+        margin: '0 auto', // Centers the chart on the screen
       }}
     >
       <h3
@@ -50,7 +52,7 @@ export const HorizontalBarChart = () => {
         Top Malware Detections
       </h3>
 
-      <ResponsiveContainer width="100%" height="85%">
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
           layout="vertical"
@@ -81,9 +83,9 @@ export const HorizontalBarChart = () => {
               color: '#fff',
               fontSize: '12px',
               boxShadow: ' #0a2e4e 0 2px 8px ',
-              opacity: 0.9  ,
+              opacity: 0.9,
             }}
-            cursor={{ fill: "var(--clr-gray-2)" }}
+            cursor={{ fill: "#06b5d411" }}
           />
           <Bar dataKey="value" fill="#f59e0b" radius={[0, 10, 10, 0]}>
             <LabelList dataKey="value" position="right" fill="#fff" fontSize={10} />
