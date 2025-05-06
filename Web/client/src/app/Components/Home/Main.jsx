@@ -5,6 +5,7 @@ import Dashboard from './Dashboard'
 
 export const Main = () => {
   return (
+
     <div className="flex flex-col  bg-[rgba(19,33,46,1)]">
     <div className="h-16">
       <Navbar />
