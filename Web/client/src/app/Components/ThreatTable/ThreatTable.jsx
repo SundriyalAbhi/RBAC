@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { UilTimes } from "@iconscout/react-unicons";
+
 
 const threatsData = [
   {
@@ -51,8 +53,10 @@ const priorityRank = {
   Low: 1,
 };
 
+
 function ThreatTable() {
   const [sortType, setSortType] = useState("time");
+  const [isOpen, setIsOpen] = useState(false);
 
   const sortedThreats = [...threatsData].sort((a, b) => {
     if (sortType === "time") {
@@ -63,14 +67,16 @@ function ThreatTable() {
     return 0;
   });
 
-  return (
-    <div className="w-full overflow-x-auto" style={{scrollbarWidth: "none"}}>
-      {/* Sorting Controls */}
-      <div className="flex justify-center gap-4 mb-4">
+  const ThreatTableContent = (
+    <div className="w-full overflow-x-auto scrollbar-hide max-h-[80vh]" onClick={() => !isOpen && setIsOpen(true)}
+    style={{scrollbarWidth:"none"}}>
+      <div className="flex justify-center gap-4 mb-4 flex-wrap">
         <button
           onClick={() => setSortType("time")}
           className={`px-3 py-1 rounded-md text-sm transition-all duration-200 ${
-            sortType === "time" ? "bg-red-500 text-white" : "bg-gray-700 text-white/70"
+            sortType === "time"
+              ? "bg-red-500 text-white"
+              : "bg-gray-700 text-white/70"
           }`}
         >
           Sort by Time
@@ -78,15 +84,18 @@ function ThreatTable() {
         <button
           onClick={() => setSortType("priority")}
           className={`px-3 py-1 rounded-md text-sm transition-all duration-200 ${
-            sortType === "priority" ? "bg-blue-500 text-white" : "bg-gray-700 text-white/70"
+            sortType === "priority"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-700 text-white/70"
           }`}
         >
           Sort by Priority
         </button>
       </div>
 
-      {/* Table */}
-      <table className="w-full table-auto text-sm rounded-md overflow-hidden shadow-md">
+      <table
+        className="w-full table-auto text-sm rounded-md overflow-hidden shadow-md"
+      >
         <thead>
           <tr className="bg-[#334155] text-white text-center">
             <th className="py-2 px-3">ID</th>
@@ -116,7 +125,9 @@ function ThreatTable() {
               >
                 {threat.threatPriority}
               </td>
-              <td className="py-2 px-3 text-white/90">{threat.threatLocation}</td>
+              <td className="py-2 px-3 text-white/90">
+                {threat.threatLocation}
+              </td>
               <td className="py-2 px-3 text-white/80">
                 {new Date(threat.timestamp).toLocaleDateString()}
               </td>
@@ -131,6 +142,55 @@ function ThreatTable() {
         </tbody>
       </table>
     </div>
+  );
+
+  return (
+    <>
+      {!isOpen ? (
+  ThreatTableContent
+) : (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      background: "rgba(0,0,0,0.8)",
+      zIndex: 9999,
+      padding: "2rem",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <div
+      style={{
+        position: "relative",
+        width: "90%",
+        height: "90%",
+      }}
+    >
+      <button
+        onClick={() => setIsOpen(false)}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+          zIndex: 10000,
+        }}
+      >
+        <UilTimes size="28" color="#ffffff" />
+      </button>
+
+      {ThreatTableContent}
+    </div>
+  </div>
+)}
+    </>
   );
 }
 
