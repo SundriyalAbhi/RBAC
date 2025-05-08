@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { UilTimes } from "@iconscout/react-unicons";
+
 import {
   AreaChart,
   Area,
@@ -20,7 +22,9 @@ const data = [
 ];
 
 export const AreaResponsiveChart = () => {
-  return (
+  const [isOpen, setIsOpen] = useState(false);
+
+  const ChartContent = (
     <div
       className="w-full h-full p-4 rounded-2xl"
       style={{
@@ -29,6 +33,7 @@ export const AreaResponsiveChart = () => {
         color: "white",
         fontFamily: "Segoe UI, Roboto, sans-serif",
       }}
+      onClick={() => !isOpen && setIsOpen(true)}
     >
       <h2
         style={{
@@ -41,44 +46,92 @@ export const AreaResponsiveChart = () => {
       >
         Website Traffic Overview
       </h2>
-      {/* This makes it fit exactly in the parent */}
-      <div style={{ width: "100%", height: "calc(100% - 2rem)" }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={data}
-            margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
-          >
-            <defs>
-              <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#0a2e4e" stopOpacity={0.9} />
-                <stop offset="95%" stopColor="#0a2e4e" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e2f45" />
-            <XAxis dataKey="name" stroke="#1B96B3" fontSize={11} />
-            <YAxis stroke="#1B96B3" fontSize={11} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "#0a2e4e",
-                borderRadius: "8px",
-                color: "#fff",
-                fontSize: "12px",
-                border: "none",
-              boxShadow: '#0a2e4e 0 2px 8px ',
+      <ResponsiveContainer width="100%" height="85%">
+        <AreaChart
+          data={data}
+          margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
+        >
+          <defs>
+            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#0a2e4e" stopOpacity={0.9} />
+              <stop offset="95%" stopColor="#0a2e4e" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="#1e2f45" />
+          <XAxis dataKey="name" stroke="#F59E0B" fontSize={11} />
+          <YAxis stroke="#F59E0B" fontSize={11} />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "#0a2e4e",
+              border: "none",
+              borderRadius: "8px",
+              color: "#fff",
+              fontSize: "12px",
+              boxShadow: " #0a2e4e 0 2px 8px ",
+              opacity: 0.9,
+            }}
+          />
+          <Area
+            type="monotone"
+            dataKey="uv"
+            stroke="#F59E0B"
+            strokeWidth={2}
+            fillOpacity={1}
+            fill="url(#colorUv)"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
 
-              }}
-            />
-            <Area
-              type="monotone"
-              dataKey="uv"
-              stroke="#1B96B3"
-              strokeWidth={2}
-              fillOpacity={1}
-              fill="url(#colorUv)"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
     </div>
+  );
+
+  return (
+    <>
+      {!isOpen ? (
+  ChartContent
+) : (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      background: "rgba(0,0,0,0.8)",
+      zIndex: 9999,
+      padding: "2rem",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <div
+      style={{
+        position: "relative",
+        width: "90%",
+        height: "90%",
+      }}
+    >
+      <button
+        onClick={() => setIsOpen(false)}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+          zIndex: 10000,
+        }}
+      >
+        <UilTimes size="28" color="#ffffff" />
+      </button>
+
+      {ChartContent}
+    </div>
+  </div>
+)}
+
+    </>
   );
 };
