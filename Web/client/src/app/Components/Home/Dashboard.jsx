@@ -80,7 +80,7 @@ export default function Dashboard() {
           }}
         >
           <h2 className="text-center text-lg font-semibold mb-4">
-            Recent Threats
+            Historical Trend
           </h2>
           {/* You can add internal content here */}
         </div>
@@ -92,7 +92,7 @@ export default function Dashboard() {
             background: "linear-gradient(145deg, #0b1f33, #081a2a)",
             boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
           }}>
-            Vertical Box 1
+            Threate Attribute
           </div>
         </div>
 
@@ -102,7 +102,7 @@ export default function Dashboard() {
             background: "linear-gradient(145deg, #0b1f33, #081a2a)",
             boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
           }}>
-            Vertical Box A
+            Severity
           </div>
         </div>
         </div>
