@@ -26,11 +26,8 @@ export const AreaResponsiveChart = () => {
 
   const ChartContent = (
     <div
+      className="w-full h-full p-4 rounded-2xl"
       style={{
-        width: "100%",
-        height: "100%",
-        padding: "1rem",
-        borderRadius: "20px",
         background: "linear-gradient(145deg, #0b1f33, #081a2a)",
         boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
         color: "white",
@@ -44,7 +41,6 @@ export const AreaResponsiveChart = () => {
           marginBottom: "0.75rem",
           fontWeight: 600,
           textAlign: "center",
-          letterSpacing: "0.5px",
           color: "#f1f5f9",
         }}
       >
@@ -85,6 +81,7 @@ export const AreaResponsiveChart = () => {
           />
         </AreaChart>
       </ResponsiveContainer>
+
     </div>
   );
 
