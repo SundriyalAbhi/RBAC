@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Treemap, ResponsiveContainer } from 'recharts';
+import { UilTimes } from "@iconscout/react-unicons";
+
 
 const data = [
   { name: 'elf', size: 50.92 },
@@ -53,27 +55,76 @@ const CustomizedContent = (props) => {
 };
 
 export const TreeChart = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const TreeChartContent = <div
+style={{
+  width: '100%',
+  height: '100%',
+  background: 'linear-gradient(145deg, #0b1f33, #081a2a)',
+  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+  borderRadius: '16px',
+  padding: '10px',
+ 
+}}
+onClick={() => !isOpen && setIsOpen(true)}
+>
+<ResponsiveContainer width="100%" height={250}>
+  <Treemap
+    data={data}
+    dataKey="size"
+    type="flat"
+    stroke="#F59E0B"
+    content={<CustomizedContent />}
+  />
+</ResponsiveContainer>
+</div>
   return (
+    <>
+    {!isOpen ? (
+  TreeChartContent
+) : (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      background: "rgba(0,0,0,0.8)",
+      zIndex: 9999,
+      padding: "2rem",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
     <div
       style={{
-        width: '100%',
-        height: '100%',
-        background: 'linear-gradient(145deg, #0b1f33, #081a2a)',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-        borderRadius: '16px',
-        padding: '10px',
-       
+        position: "relative",
+        width: "90%",
+        height: "90%",
       }}
     >
-      <ResponsiveContainer width="100%" height={250}>
-        <Treemap
-          data={data}
-          dataKey="size"
-          type="flat"
-          stroke="#F59E0B"
-          content={<CustomizedContent />}
-        />
-      </ResponsiveContainer>
+      <button
+        onClick={() => setIsOpen(false)}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+          zIndex: 10000,
+        }}
+      >
+        <UilTimes size="28" color="#ffffff" />
+      </button>
+
+      {TreeChartContent}
     </div>
+  </div>
+)}
+
+  </>
   );
 };

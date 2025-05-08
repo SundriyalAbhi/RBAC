@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { UilTimes } from "@iconscout/react-unicons";
+
 import {
   Radar
 } from 'react-chartjs-2';
@@ -91,47 +93,98 @@ const options = {
   },
 };
 
+
 export default function RadarChart() {
+const [isOpen, setIsOpen] = useState(false);
+const RadarChartContent =     
+<div
+style={{
+  width: "100%",
+  height: "100%",
+  padding: '1rem',
+  borderRadius: '16px',
+  background: 'linear-gradient(145deg, #0b1f33, #081a2a)',
+  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
+  color: 'white',
+  fontFamily: 'Segoe UI, Roboto, sans-serif',
+  borderColor: '#334155',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}
+onClick={() => !isOpen && setIsOpen(true)}
+>
+<h3
+  style={{
+    fontSize: '0.95rem',
+    fontWeight: 600,
+    marginBottom: '0.75rem',
+    textAlign: 'center',
+    color: '#f1f5f9',
+  }}
+>
+  Team Skill Radar Comparison
+</h3>
+<div
+  style={{
+    width: '100%',
+    height: '85%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}
+>
+  <Radar data={data} options={options} />
+</div>
+</div>
+  
   return (
+    <>
+      {!isOpen ? (
+  RadarChartContent
+) : (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      background: "rgba(0,0,0,0.8)",
+      zIndex: 9999,
+      padding: "2rem",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
     <div
       style={{
-        width: 550,
-        height: 300,
-        padding: '1rem',
-        borderRadius: '16px',
-        background: 'linear-gradient(145deg, #0b1f33, #081a2a)',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)',
-        color: 'white',
-        fontFamily: 'Segoe UI, Roboto, sans-serif',
-        borderColor: '#334155',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
+        position: "relative",
+        width: "90%",
+        height: "90%",
       }}
     >
-      <h3
+      <button
+        onClick={() => setIsOpen(false)}
         style={{
-          fontSize: '0.95rem',
-          fontWeight: 600,
-          marginBottom: '0.75rem',
-          textAlign: 'center',
-          color: '#f1f5f9',
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+          zIndex: 10000,
         }}
       >
-        Team Skill Radar Comparison
-      </h3>
-      <div
-        style={{
-          width: '100%',
-          height: '85%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Radar data={data} options={options} />
-      </div>
+        <UilTimes size="28" color="#ffffff" />
+      </button>
+
+      {RadarChartContent}
     </div>
+  </div>
+)}
+    </>
   );
 }

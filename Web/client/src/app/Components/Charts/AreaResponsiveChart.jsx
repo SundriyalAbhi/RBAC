@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
+import { UilTimes } from "@iconscout/react-unicons";
+
 import {
   AreaChart,
   Area,
@@ -20,7 +22,9 @@ const data = [
 ];
 
 export const AreaResponsiveChart = () => {
-  return (
+  const [isOpen, setIsOpen] = useState(false);
+
+  const ChartContent = (
     <div
       style={{
         width: "100%",
@@ -32,6 +36,7 @@ export const AreaResponsiveChart = () => {
         color: "white",
         fontFamily: "Segoe UI, Roboto, sans-serif",
       }}
+      onClick={() => !isOpen && setIsOpen(true)}
     >
       <h2
         style={{
@@ -61,12 +66,12 @@ export const AreaResponsiveChart = () => {
           <YAxis stroke="#F59E0B" fontSize={11} />
           <Tooltip
             contentStyle={{
-              backgroundColor: '#0a2e4e',
-              border: 'none',
-              borderRadius: '8px',
-              color: '#fff',
-              fontSize: '12px',
-              boxShadow: ' #0a2e4e 0 2px 8px ',
+              backgroundColor: "#0a2e4e",
+              border: "none",
+              borderRadius: "8px",
+              color: "#fff",
+              fontSize: "12px",
+              boxShadow: " #0a2e4e 0 2px 8px ",
               opacity: 0.9,
             }}
           />
@@ -81,5 +86,55 @@ export const AreaResponsiveChart = () => {
         </AreaChart>
       </ResponsiveContainer>
     </div>
+  );
+
+  return (
+    <>
+      {!isOpen ? (
+  ChartContent
+) : (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      background: "rgba(0,0,0,0.8)",
+      zIndex: 9999,
+      padding: "2rem",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <div
+      style={{
+        position: "relative",
+        width: "90%",
+        height: "90%",
+      }}
+    >
+      <button
+        onClick={() => setIsOpen(false)}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+          zIndex: 10000,
+        }}
+      >
+        <UilTimes size="28" color="#ffffff" />
+      </button>
+
+      {ChartContent}
+    </div>
+  </div>
+)}
+
+    </>
   );
 };
