@@ -1,11 +1,13 @@
 import React from "react";
 import "@/app/style.css";
 import { IoSearch } from "react-icons/io5";
-import style from "./NavStyle.css"
+import style from "./NavStyle.css";
 export const Navbar = () => {
   return (
     <nav className="bg-[#1E293B] h-[10vh] flex items-center justify-between px-6 shadow-md">
-      <h1 className="text-white text-2xl font-serif ">PHANTOM RADAR</h1>
+      <span className="text-transparent bg-clip-text text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400">
+        PHANTOM RADAR
+      </span>
 
       <div className="cursor-pointer flex gap-4 items-center">
         <form className="flex items-center space-x-2">
