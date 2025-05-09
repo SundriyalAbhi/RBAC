@@ -8,3 +8,9 @@
 /Web/server/node_modules
 /Web/server/Config/config.env
 /Web/server/package-lock.json
+
+/Web/provider/node_modules
+/Web/provider/.next
+/Web/provider/next.jsconfig.mjs
+/Web/provider/jsconfig.jsconfig
+/Web/provider/package-lock.json
