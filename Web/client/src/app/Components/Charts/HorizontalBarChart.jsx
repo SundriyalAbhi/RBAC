@@ -88,7 +88,7 @@ export const HorizontalBarChart = () => {
           boxShadow: ' #0a2e4e 0 2px 8px ',
           opacity: 0.9  ,
         }}
-        cursor={{ fill: "var(--clr-gray-2)" }}
+        cursor={{ fill: "#06b5d411"}}
       />
       <Bar dataKey="value" fill="#f59e0b" radius={[0, 10, 10, 0]}>
         <LabelList dataKey="value" position="right" fill="#fff" fontSize={10} />
