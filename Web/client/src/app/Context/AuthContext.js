@@ -41,6 +41,15 @@ async function UserSignIn(body) {
     }
 }
 
+async function checkEmail(body) {
+    try {
+        const response= await API.post(`${baseURL}/checkEmail/validateEmail`,body)
+        return response?.status
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 async function getprofile(authData) {
     try {
@@ -139,7 +148,7 @@ export const AuthContext = createContext()
 export const AuthProvider = ({children})=>{
     const [state,Authdispatch] = useReducer(reducer,initialState)
     return(
-        <AuthContext.Provider value={{AuthData:state,Authdispatch,UserSignUp,UserSignIn,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate}}>
+        <AuthContext.Provider value={{AuthData:state,Authdispatch,UserSignUp,UserSignIn,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate,checkEmail}}>
             {children}
         </AuthContext.Provider>
 

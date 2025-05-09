@@ -5,7 +5,7 @@ import { AuthContext } from '@/app/Context/AuthContext';
 
 export const SignUp = ({ setMode }) => {
   const [formData, setFormData] = useState({});
-  const { UserSignUp, SENDOTP, VERIFYOTP } = useContext(AuthContext);
+  const { UserSignUp, SENDOTP, VERIFYOTP,checkEmail } = useContext(AuthContext);
   const [enterOtp, setEnterOtp] = useState(false);
   const [otpArray, setOtpArray] = useState(new Array(6).fill(''));
   const [loading, setLoading] = useState(false);
@@ -39,49 +39,53 @@ export const SignUp = ({ setMode }) => {
   async function handleSubmit(e) {
     e.preventDefault();
     if (formData?.username && formData?.email && formData?.password && formData?.confirmPassword) {
-      if(isEmailValid && isPasswordValid){
-        if (formData.password === formData.confirmPassword) {
-          try {
-            setLoading(true);
-            const data = await SENDOTP({ UserEmail: formData.email });
+    const validEmail = checkEmail({email:formData.email})
+    console.log(validEmail);
+    // if(validEmail){
+    //   if(isEmailValid && isPasswordValid){
+    //     if (formData.password === formData.confirmPassword) {
+    //       try {
+    //         setLoading(true);
+    //         const data = await SENDOTP({ UserEmail: formData.email });
   
-            const resolveAfter3Sec = new Promise((resolve, reject) => {
-              setTimeout(() => {
-                if (data.Status === 'OTP Sent Successfully') {
-                  setEnterOtp(true);
-                  resolve();
-                } else {
-                  reject();
-                }
-              }, 2000);
-            });
+    //         const resolveAfter3Sec = new Promise((resolve, reject) => {
+    //           setTimeout(() => {
+    //             if (data.Status === 'OTP Sent Successfully') {
+    //               setEnterOtp(true);
+    //               resolve();
+    //             } else {
+    //               reject();
+    //             }
+    //           }, 2000);
+    //         });
   
-            toast.promise(resolveAfter3Sec, {
-              pending: 'Sending OTP...',
-              success: 'OTP sent successfully 👌',
-              error: 'Error sending OTP 🤯',
-            });
-          } catch (error) {
-            console.error(error);
-            toast.error('Failed to send OTP', { position: 'top-center' });
-          } finally {
-            setLoading('Resend');
-          }
-        } else {
-          toast.error("Passwords don't match", {
-            position: 'top-center',
-            autoClose: 5000,
-            theme: 'light',
-            transition: Bounce,
-          });
-        }
-      }else{
-        if(!isEmailValid){
-          toast.error('Enter Valid Email', { position: 'top-center' });
-        }else if(!isPasswordValid){
-          toast.error('Password must include 8+ chars, A-Z, a-z, 0-9, and a special symbol', { position: 'top-center' });
-        }
-      }
+    //         toast.promise(resolveAfter3Sec, {
+    //           pending: 'Sending OTP...',
+    //           success: 'OTP sent successfully 👌',
+    //           error: 'Error sending OTP 🤯',
+    //         });
+    //       } catch (error) {
+    //         console.error(error);
+    //         toast.error('Failed to send OTP', { position: 'top-center' });
+    //       } finally {
+    //         setLoading('Resend');
+    //       }
+    //     } else {
+    //       toast.error("Passwords don't match", {
+    //         position: 'top-center',
+    //         autoClose: 5000,
+    //         theme: 'light',
+    //         transition: Bounce,
+    //       });
+    //     }
+    //   }else{
+    //     if(!isEmailValid){
+    //       toast.error('Enter Valid Email', { position: 'top-center' });
+    //     }else if(!isPasswordValid){
+    //       toast.error('Password must include 8+ chars, A-Z, a-z, 0-9, and a special symbol', { position: 'top-center' });
+    //     }
+    //   }
+    // }
     } else {
       toast.error('Please fill out the form', {
         position: 'top-center',
