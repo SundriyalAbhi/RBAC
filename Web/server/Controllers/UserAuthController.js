@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv");
-const User = require("../Models/UserModel")
+const User = require("../Models/UserModel");
 const cloudinary = require('cloudinary').v2;
 dotenv.config({path:"./Config/config.env"})
 cloudinary.config({
@@ -10,7 +10,7 @@ cloudinary.config({
     api_secret: process.env.API_SECRET
 });
 
-exports.signup = async(req,res)=>{
+exports.Usersignup = async(req,res)=>{
     try {
         const checkuser = await User.findOne({email:req.body.email})
         if(checkuser){
@@ -36,7 +36,7 @@ exports.signup = async(req,res)=>{
     }
 }
 
-exports.signin = async(req,res)=>{
+exports.Usersignin = async(req,res)=>{
     try {
         const { email, password } = req.body
         const user = await User.findOne({email:email})
@@ -56,13 +56,9 @@ exports.signin = async(req,res)=>{
     }
 }
 
-exports.findAccount = async(req,res)=>{
+exports.UserfindAccount = async(req,res)=>{
     try {
-        console.log(req.params.email);
-        
         const account = await User.findOne({email:req.params.email})
-        // console.log(account);
-        
         if(account){
             res.send({email:account.email})
         }
@@ -73,3 +69,5 @@ exports.findAccount = async(req,res)=>{
       console.log(error); 
     }
 }
+
+

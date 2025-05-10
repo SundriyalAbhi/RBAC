@@ -24,7 +24,7 @@ const { createContext, useReducer } = require("react")
 
 async function UserSignUp(body) {
     try {
-        const response= await API.post(`${baseURL}/auth/signup`,body)
+        const response= await API.post(`${baseURL}/Userauth/Usersignup`,body)
         return response?.status
     } catch (error) {
         console.log(error);
@@ -33,20 +33,11 @@ async function UserSignUp(body) {
 
 async function UserSignIn(body) {
     try {
-        const response= await API.post(`${baseURL}/auth/signin`,body)
+        const response= await API.post(`${baseURL}/Userauth/Usersignin`,body)
         return { status: response?.status, data: response?.data}
     } catch (error) {
         console.log(error);
         return { status: error?.status}
-    }
-}
-
-async function checkEmail(body) {
-    try {
-        const response= await API.post(`${baseURL}/checkEmail/validateEmail`,body)
-        return response?.status
-    } catch (error) {
-        console.log(error);
     }
 }
 
@@ -62,7 +53,7 @@ async function getprofile(authData) {
 
 async function findAccount(body) {
     try {
-        const response= await API.get(`${baseURL}/auth/FindAccount/${body.email}`)
+        const response= await API.get(`${baseURL}/Userauth/UserFindAccount/${body.email}`)
         return response?.data
     } catch (error) {
         console.log(error);
@@ -148,7 +139,7 @@ export const AuthContext = createContext()
 export const AuthProvider = ({children})=>{
     const [state,Authdispatch] = useReducer(reducer,initialState)
     return(
-        <AuthContext.Provider value={{AuthData:state,Authdispatch,UserSignUp,UserSignIn,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate,checkEmail}}>
+        <AuthContext.Provider value={{AuthData:state,Authdispatch,UserSignUp,UserSignIn,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate}}>
             {children}
         </AuthContext.Provider>
 
