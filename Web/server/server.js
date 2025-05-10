@@ -4,9 +4,10 @@ const cors = require("cors")
 const morgan = require("morgan")
 const dotenv = require("dotenv")
 const { connectdb } = require("./Config/db")
-const AuthRouter = require("./routes/AuthRouter")
 const OTPRouter = require("./routes/OTPRoute")
 const validateEmailRouter = require("./routes/ValidateEmailRouter")
+const ProviderAuthRouter = require("./routes/ProviderAuthRoute")
+const UserAuthRouter = require("./routes/UserAuthRouter")
 // const { app, server } = require("./SOCKETIO/socketio")
 dotenv.config({path:"./Config/config.env"})
 const app = express()
@@ -30,9 +31,10 @@ app.get("/",(req,res)=>{
       console.log(error);
   }
 })
-app.use("/auth",AuthRouter)
+app.use("/Userauth",UserAuthRouter)
 app.use("/otp",OTPRouter)
 app.use("/checkEmail",validateEmailRouter)
+app.use("/Userprovider",ProviderAuthRouter)
 
 app.listen(process.env.PORT,()=>{
     console.log("server is running");
