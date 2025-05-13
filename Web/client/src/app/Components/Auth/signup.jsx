@@ -115,7 +115,10 @@ export const SignUp = ({ setMode }) => {
               });
               setTimeout(() => setMode('signin'), 3000);
               resolve();
-            } else {
+            } else if(status==409){
+                 toast.error('"User already exists"', { position: 'top-center', autoClose: 3000 });
+              reject();
+            }else {
               toast.error('Signup failed!', { position: 'top-center', autoClose: 3000 });
               reject();
             }

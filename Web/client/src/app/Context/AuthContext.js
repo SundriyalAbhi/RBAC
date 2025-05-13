@@ -27,7 +27,7 @@ async function UserSignUp(body) {
         const response= await API.post(`${baseURL}/Userauth/Usersignup`,body)
         return response?.status
     } catch (error) {
-        console.log(error);
+        return { status: error?.status}
     }
 }
 
@@ -36,7 +36,6 @@ async function UserSignIn(body) {
         const response= await API.post(`${baseURL}/Userauth/Usersignin`,body)
         return { status: response?.status, data: response?.data}
     } catch (error) {
-        console.log(error);
         return { status: error?.status}
     }
 }
@@ -47,7 +46,7 @@ async function getprofile(authData) {
         const response = await API.get(`${baseURL}/profile/getprofile/${authData.userId}`)
         return response?.data
     } catch (error) {
-        console.log(error);
+        return { status: error?.status}
     }
 }
 
@@ -56,7 +55,6 @@ async function findAccount(body) {
         const response= await API.get(`${baseURL}/Userauth/UserFindAccount/${body.email}`)
         return response?.data
     } catch (error) {
-        console.log(error);
         return error?.response?.status
     }
 }
@@ -67,7 +65,6 @@ async function SENDOTP(body) {
         const response= await API.post(`${baseURL}/otp/sentOTP`,body)
         return response?.data
     } catch (error) {
-        console.log(error);
         return error?.response?.status
     }
 }
@@ -77,7 +74,6 @@ async function VERIFYOTP(body) {
         const response= await API.post(`${baseURL}/otp/verifyOTP`,body)
         return response?.data
     } catch (error) {
-        console.log(error);
         return error?.response?.status
     }
 }
@@ -87,7 +83,7 @@ async function PasswordUpdate(body) {
         const response = await API.put(`${baseURL}/profile/updatepassword/`,body)
         return response?.status
     } catch (error) {
-        console.log(error);
+        return { status: error?.status}
     }
 }
 
@@ -96,7 +92,7 @@ async function deleteaccount(authData) {
         const response = await API.delete(`${baseURL}/profile/deleteprofile/${authData.userId}`)
         return response?.status
     } catch (error) {
-        console.log(error);
+        return { status: error?.status}
     }
 }
 
@@ -105,7 +101,7 @@ async function profileupdate(authData,body) {
         const response = await API.put(`${baseURL}/profile/updateprofile/${authData.userId}`,body)
         return response?.status
     } catch (error) {
-        console.log(error);
+        return { status: error?.status}
     }
 }
 

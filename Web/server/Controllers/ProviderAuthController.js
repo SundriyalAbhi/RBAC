@@ -29,8 +29,8 @@ exports.Providersignup = async(req,res)=>{
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password,salt)
         const providerTobeadded = new Provider({...req.body,ProfilePicture:ProfilePictureUrl,password:hashedPassword})
-        const provider = await userTobeadded.save()
-        res.send({providerTobeadded,msg:"user created"})
+        const provider = await providerTobeadded.save()
+        res.send({provider,msg:"user created"})
     } catch (error) {
         console.log(error);
     }

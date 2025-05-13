@@ -1,9 +1,9 @@
 "use client"
 import Image from "next/image";
-import ProviderDashboard from "./Components/Dashboard/Dashboard";
+import { Main } from "./Components/Home/Main";
 
 export default function Home() {
   return (
-   <ProviderDashboard/>
+   <Main/>
   );
 }
