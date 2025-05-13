@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv");
-const User = require("../Models/UserModel");
+const CompanyMember = require("../Models/CompanyMemberModel");
 const cloudinary = require('cloudinary').v2;
 dotenv.config({path:"./Config/config.env"})
 cloudinary.config({
@@ -12,7 +12,7 @@ cloudinary.config({
 
 exports.Usersignup = async(req,res)=>{
     try {
-        const checkuser = await User.findOne({email:req.body.email})
+        const checkuser = await CompanyMember.findOne({email:req.body.email})
         if(checkuser){
             res.status(409).send("User already exists")
             return;
@@ -28,9 +28,9 @@ exports.Usersignup = async(req,res)=>{
         }
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password,salt)
-        const userTobeadded = new User({...req.body,ProfilePicture:ProfilePictureUrl,password:hashedPassword})
-        const user = await userTobeadded.save()
-        res.send({user,msg:"user created"})
+        const MemberTobeadded = new CompanyMember({...req.body,ProfilePicture:ProfilePictureUrl,password:hashedPassword})
+        const Member = await MemberTobeadded.save()
+        res.send({Member,msg:"user created"})
     } catch (error) {
         console.log(error);
     }
@@ -39,12 +39,12 @@ exports.Usersignup = async(req,res)=>{
 exports.Usersignin = async(req,res)=>{
     try {
         const { email, password } = req.body
-        const user = await User.findOne({email:email})
-        if(user){
-            const verify = await bcrypt.compare(password,user.password)
+        const Member = await CompanyMember.findOne({email:email})
+        if(Member){
+            const verify = await bcrypt.compare(password,Member.password)
             if(verify){
                 const token = jwt.sign({email,password},process.env.SECRET)
-                res.send({token,userId:user._id,ProfilePicture:user.ProfilePicture,msg:"Welcome"})
+                res.send({token,userId:Member._id,ProfilePicture:Member.ProfilePicture,msg:"Welcome"})
             }else{
                 res.status(401).send("Wrong Password")
             }
@@ -58,7 +58,7 @@ exports.Usersignin = async(req,res)=>{
 
 exports.UserfindAccount = async(req,res)=>{
     try {
-        const account = await User.findOne({email:req.params.email})
+        const account = await CompanyMember.findOne({email:req.params.email})
         if(account){
             res.send({email:account.email})
         }
