@@ -11,7 +11,7 @@ const companyMemberSchema = new mongoose.Schema({
   password: { type: String },
   role: {
     type: String,
-    enum: ['HR', 'Manager', 'Employee'], 
+    enum: ['ADMIN', 'Manager', 'Employee','CLIENTS'], 
     required: true,
   },
   addedBy: {
