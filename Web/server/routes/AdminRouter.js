@@ -23,7 +23,7 @@ AdminRouter.get(
 AdminRouter.put(
   "/update-role",
   verifyToken,
-  allowRoles("admin"),
+  allowRoles("admin", "ciso"),
   AdminController.updateAdminRole
 );
 
