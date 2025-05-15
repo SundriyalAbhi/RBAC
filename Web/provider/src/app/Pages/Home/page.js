@@ -1,11 +1,11 @@
 "use client"
-import { MainAuth } from '@/app/Components/Auth/Main'
+import { Main } from '@/app/Components/Home/Main'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-     <MainAuth/>
+     <Main/>
     </div>
   )
 }
