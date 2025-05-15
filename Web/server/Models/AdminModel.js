@@ -40,12 +40,6 @@ const AdminSchema = new mongoose.Schema(
   }
 );
 
-// Prevent password from being returned by default
-AdminSchema.methods.toJSON = function () {
-  const obj = this.toObject();
-  delete obj.password;
-  return obj;
-};
 
   const AdminModel = mongoose.model('Admin',AdminSchema);
 

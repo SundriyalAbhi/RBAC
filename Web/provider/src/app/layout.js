@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CompanyProvider } from "./Context/CompanyContext";
+import { AuthProvider } from "./Context/AuthContext";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,9 +25,12 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <CompanyProvider>
+      <AuthProvider>
+      <CompanyProvider>
+        <ToastContainer/>
           {children}
         </CompanyProvider>
+      </AuthProvider>
       </body>
     </html>
   );
