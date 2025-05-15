@@ -3,21 +3,16 @@ const roles = require("../Config/role");
 
 
 const AdminSchema = new mongoose.Schema({
-    email: {
-      type: String,
-      required: true,
-      lowercase: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    role: {
-      type: String,
-      enum: [roles.admin, roles.moderator, roles.client],
-      default: roles.client,
-    },
+    companyId: {
+    type: String,
+    ref: 'Company',
+    required: true,
+  },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  name: { type: String },
+  company:{type:String},
+  role: { type: String, default: 'Admin' },
   });
 
   const AdminModel = mongoose.model('Admin',AdminSchema);

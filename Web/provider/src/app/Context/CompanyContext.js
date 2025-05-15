@@ -37,13 +37,33 @@ async function UPDATECOMPANYDETAILS(id, body) {
   }
 }
 
+async function GETALLADMINS() {
+  try {
+    const responce = await API.get(`${baseURL}/admin/all`)
+    return responce.data
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function DELETECOMPANY(body) {
+  try {
+    const response = await API.delete(`${baseURL}/company/DeleteCompany`, {
+      data: body,
+    });
+    return response.status;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 
 export const CompanyContext = createContext()
 
 export const CompanyProvider = ({children})=>{
 
 return(
-     <CompanyContext.Provider value={{ADDCOMPANY,GETALLCOMPANYS,UPDATECOMPANYDETAILS}}>
+     <CompanyContext.Provider value={{ADDCOMPANY,GETALLCOMPANYS,UPDATECOMPANYDETAILS,GETALLADMINS,DELETECOMPANY}}>
         {children}
     </CompanyContext.Provider>
 )
