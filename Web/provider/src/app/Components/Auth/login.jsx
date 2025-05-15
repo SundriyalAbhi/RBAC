@@ -55,7 +55,7 @@ export const SignIn = ({ setMode }) => {
             type: 'SIGN_IN',
             payload: logindata.data,
           });
-          router.push('/');
+          router.push('/pages/Home');
         }
       } else {
         toast.error('Please fill out the form', {
