@@ -16,8 +16,7 @@ const AddCompanyForm = ({ ownerId, setIsOpenModal, DataForUpdate }) => {
     createdBy: ownerId || 'Abhi',
   });
 
-  const isEditMode = DataForUpdate && Object.keys(DataForUpdate).length > 0;
-
+  const isEditMode = Object.keys(DataForUpdate).length > 0;
   useEffect(() => {
     if (isEditMode) {
       setFormData({
@@ -41,8 +40,7 @@ const AddCompanyForm = ({ ownerId, setIsOpenModal, DataForUpdate }) => {
       } else {
         res = await ADDCOMPANY(formData);
       }
-
-      if (res?.status === 200 || res?.status === 201) {
+      if (res === 200 || res === 201) {
         alert(isEditMode ? 'Company updated successfully!' : 'Company added successfully!');
         setFormData({
           name: '',

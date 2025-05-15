@@ -1,12 +1,13 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Admin = require('../Models/AdminModel'); // Update path if different
+const Company = require('../Models/CompanyModel');
 require('dotenv').config();
 
 // SIGNUP CONTROLLER
 exports.registerAdmin = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password, role ,companyId,name} = req.body;
 
     const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
@@ -14,8 +15,9 @@ exports.registerAdmin = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newAdmin = new Admin({ email, password: hashedPassword, role });
-
+    const CompanyName = await Company.findById(companyId)
+    const newAdmin = new Admin({ email, password: hashedPassword, role , companyId, name, company:CompanyName.name});
+    
     await newAdmin.save();
     res.status(201).json({ msg: 'Admin registered successfully' });
   } catch (err) {
@@ -55,7 +57,7 @@ exports.loginAdmin = async (req, res) => {
 exports.getAllAdmins = async (req, res) => {
   try {
     const admins = await Admin.find().select('-password'); // Hide passwords
-    res.status(200).json(admins);
+    res.status(200).send(admins);
   } catch (err) {
     res.status(500).json({ msg: 'Failed to fetch admins' });
   }

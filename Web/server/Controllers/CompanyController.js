@@ -1,3 +1,4 @@
+const AdminModel = require("../Models/AdminModel");
 const Company = require("../Models/CompanyModel");
 
 
@@ -55,3 +56,30 @@ exports.UpdateCompanyDetails = async(req,res)=>{
         console.log(error);
     }
 }
+
+
+exports.DeleteCompany = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+    const findCompany = await Company.findOne({ email });
+
+    if (!findCompany) {
+      return res.status(404).json({ message: 'Company not found' });
+    }
+    await AdminModel.deleteMany({ company: findCompany._id });
+
+    const deletedCompany = await Company.findByIdAndDelete(findCompany._id);
+
+    return res.status(200).json({
+      message: 'Company and associated admins deleted successfully',
+      deletedCompany,
+    });
+  } catch (error) {
+    console.error('DeleteCompany Error:', error);
+    return res.status(500).json({ message: 'Server error', error });
+  }
+};
