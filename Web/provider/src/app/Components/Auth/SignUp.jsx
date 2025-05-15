@@ -44,10 +44,11 @@ export const SignUp = ({ setMode }) => {
           try {
             setLoading(true);
             const data = await SENDOTP({ UserEmail: formData.email });
-  
+             console.log(data);
+             
             const resolveAfter3Sec = new Promise((resolve, reject) => {
               setTimeout(() => {
-                if (data.Status === 'OTP Sent Successfully') {
+                if (data.status === 200) {
                   setEnterOtp(true);
                   resolve();
                 } else {
@@ -93,51 +94,61 @@ export const SignUp = ({ setMode }) => {
   }
 
   async function handleVerifyOtp(e) {
-    e.preventDefault();
-    const otp = otpArray.join('');
-    if (otp.length !== 6) {
-      return toast.error('Please enter a 6-digit OTP');
-    }
+  e.preventDefault();
+  const otp = otpArray.join('');
+  if (otp.length !== 6) {
+    return toast.error('Please enter a 6-digit OTP');
+  }
 
-    try {
-      const verified = await VERIFYOTP({ otp, email: formData.email });
-
-      const resolveAfter3Sec = new Promise(async (resolve, reject) => {
-        setTimeout(async () => {
-          if (verified.msg === 'OTP verified successfully') {
-            const status = await ProviderSignUp(formData);
-            if (status === 200) {
-              toast.success('SignUp successful!', {
-                position: 'top-center',
-                autoClose: 3000,
-                theme: 'light',
-                transition: Bounce,
-              });
-              setTimeout(() => setMode('signin'), 3000);
-              resolve();
-            } else if(status==409){
-                 toast.error('"User already exists"', { position: 'top-center', autoClose: 3000 });
-              reject();
-            }else {
-              toast.error('Signup failed!', { position: 'top-center', autoClose: 3000 });
-              reject();
-            }
+  try {
+    const verified = await VERIFYOTP({ otp, email: formData.email });
+    console.log(verified);
+    
+    const resolveAfter3Sec = new Promise(async (resolve, reject) => {
+      setTimeout(async () => {
+        if (verified.status === 200 && verified.data?.msg === 'OTP verified successfully') {
+          const response = await ProviderSignUp(formData);
+        console.log(response);
+        
+          if (response.status === 201) {
+            toast.success('SignUp successful!', {
+              position: 'top-center',
+              autoClose: 3000,
+              theme: 'light',
+              transition: Bounce,
+            });
+            setTimeout(() => setMode('signin'), 3000);
+            resolve();
+          } else if (response.status === 409) {
+            toast.error(response.data?.message || 'User already exists', {
+              position: 'top-center',
+              autoClose: 3000,
+            });
+            reject();
           } else {
+            toast.error(response.data?.message || 'Signup failed', {
+              position: 'top-center',
+              autoClose: 3000,
+            });
             reject();
           }
-        }, 3000);
-      });
+        } else {
+          reject();
+        }
+      }, 3000);
+    });
 
-      toast.promise(resolveAfter3Sec, {
-        pending: 'Verifying OTP...',
-        success: `${verified.msg} 👌`,
-        error: `${verified.msg || 'OTP verification failed'} 🤯`,
-      });
-    } catch (error) {
-      console.error(error);
-      toast.error('Something went wrong during OTP verification');
-    }
+    toast.promise(resolveAfter3Sec, {
+      pending: 'Verifying OTP...',
+      success: `${verified.data?.msg || 'OTP verified'} 👌`,
+      error: `${verified.data?.msg || 'OTP verification failed'} 🤯`,
+    });
+  } catch (error) {
+    console.error(error);
+    toast.error('Something went wrong during OTP verification');
   }
+}
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

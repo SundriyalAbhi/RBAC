@@ -52,12 +52,6 @@ app.use("/checkEmail",validateEmailRouter)
 app.use("/ProviderAuth",ProviderAuthRouter)
 app.use("/company",ComapnyRouter)
 app.use('/admin', AdminRouter);
-// router.put(
-//   '/assign-role',
-//   verifyToken,
-//   allowRoles('admin'), // Only allow 'admin' to access this
-//   adminController.updateAdminRole
-// );
 
 
 
