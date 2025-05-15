@@ -24,85 +24,85 @@ const { createContext, useReducer } = require("react")
 
 async function UserSignUp(body) {
     try {
-        const response= await API.post(`${baseURL}/Userauth/Usersignup`,body)
-        return response?.status
-    } catch (error) {
-        return { status: error?.status}
-    }
+        const response= await API.post(`${baseURL}/MamberAuth/MemberSignup`,body)
+  return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
 }
 
 async function UserSignIn(body) {
     try {
-        const response= await API.post(`${baseURL}/Userauth/Usersignin`,body)
-        return { status: response?.status, data: response?.data}
-    } catch (error) {
-        return { status: error?.status}
-    }
+        const response= await API.post(`${baseURL}/MamberAuth/MemberSignin`,body)
+         return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
 }
 
 
 async function getprofile(authData) {
     try {
         const response = await API.get(`${baseURL}/profile/getprofile/${authData.userId}`)
-        return response?.data
-    } catch (error) {
-        return { status: error?.status}
-    }
+         return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
 }
 
 async function findAccount(body) {
     try {
-        const response= await API.get(`${baseURL}/Userauth/UserFindAccount/${body.email}`)
-        return response?.data
-    } catch (error) {
-        return error?.response?.status
-    }
+        const response= await API.get(`${baseURL}/Userauth/MemberFindAccount/${body.email}`)
+         return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
 }
 
 
 async function SENDOTP(body) {
     try {
         const response= await API.post(`${baseURL}/otp/sentOTP`,body)
-        return response?.data
-    } catch (error) {
-        return error?.response?.status
-    }
+         return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
 }
 
 async function VERIFYOTP(body) {
     try {
         const response= await API.post(`${baseURL}/otp/verifyOTP`,body)
-        return response?.data
-    } catch (error) {
-        return error?.response?.status
-    }
+       return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
 }
 
 async function PasswordUpdate(body) {
     try {
         const response = await API.put(`${baseURL}/profile/updatepassword/`,body)
-        return response?.status
-    } catch (error) {
-        return { status: error?.status}
-    }
+       return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
 }
 
 async function deleteaccount(authData) {
     try {
         const response = await API.delete(`${baseURL}/profile/deleteprofile/${authData.userId}`)
-        return response?.status
-    } catch (error) {
-        return { status: error?.status}
-    }
+        return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
 }
 
 async function profileupdate(authData,body) {
     try {
         const response = await API.put(`${baseURL}/profile/updateprofile/${authData.userId}`,body)
-        return response?.status
-    } catch (error) {
-        return { status: error?.status}
-    }
+        return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
 }
 
 function reducer(state,action){

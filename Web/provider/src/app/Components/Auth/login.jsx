@@ -5,14 +5,14 @@ import '@/app/style.css'
 import { AuthContext } from '@/app/Context/AuthContext';
 export const SignIn = ({ setMode }) => {
   const [formData, setFormData] = useState({});
-  const { Authdispatch, UserSignIn } = useContext(AuthContext);
+  const { Authdispatch, ProviderSignIn } = useContext(AuthContext);
   const router = useRouter();
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent page reload
     try {
       if (formData?.email && formData?.password) {
-        const logindata = await UserSignIn(formData);
+        const logindata = await ProviderSignIn(formData);
         if (logindata.status === 404) {
           toast.error('User does not exist', {
             position: 'top-center',

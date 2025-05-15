@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const companyMemberSchema = new mongoose.Schema({
   companyId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Company',
     required: true,
   },
@@ -11,7 +11,8 @@ const companyMemberSchema = new mongoose.Schema({
   password: { type: String },
   role: {
     type: String,
-    enum: ['ADMIN', 'Manager', 'Employee','CLIENTS'], 
+    enum: ['ADMIN', 'Manager', 'Employee'],
+    default:'Employee',
     required: true,
   },
   addedBy: {

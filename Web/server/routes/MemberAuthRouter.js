@@ -3,8 +3,8 @@ const { Usersignup, Usersignin, UserfindAccount } = require("../Controllers/Comp
 
 const UserAuthRouter = express.Router()
 
-UserAuthRouter.post("/Usersignup",Usersignup)
-UserAuthRouter.post("/Usersignin",Usersignin)
-UserAuthRouter.get("/UserFindAccount/:email",UserfindAccount)
+UserAuthRouter.post("/MemberSignup",Usersignup)
+UserAuthRouter.post("/MemberSignin",Usersignin)
+UserAuthRouter.get("/MemberFindAccount/:email",UserfindAccount)
 
 module.exports = UserAuthRouter

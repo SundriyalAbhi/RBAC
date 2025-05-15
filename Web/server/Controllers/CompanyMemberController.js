@@ -14,8 +14,7 @@ exports.Usersignup = async(req,res)=>{
     try {
         const checkuser = await CompanyMember.findOne({email:req.body.email})
         if(checkuser){
-            res.status(409).send("User already exists")
-            return;
+            return res.status(409).json({ message: "User already exists" });
         }
         const {password , ProfilePicture} = req.body
         let ProfilePictureUrl;
@@ -30,9 +29,10 @@ exports.Usersignup = async(req,res)=>{
         const hashedPassword = await bcrypt.hash(password,salt)
         const MemberTobeadded = new CompanyMember({...req.body,ProfilePicture:ProfilePictureUrl,password:hashedPassword})
         const Member = await MemberTobeadded.save()
-        res.send({Member,msg:"user created"})
+        res.status(201).json({Member,msg:"user created"})
     } catch (error) {
-        console.log(error);
+        console.error("Signup Error:", error);
+        res.status(500).json({ message: "Internal Server Error" }); 
     }
 }
 
