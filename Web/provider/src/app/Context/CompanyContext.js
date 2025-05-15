@@ -4,8 +4,6 @@ import { API, baseURL } from "../Utils/Utils";
 
 const { createContext, useReducer } = require("react");
 
-let initialstate;
-
 async function ADDCOMPANY(body) {
     try {
         const responce = await API.post(`${baseURL}/company/AddCompany`,body)
@@ -15,28 +13,37 @@ async function ADDCOMPANY(body) {
     }
 }
 
-async function GETALLCOMPANYS(body) {
+async function GETALLCOMPANYS() {
     try {
-       const responce = await API.get(`${baseURL}/company/GetAllCompany`,body) 
+       const responce = await API.get(`${baseURL}/company/GetAllCompany`) 
        return responce.data
     } catch (error) {
         return { status: error?.status}
     }
 }
 
-function reducer(state,action){
-    switch(action.type){
-        case"":
-    }
+async function UPDATECOMPANYDETAILS(id, body) {
+  try {
+    const response = await API.put(`${baseURL}/company/UpdateCompanyDetails/${id}`, body);
+    
+    return response.status;
+  } catch (error) {
+    console.error("Update error:", error?.response?.data || error.message);
+
+    return {
+      status: error?.response?.status || 500,
+      error: error?.response?.data || "Server error",
+    };
+  }
 }
+
 
 export const CompanyContext = createContext()
 
 export const CompanyProvider = ({children})=>{
-    const[state,Companydispatch] = useReducer(reducer,initialstate)
 
 return(
-     <CompanyContext.Provider value={{}}>
+     <CompanyContext.Provider value={{ADDCOMPANY,GETALLCOMPANYS,UPDATECOMPANYDETAILS}}>
         {children}
     </CompanyContext.Provider>
 )

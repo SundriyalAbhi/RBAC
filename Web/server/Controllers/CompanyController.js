@@ -14,7 +14,7 @@ exports.AddCompany = async(req,res)=>{
         CompanytobeAdded.address.state = state
         CompanytobeAdded.address.country = country
         const CompanySaved = await CompanytobeAdded.save()
-        res.send({CompanySaved,msg:"Company Added"})
+        res.status(200).send({CompanySaved,msg:"Company Added"})
 
     } catch (error) {
         console.log(error);
@@ -47,7 +47,8 @@ exports.GetCompanyByName = async(req,res)=>{
 exports.UpdateCompanyDetails = async(req,res)=>{
     try {
         const {email , name , industry , city , state , country} = req.body
-        const findCompany = await Company.findOneAndUpdate({email,email }, {name:name , industry:industry , address:{city:city,state:state,country:country}})
+        const {id} = req.params
+        const findCompany = await Company.findOneAndUpdate({_id:id}, {name:name , industry:industry , address:{city:city,state:state,country:country}})
         const SavedDetails = await findCompany.save()
         res.send(SavedDetails)
     } catch (error) {
