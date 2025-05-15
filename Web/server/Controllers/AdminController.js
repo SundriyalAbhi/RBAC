@@ -66,6 +66,11 @@ exports.updateAdminRole = async (req, res) => {
   try {
     const { adminId, newRole } = req.body;
 
+    // Prevent self-role change
+    if (req.user.id === adminId) {
+      return res.status(403).json({ msg: 'Admins cannot change their own role.' });
+    }
+
     const updated = await Admin.findByIdAndUpdate(
       adminId,
       { role: newRole },
@@ -82,10 +87,16 @@ exports.updateAdminRole = async (req, res) => {
   }
 };
 
+
 // DELETE ADMIN
 exports.deleteAdmin = async (req, res) => {
   try {
     const { adminId } = req.params;
+
+    // Prevent self-deletion
+    if (req.user.id === adminId) {
+      return res.status(403).json({ msg: 'Admins cannot delete their own account.' });
+    }
 
     const deleted = await Admin.findByIdAndDelete(adminId);
     if (!deleted) return res.status(404).json({ msg: 'Admin not found' });
@@ -95,6 +106,7 @@ exports.deleteAdmin = async (req, res) => {
     res.status(500).json({ msg: 'Failed to delete admin' });
   }
 };
+
 
 exports.assignRole = async (req, res) => {
     const { userId, role } = req.body;

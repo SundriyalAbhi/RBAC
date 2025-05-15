@@ -2,23 +2,50 @@ const { default: mongoose } = require("mongoose");
 const roles = require("../Config/role");
 
 
-const AdminSchema = new mongoose.Schema({
+const AdminSchema = new mongoose.Schema(
+  {
+    companyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Company",
+      required: true,
+    },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       lowercase: true,
       unique: true,
+      match: [/\S+@\S+\.\S+/, "Invalid email format"],
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters"],
+    },
+    companyName: {
+      type: String,
+      trim: true,
     },
     role: {
       type: String,
-      enum: [roles.admin, roles.moderator, roles.client],
+      enum: Object.values(roles), // dynamically adds all allowed roles
       default: roles.client,
     },
-  });
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
+    timestamps: true, // adds createdAt and updatedAt automatically
+  }
+);
+
+// Prevent password from being returned by default
+AdminSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
 
   const AdminModel = mongoose.model('Admin',AdminSchema);
 
