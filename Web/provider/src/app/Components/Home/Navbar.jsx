@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "@/app/style.css";
-import { IoSearch } from "react-icons/io5";
+import { IoSearch } from 'react-icons/io5';
+
 
 export const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
