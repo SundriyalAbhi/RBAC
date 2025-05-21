@@ -40,12 +40,12 @@ export default function Dashboard() {
       {/* Second Row: Map and Area Chart */}
       <div className="flex flex-col md:flex-row gap-4 h-[45%]">
         {/* Map */}
-        <div className="flex-1 rounded p-4 flex items-center justify-center text-white font-bold text-lg">
+        <div className="flex-1 bg-[#0c1b2a] rounded-2xl p-4 shadow-lg h-full flex items-center justify-center">
           <Map />
         </div>
 
         {/* Area Chart */}
-        <div className="flex-1 rounded h-[300px] p-4 flex items-center justify-center text-white font-bold text-lg">
+        <div className="flex-1 bg-[#0c1b2a] rounded-2xl p-4 shadow-lg flex items-center justify-center">
           <AreaResponsiveChart />
         </div>
       </div>
@@ -85,26 +85,32 @@ export default function Dashboard() {
           {/* You can add internal content here */}
         </div>
 
-        <div style={{ width: "50%"  }} className="flex flex-row gap-4">
-        <div className="flex-1 flex flex-col bg-[#1f2937] rounded-xl  h-full text-white">
-          {/* Vertical child layout inside */}
-          <div className="flex-1 bg-[#334155] rounded-md mb-2 p-2"  style={{
-            background: "linear-gradient(145deg, #0b1f33, #081a2a)",
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-          }}>
-            Threate Attribute
+        <div style={{ width: "50%" }} className="flex flex-row gap-4">
+          <div className="flex-1 flex flex-col bg-[#1f2937] rounded-xl  h-full text-white">
+            {/* Vertical child layout inside */}
+            <div
+              className="flex-1 bg-[#334155] rounded-md mb-2 p-2"
+              style={{
+                background: "linear-gradient(145deg, #0b1f33, #081a2a)",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
+              }}
+            >
+              Threate Attribute
+            </div>
           </div>
-        </div>
 
-        <div className="flex-1 flex flex-col bg-[#1f2937] rounded-xl  h-full text-white">
-          {/* Another vertical child layout */}
-          <div className="flex-1 bg-[#334155] rounded-md mb-2 p-2"  style={{
-            background: "linear-gradient(145deg, #0b1f33, #081a2a)",
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-          }}>
-            Severity
+          <div className="flex-1 flex flex-col bg-[#1f2937] rounded-xl  h-full text-white">
+            {/* Another vertical child layout */}
+            <div
+              className="flex-1 bg-[#334155] rounded-md mb-2 p-2"
+              style={{
+                background: "linear-gradient(145deg, #0b1f33, #081a2a)",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
+              }}
+            >
+              Severity
+            </div>
           </div>
-        </div>
         </div>
       </div>
       <div className="flex flex-col md:flex-row gap-4 h-[45%]">
@@ -118,15 +124,15 @@ export default function Dashboard() {
           <h2 className="text-center text-lg font-semibold mb-4">
             Recent Threats
           </h2>
-         
         </div>
 
-        <div className="flex-1 rounded-lg p-4 flex items-center justify-center text-black font-bold text-lg"  style={{
+        <div
+          className="flex-1 rounded-lg p-4 flex items-center justify-center text-black font-bold text-lg"
+          style={{
             background: "linear-gradient(145deg, #0b1f33, #081a2a)",
             boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-          }}>
-         
-        </div>
+          }}
+        ></div>
       </div>
     </div>
   );
