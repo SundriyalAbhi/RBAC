@@ -1,74 +1,43 @@
 import React, { useContext, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Bounce, toast } from 'react-toastify';
-import '@/app/style.css'
 import { AuthContext } from '@/app/Context/AuthContext';
+
 export const SignIn = ({ setMode }) => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({ role: 'Administrator' }); // default role
   const { Authdispatch, UserSignIn } = useContext(AuthContext);
   const router = useRouter();
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent page reload
+    event.preventDefault();
     try {
-      if (formData?.email && formData?.password) {
+      const { companyId, password, role , email} = formData;
+      if (companyId && password && role && email) {
         const logindata = await UserSignIn(formData);
-        if (logindata.status === 404) {
-          toast.error('User does not exist', {
-            position: 'top-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-            transition: Bounce,
-          });
-        } else if (logindata.status === 401) {
-          toast.error('Wrong password', {
-            position: 'top-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-            transition: Bounce,
-          });
-        }
 
-        if (logindata?.status === 200) {
-          toast.info("login successful",{
-            position: 'top-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-            transition: Bounce,
-          })
-          Authdispatch({
-            type: 'SIGN_IN',
-            payload: logindata.data,
-          });
-          router.push('/');
+        if (logindata.status === 404) {
+          toast.error('User does not exist', { position: 'top-center', autoClose: 5000, transition: Bounce });
+        } else if (logindata.status === 401) {
+          toast.error('Wrong password', { position: 'top-center', autoClose: 5000, transition: Bounce });
+        } else if (logindata.status === 200) {
+          toast.info('Login successful', { position: 'top-center', autoClose: 5000, transition: Bounce });
+          Authdispatch({ type: 'SIGN_IN', payload: logindata.data });
+          switch (role) {
+            case 'Administrator':
+              router.push('/pages/Home');
+              break;
+            case 'Provider':
+              router.push('/provider-dashboard');
+              break;
+            case 'User':
+              router.push('/user-dashboard');
+              break;
+            default:
+              router.push('/pages/Home');
+          }
         }
       } else {
-        toast.error('Please fill out the form', {
-          position: 'top-center',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'light',
-          transition: Bounce,
-        });
+        toast.error('Please fill out all fields', { position: 'top-center', autoClose: 5000, transition: Bounce });
       }
     } catch (error) {
       console.log(error);
@@ -76,85 +45,67 @@ export const SignIn = ({ setMode }) => {
   };
 
   return (
-    <div
-    className="flex justify-center items-center min-h-screen"
-  >  
-    <div className='flex justify-items-center items-center mr-5'
-    style={{width:"600px",height:"48vh"}}>
-        <h1 className='text-slate-900 font-bold self-center' style={{fontSize:"40px"}}>"Ready to pick up your cyber Threat Reports? Log in now!."</h1>
-    </div>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-lg rounded-xl p-10 w-full max-w-md">
+        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Login</h2>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <select
+              value={formData.role}
+              onChange={(e) => setFormData((prev) => ({ ...prev, role: e.target.value }))}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600"
+            >
+              <option value="Administrator">Administrator</option>
+              <option value="Provider">CISO</option>
+              <option value="User">Data Analyst</option>
+             <option value="User">Auditor</option> 
+            </select>
+          </div>
 
-    <div
-        className="bg-slate-200 rounded-lg flex flex-col items-center justify-items-center shadow-lg"
-        style={{width:"450px",height:"50vh"}}
-      >
-        <h5
-          className="text-slate-900 text-2xl font-bold mt-6"
-          style={{ fontFamily: 'sans-serif', fontWeight: '700' }}
-        >
-          Signin
-        </h5>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group mt-3 mb-3">
+          <div>
+            <input
+              type="text"
+              placeholder="Enter Company ID"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600"
+              onChange={(e) => setFormData((prev) => ({ ...prev, companyId: e.target.value }))}
+            />
+          </div>
+
+             <div>
             <input
               type="email"
-              className="w-full bg-white p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black mt-2"
               placeholder="Enter Email"
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, email: e.target.value }))
-              }
-              style={{
-                borderRadius: '6px',
-                backgroundColor: '#e6e6e6',
-                width: '300px',
-                height:"45px"
-              }}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600"
+              onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
             />
           </div>
 
-          <div className="form-group mt-4">
+          <div>
             <input
               type="password"
-              className="w-full bg-white p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black mt-1"
               placeholder="Enter Password"
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, password: e.target.value }))
-              }
-              style={{
-                borderRadius: '6px',
-                backgroundColor: '#e6e6e6',
-                width: '300px',
-                height:"45px",
-              }}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600"
+              onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
             />
           </div>
-          <button
-          className="text-red-500 mt-1 grid justify-self-end hover:underline"
-          onClick={() => {
-            setMode('ForgotPass');
-          }}
-        >
-          Forgot Password
-        </button>
-          <br />
+
+          <div className="text-right">
+            <button
+              type="button"
+              className="text-sm text-teal-700 hover:underline"
+              onClick={() => setMode('ForgotPass')}
+            >
+              Forgot Password?
+            </button>
+          </div>
+
           <button
             type="submit"
-            className="bg-teal-950 w-40 h-12 text-white mt-1 rounded-sm hover:bg-teal-900"
-            style={{ borderRadius: '10px', width: '160px',marginLeft:"60px"}}
+            className="w-full bg-teal-700 text-white py-3 rounded-lg hover:bg-teal-800 transition duration-300"
           >
-            Signin!
+            Sign In
           </button>
-          <br />
         </form>
-        <button
-          className="text-teal-900 mt-4 hover:underline"
-          onClick={() => {
-            setMode('signup');
-          }}
-        >
-          Don't Have An Account? Signup!
-        </button>
-        <br />
       </div>
     </div>
   );

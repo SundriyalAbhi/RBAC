@@ -70,7 +70,7 @@ exports.DeleteCompany = async (req, res) => {
     if (!findCompany) {
       return res.status(404).json({ message: 'Company not found' });
     }
-    await AdminModel.deleteMany({ company: findCompany._id });
+    const DeleteAdmin = await AdminModel.deleteMany({ companyId: findCompany._id });
 
     const deletedCompany = await Company.findByIdAndDelete(findCompany._id);
 
@@ -81,5 +81,14 @@ exports.DeleteCompany = async (req, res) => {
   } catch (error) {
     console.error('DeleteCompany Error:', error);
     return res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+exports.getAllAdminsforProvider = async (req, res) => {
+  try {
+    const admins = await AdminModel.find().select('-password');
+    res.status(200).send(admins);
+  } catch (err) {
+    res.status(500).json({ msg: 'Failed to fetch admins' });
   }
 };

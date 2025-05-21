@@ -4,6 +4,8 @@ const cors = require("cors")
 const morgan = require("morgan")
 const helmet = require('helmet');
 const dotenv = require("dotenv")
+const dns = require('dns');
+dns.setServers(['8.8.8.8']);
 const fs = require('fs');
 const path = require('path');
 const { connectdb } = require("./Config/db")
@@ -16,13 +18,28 @@ const AdminRouter = require("./routes/AdminRouter");
 dotenv.config({path:"./Config/config.env"})
 const app = express()
 app.use(helmet()); 
+
+const allowedOrigins = [
+  process.env.CORS_PORT || "http://localhost:3000",
+  "http://localhost:3001"
+];
+
 app.use(
   cors({
-    origin:process.env.CORS_PORT||"http://localhost:3000", 
-    methods: ["GET", "POST","PUT","DELETE"],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+
 app.use(bodyparser.json({
     limit:"30mb"
 }))

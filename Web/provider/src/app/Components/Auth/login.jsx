@@ -1,74 +1,37 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Bounce, toast } from 'react-toastify';
-import '@/app/style.css'
+import '@/app/style.css';
 import { AuthContext } from '@/app/Context/AuthContext';
+
 export const SignIn = ({ setMode }) => {
   const [formData, setFormData] = useState({});
+  const [isClient, setIsClient] = useState(false); 
   const { Authdispatch, ProviderSignIn } = useContext(AuthContext);
   const router = useRouter();
 
+    useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
+
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent page reload
+    event.preventDefault();
     try {
       if (formData?.email && formData?.password) {
         const logindata = await ProviderSignIn(formData);
         if (logindata.status === 404) {
-          toast.error('User does not exist', {
-            position: 'top-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-            transition: Bounce,
-          });
+          toast.error('User does not exist', { position: 'top-center', autoClose: 3000, transition: Bounce });
         } else if (logindata.status === 401) {
-          toast.error('Wrong password', {
-            position: 'top-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-            transition: Bounce,
-          });
-        }
-
-        if (logindata?.status === 200) {
-          toast.info("login successful",{
-            position: 'top-center',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-            transition: Bounce,
-          })
-          Authdispatch({
-            type: 'SIGN_IN',
-            payload: logindata.data,
-          });
+          toast.error('Wrong password', { position: 'top-center', autoClose: 3000, transition: Bounce });
+        } else if (logindata.status === 200) {
+          toast.info('Login successful', { position: 'top-center', autoClose: 3000, transition: Bounce });
+          Authdispatch({ type: 'SIGN_IN', payload: logindata.data });
           router.push('/pages/Home');
         }
       } else {
-        toast.error('Please fill out the form', {
-          position: 'top-center',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: 'light',
-          transition: Bounce,
-        });
+        toast.error('Please fill out the form', { position: 'top-center', autoClose: 3000, transition: Bounce });
       }
     } catch (error) {
       console.log(error);
@@ -76,85 +39,45 @@ export const SignIn = ({ setMode }) => {
   };
 
   return (
-    <div
-    className="flex justify-center items-center min-h-screen"
-  >  
-    <div className='flex justify-items-center items-center mr-5'
-    style={{width:"600px",height:"48vh"}}>
-        <h1 className='text-slate-900 font-bold self-center' style={{fontSize:"40px"}}>"Ready to pick up your cyber Threat Reports? Log in now!."</h1>
-    </div>
-
-    <div
-        className="bg-slate-200 rounded-lg flex flex-col items-center justify-items-center shadow-lg"
-        style={{width:"450px",height:"50vh"}}
-      >
-        <h5
-          className="text-slate-900 text-2xl font-bold mt-6"
-          style={{ fontFamily: 'sans-serif', fontWeight: '700' }}
-        >
-          Signin
-        </h5>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group mt-3 mb-3">
-            <input
-              type="email"
-              className="w-full bg-white p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black mt-2"
-              placeholder="Enter Email"
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, email: e.target.value }))
-              }
-              style={{
-                borderRadius: '6px',
-                backgroundColor: '#e6e6e6',
-                width: '300px',
-                height:"45px"
-              }}
-            />
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Sign In</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gray-100"
+            onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 bg-gray-100"
+            onChange={(e) => setFormData((prev) => ({ ...prev, password: e.target.value }))}
+          />
+          <div className="flex justify-between text-sm">
+            <button
+              type="button"
+              className="text-blue-500 hover:underline"
+              onClick={() => setMode('ForgotPass')}
+            >
+              Forgot Password?
+            </button>
+            <button
+              type="button"
+              className="text-blue-500 hover:underline"
+              onClick={() => setMode('signup')}
+            >
+              Don't have an account?
+            </button>
           </div>
-
-          <div className="form-group mt-4">
-            <input
-              type="password"
-              className="w-full bg-white p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black mt-1"
-              placeholder="Enter Password"
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, password: e.target.value }))
-              }
-              style={{
-                borderRadius: '6px',
-                backgroundColor: '#e6e6e6',
-                width: '300px',
-                height:"45px",
-              }}
-            />
-          </div>
-          <button
-          className="text-red-500 mt-1 grid justify-self-end hover:underline"
-          onClick={() => {
-            setMode('ForgotPass');
-          }}
-        >
-          Forgot Password
-        </button>
-          <br />
           <button
             type="submit"
-            className="bg-teal-950 w-40 h-12 text-white mt-1 rounded-sm hover:bg-teal-900"
-            style={{ borderRadius: '10px', width: '160px',marginLeft:"60px"}}
+            className="w-full bg-teal-600 text-white py-2 rounded-md hover:bg-teal-700"
           >
-            Signin!
+            Sign In
           </button>
-          <br />
         </form>
-        <button
-          className="text-teal-900 mt-4 hover:underline"
-          onClick={() => {
-            setMode('signup');
-          }}
-        >
-          Don't Have An Account? Signup!
-        </button>
-        <br />
       </div>
     </div>
   );

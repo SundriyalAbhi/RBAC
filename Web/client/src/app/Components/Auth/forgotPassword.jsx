@@ -1,173 +1,153 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState } from 'react';
 import { Bounce, toast } from 'react-toastify';
 import { NewPassword } from './NewPassword';
 import { AuthContext } from '@/app/Context/AuthContext';
 
+const ForgotPass = ({ setMode }) => {
+  const { findAccount, SENDOTP, VERIFYOTP } = useContext(AuthContext);
+  const [data, setFormData] = useState({});
+  const [user, setUser] = useState(false);
+  const [email, setEmail] = useState('');
+  const [passwordInp, setPasswordInp] = useState(false);
+  const [showInput, setShowInput] = useState(false);
 
-const ForgotPass = ({setMode}) => {
-    const {findAccount,SENDOTP,VERIFYOTP} = useContext(AuthContext)
-    const [data,setFormData] = useState({})
-    const [user,setUser] = useState(false)
-    const [Email,SetEmail] = useState('')
-    const [passwordInp,SetpasswordInp] = useState(false)
-    const [showinput,Setshowonput] = useState(false)
-
-
-    async function findUserAccount(body) {
-      try {
-        const data = await findAccount(body);
-        const resolveAfter3Sec = new Promise((resolve, reject) => {
-          setTimeout(() => {
-            if (data.email){
-              SetEmail(data.email);
-              setUser(true);
-              resolve();
-            } 
-            else reject();
-          }, 3000);
-        });
-    
-        toast.promise(resolveAfter3Sec, {
-          pending: 'Finding Account...',
-          success: 'Account found successfully 👌',
-          error: '"User Not Found" 🤯',
-        });
-      } catch (error) {
-        console.log(error);
-        toast.error('An error occurred while finding the account.');
-      }
-    }
-    
-
-    async function OTPHandler(body){
-      try {
-          const data = await SENDOTP(body)
-          const resolveAfter3Sec = new Promise((resolve, reject) => {
-          setTimeout(() => {
-            if (data.Status=="OTP Sent Successfully"){
-              Setshowonput(true);
-              resolve();
-            } 
-            else reject();
-          }, 2000);
-        });
-    
-        toast.promise(resolveAfter3Sec, {
-          pending: 'Sending OTP...',
-          success: 'OTP Send successfully 👌',
-          error: '"Error sending OTP" 🤯',
-        });
-      } catch (error) {
-          console.log(error);
-      }
-  }
-
-  async function VERIFYOTPHandler(body){
+  const findUserAccount = async (body) => {
     try {
-        const data = await VERIFYOTP(body)
-        const resolveAfter3Sec = new Promise((resolve, reject) => {
-          setTimeout(() => {
-            if (data.msg==='OTP verified successfully'){
-              SetpasswordInp(true)
-              resolve();
-            } 
-            else reject();
-          }, 3000);
-        });
-    
-        toast.promise(resolveAfter3Sec, {
-          pending: 'Verifying OTP...',
-          success: `${data.msg} 👌`,
-          error: `${data.msg} 🤯`,
-        });
-    } catch (error) {
-        console.log(error);
-    }
-}
-  return (
-   <>
-   {passwordInp?<NewPassword setMode={setMode} Email={Email}/>:(user?    <div className="flex justify-center h-full">
-      <div className="bg-slate-200 rounded-2xl flex flex-col items-center shadow-2xl mt-10 p-6 w-[450px] h-[45vh]">
-        <h5 className="text-slate-900 text-3xl font-extrabold mt-4 font-sans">{Email}</h5>
+      const data = await findAccount(body);
+      const resolveAfter3Sec = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (data.email) {
+            setEmail(data.email);
+            setUser(true);
+            resolve();
+          } else reject();
+        }, 3000);
+      });
 
-        <form onSubmit={(e) => e.preventDefault()} className="flex flex-col items-center mt-4 w-full">
-          {showinput && (
-            <div className="mt-4 flex items-center">
+      toast.promise(resolveAfter3Sec, {
+        pending: 'Finding Account...',
+        success: 'Account found successfully 👌',
+        error: '"User Not Found" 🤯',
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error('An error occurred while finding the account.');
+    }
+  };
+
+  const OTPHandler = async (body) => {
+    try {
+      const data = await SENDOTP(body);
+      const resolveAfter2Sec = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (data.Status === 'OTP Sent Successfully') {
+            setShowInput(true);
+            resolve();
+          } else reject();
+        }, 2000);
+      });
+
+      toast.promise(resolveAfter2Sec, {
+        pending: 'Sending OTP...',
+        success: 'OTP Sent successfully 👌',
+        error: 'Error sending OTP 🤯',
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const VERIFYOTPHandler = async (body) => {
+    try {
+      const data = await VERIFYOTP(body);
+      const resolveAfter3Sec = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (data.msg === 'OTP verified successfully') {
+            setPasswordInp(true);
+            resolve();
+          } else reject();
+        }, 3000);
+      });
+
+      toast.promise(resolveAfter3Sec, {
+        pending: 'Verifying OTP...',
+        success: `${data.msg} 👌`,
+        error: `${data.msg} 🤯`,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  if (passwordInp) return <NewPassword setMode={setMode} Email={email} />;
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
+      <div className="bg-white shadow-xl rounded-2xl w-full max-w-md p-8">
+        {user ? (
+          <>
+            <h2 className="text-2xl font-bold text-center text-gray-800 mb-1">{email}</h2>
+            <p className="text-sm text-center text-gray-500 mb-6">Enter the OTP sent to your email</p>
+
+            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+              {showInput && (
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    placeholder="Enter OTP"
+                    className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    onChange={(e) => setFormData((prev) => ({ ...prev, OTP: e.target.value }))}
+                  />
+                  <button
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                    onClick={() => VERIFYOTPHandler({ email, otp: data.OTP })}
+                  >
+                    Submit
+                  </button>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+                onClick={() => OTPHandler({ UserEmail: email })}
+              >
+                {showInput ? 'Resend OTP' : 'Send OTP'}
+              </button>
+            </form>
+          </>
+        ) : (
+          <>
+            <h2 className="text-2xl font-bold text-center text-gray-800">Find Your Account</h2>
+            <p className="text-sm text-center text-gray-500 mt-2 mb-6">Enter your registered email</p>
+
+            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
               <input
-                type="text"
-                className="w-40 bg-white p-3 border border-slate-400 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-500 transition duration-300"
-                placeholder="Enter OTP"
-                onChange={(e) => setFormData((prev) => ({ ...prev, OTP: e.target.value }))}
+                type="email"
+                placeholder="Enter Email"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
               />
               <button
-                className="bg-green-700 w-24 h-12 rounded-xl text-white hover:bg-green-800 transition duration-300 ml-2"
-                onClick={() => VERIFYOTPHandler({ email: Email, otp: data.OTP })}
+                type="submit"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700"
+                onClick={() => findUserAccount(data)}
               >
-                Submit
+                Continue
               </button>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="bg-blue-700 w-40 h-12 text-white rounded-xl hover:bg-blue-800 transition duration-300 mt-4"
-            onClick={(e) => {
-              e.preventDefault();
-              OTPHandler({ UserEmail: Email });
-            }}
-          >
-            {showinput ? 'Resend OTP' : 'Send OTP'}
-          </button>
-        </form>
+            </form>
+          </>
+        )}
 
         <button
-          className="text-teal-900 mt-4 hover:underline text-lg transition duration-300"
+          className="text-teal-700 text-center mt-6 w-full hover:underline"
           onClick={() => setMode('signin')}
         >
-          Go to login page
+          Back to Login
         </button>
       </div>
-    </div>: <div
-    className="flex justify-center "
-    style={{ height: '100%' }}
-  >
-
-<div className="bg-slate-200 rounded-2xl flex flex-col items-center shadow-2xl mt-10 p-6 w-[450px] h-[48vh]">
-      <h5 className="text-slate-900 text-3xl font-extrabold mt-4 font-sans">Find Your Account</h5>
-      <p className="text-slate-700 text-lg mt-2">Enter Your Email</p>
-
-      <form className="mt-3 w-full" onSubmit={(e) => e.preventDefault()}>
-        <div className="mb-4 w-full">
-          <input
-            type="email"
-            className="w-full h-12 p-3 border border-slate-400 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500 transition duration-300"
-            placeholder="Enter Email"
-            onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="bg-blue-700 w-full h-12 text-white rounded-xl hover:bg-blue-800 transition duration-300 mt-2"
-          onClick={(e) => {
-            e.preventDefault();
-            findUserAccount(data);
-          }}
-        >
-          Continue
-        </button>
-      </form>
-
-      <button
-        className="text-teal-900 mt-4 hover:underline text-lg transition duration-300"
-        onClick={() => setMode('signin')}
-      >
-        Go to login page
-      </button>
     </div>
-  </div>)}
-   </>
-  )
-}
+  );
+};
 
-export default ForgotPass
+export default ForgotPass;

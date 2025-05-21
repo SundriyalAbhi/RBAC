@@ -22,13 +22,15 @@ export const Sidebaar = () => {
 
   return (
     <div  className="flex">
-      <motion.div
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-        animate={{ width: isOpen ? 250 : 80 }}
-        transition={{ duration: 0.3, type: 'tween' }}
-        className={` bg-[${isOpen?"#8A1C1C":"#111827"}] p-4 text-white shadow-lg flex flex-col overflow-hidden`}
-      >
+     <motion.div
+  onMouseEnter={() => setIsOpen(true)}
+  onMouseLeave={() => setIsOpen(false)}
+  animate={{ width: isOpen ? 250 : 80 }}
+  transition={{ duration: 0.3, type: 'tween' }}
+  style={{ backgroundColor: isOpen ? '#0e0f11' : '#0c1218' }}
+  className="p-4 text-white shadow-lg flex flex-col overflow-hidden"
+>
+
 
         <nav onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)} className="flex flex-col space-y-3">
