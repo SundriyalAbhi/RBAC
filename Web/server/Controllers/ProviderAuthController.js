@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const Provider = require("../Models/ProviderModel");
+const AdminModel = require("../Models/AdminModel");
 const cloudinary = require('cloudinary').v2;
 
 dotenv.config({ path: "./Config/config.env" });
@@ -89,3 +90,14 @@ exports.ProviderfindAccount = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+
+exports.getAllAdminsforProvider  = async (req, res) => {
+  try {
+    const admins = await AdminModel.find().select('-password');
+    res.status(200).send(admins);
+  } catch (err) {
+    res.status(500).json({ msg: 'Failed to fetch admins' });
+  }
+};
+

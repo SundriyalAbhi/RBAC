@@ -16,7 +16,7 @@ export const MainAuth = () => {
     <>
     
       <div className='' style={{ height: "100vh",  backgroundColor: "#f7f7f7"}}>
-        {mode === "signin" ? <NoSSRSignIn setMode={setMode}/> :mode==="signup"?<SignUp setMode={setMode}/>:<ForgotPass setMode={setMode}/> }
+        {mode === "signin" ? <NoSSRSignIn setMode={setMode}/> :<ForgotPass setMode={setMode}/> }
         
       </div>
     </>

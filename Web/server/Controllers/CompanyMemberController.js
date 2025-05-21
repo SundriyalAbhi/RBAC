@@ -12,6 +12,7 @@ cloudinary.config({
 
 exports.Usersignup = async(req,res)=>{
     try {
+        const {companyId} = req.body
         const checkuser = await CompanyMember.findOne({email:req.body.email})
         if(checkuser){
             return res.status(409).json({ message: "User already exists" });
@@ -22,12 +23,10 @@ exports.Usersignup = async(req,res)=>{
 
             const uploadResponse = await cloudinary.uploader.upload(ProfilePicture);
             ProfilePictureUrl = uploadResponse.secure_url;
-
-            ProfilePictureUrl = uploadResponse.secure_url;
         }
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password,salt)
-        const MemberTobeadded = new CompanyMember({...req.body,ProfilePicture:ProfilePictureUrl,password:hashedPassword})
+        const MemberTobeadded = new CompanyMember({...req.body,ProfilePicture:ProfilePictureUrl,password:hashedPassword,companyId:companyId})
         const Member = await MemberTobeadded.save()
         res.status(201).json({Member,msg:"user created"})
     } catch (error) {

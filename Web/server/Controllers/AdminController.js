@@ -1,22 +1,23 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Admin = require('../Models/AdminModel'); // Update path if different
 const Company = require('../Models/CompanyModel');
+const CompanyMember = require('../Models/CompanyMemberModel');
+const AdminModel = require('../Models/AdminModel');
 require('dotenv').config();
 
-// SIGNUP CONTROLLER
+
 exports.registerAdmin = async (req, res) => {
   try {
     const { email, password, role ,companyId,name} = req.body;
 
-    const existingAdmin = await Admin.findOne({ email });
+    const existingAdmin = await AdminModel.findOne({ email });
     if (existingAdmin) {
       return res.status(400).json({ msg: 'Admin already exists' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const CompanyName = await Company.findById(companyId)
-    const newAdmin = new Admin({ email, password: hashedPassword, role , companyId, name, company:CompanyName.name});
+    const newAdmin = new AdminModel({ email, password: hashedPassword, role , companyId, name, company:CompanyName.name});
     
     await newAdmin.save();
     res.status(201).json({ msg: 'Admin registered successfully' });
@@ -26,12 +27,12 @@ exports.registerAdmin = async (req, res) => {
   }
 };
 
-// SIGNIN CONTROLLER
+
 exports.loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const admin = await Admin.findOne({ email });
+    const admin = await AdminModel.findOne({ email });
     if (!admin) return res.status(404).json({ msg: 'Admin not found' });
 
     const isMatch = await bcrypt.compare(password, admin.password);
@@ -53,27 +54,22 @@ exports.loginAdmin = async (req, res) => {
   }
 };
 
-// GET ALL ADMINS
+
 exports.getAllAdmins = async (req, res) => {
   try {
-    const admins = await Admin.find().select('-password'); // Hide passwords
+    const {companyId} = req.body
+    const admins = await AdminModel.find({companyId:companyId}).select('-password');
     res.status(200).send(admins);
   } catch (err) {
     res.status(500).json({ msg: 'Failed to fetch admins' });
   }
 };
 
-// UPDATE ROLE OF AN ADMIN
+
 exports.updateAdminRole = async (req, res) => {
   try {
     const { adminId, newRole } = req.body;
-
-    // Prevent self-role change
-    if (req.user.id === adminId) {
-      return res.status(403).json({ msg: 'Admins cannot change their own role.' });
-    }
-
-    const updated = await Admin.findByIdAndUpdate(
+    const updated = await AdminModel.findByIdAndUpdate(
       adminId,
       { role: newRole },
       { new: true }
@@ -90,17 +86,10 @@ exports.updateAdminRole = async (req, res) => {
 };
 
 
-// DELETE ADMIN
 exports.deleteAdmin = async (req, res) => {
   try {
     const { adminId } = req.params;
-
-    // Prevent self-deletion
-    if (req.user.id === adminId) {
-      return res.status(403).json({ msg: 'Admins cannot delete their own account.' });
-    }
-
-    const deleted = await Admin.findByIdAndDelete(adminId);
+    const deleted = await AdminModel.findByIdAndDelete(adminId);
     if (!deleted) return res.status(404).json({ msg: 'Admin not found' });
 
     res.status(200).json({ msg: 'Admin deleted' });
@@ -112,14 +101,12 @@ exports.deleteAdmin = async (req, res) => {
 
 exports.assignRole = async (req, res) => {
     const { userId, role } = req.body;
-  
     try {
       const validRoles = ['admin', 'ciso', 'analyst', 'auditor'];
       if (!validRoles.includes(role)) {
         return res.status(400).json({ msg: 'Invalid role' });
       }
-  
-      const user = await User.findByIdAndUpdate(
+      const user = await CompanyMember.findByIdAndUpdate(
         userId,
         { role },
         { new: true }
@@ -135,20 +122,21 @@ exports.assignRole = async (req, res) => {
     }
   };
   
-  // GET /users
+
   exports.getAllUsers = async (req, res) => {
     try {
-      const users = await User.find({}, '-password'); // exclude password
+      const {companyId} = req.body
+      const users = await CompanyMember.find({companyId:companyId}, '-password'); 
       res.status(200).json(users);
     } catch (err) {
       res.status(500).json({ msg: 'Server error', error: err.message });
     }
   };
   
-  // PUT /user/:id
+  
   exports.updateUser = async (req, res) => {
     try {
-      const user = await User.findByIdAndUpdate(
+      const user = await CompanyMember.findByIdAndUpdate(
         req.params.id,
         req.body,
         { new: true }
@@ -159,10 +147,10 @@ exports.assignRole = async (req, res) => {
     }
   };
   
-  // DELETE /user/:id
+
   exports.deleteUser = async (req, res) => {
     try {
-      await User.findByIdAndDelete(req.params.id);
+      await CompanyMember.findByIdAndDelete(req.params.id);
       res.status(200).json({ msg: 'User deleted' });
     } catch (err) {
       res.status(500).json({ msg: 'Server error', error: err.message });
