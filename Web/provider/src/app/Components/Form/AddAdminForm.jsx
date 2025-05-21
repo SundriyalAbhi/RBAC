@@ -11,7 +11,7 @@ const AddAdminForm = ({ DataForUpdate, setIsOpenModal, ownerId = 'Abhi', compani
     email: '',
     password: '',
     companyId: '',
-    role:'Admin',
+    role:'admin',
     createdBy: ownerId,
   });
 

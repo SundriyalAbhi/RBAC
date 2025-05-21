@@ -9,7 +9,7 @@ AdminRouter.post("/register", AdminController.registerAdmin);
 
 // ✅ Login admin
 AdminRouter.post("/login", AdminController.loginAdmin);
-
+AdminRouter.put("/admin/update/:id", AdminController.updateAdmin);
 AdminRouter.get(
   "/all",
   // verifyToken,

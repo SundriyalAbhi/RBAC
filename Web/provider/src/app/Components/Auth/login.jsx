@@ -28,7 +28,7 @@ export const SignIn = ({ setMode }) => {
         } else if (logindata.status === 200) {
           toast.info('Login successful', { position: 'top-center', autoClose: 3000, transition: Bounce });
           Authdispatch({ type: 'SIGN_IN', payload: logindata.data });
-          router.push('/pages/Home');
+          router.push('/Pages/Home');
         }
       } else {
         toast.error('Please fill out the form', { position: 'top-center', autoClose: 3000, transition: Bounce });
