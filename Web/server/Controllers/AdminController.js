@@ -27,7 +27,31 @@ exports.registerAdmin = async (req, res) => {
   }
 };
 
+exports.updateAdmin = async (req, res) => {
+  try {
+    const { id } = req.params; // Admin ID from URL
+    const updates = req.body;  // Data to update
 
+    // Optional: convert role to lowercase if included
+    // if (updates.role) {
+    //   updates.role = updates.role.toLowerCase();
+    // }
+
+    const updatedAdmin = await Admin.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedAdmin) {
+      return res.status(404).json({ error: "Admin not found" });
+    }
+
+    res.status(200).json({ message: "Admin updated successfully", admin: updatedAdmin });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error while updating admin" });
+  }
+};
 exports.loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
