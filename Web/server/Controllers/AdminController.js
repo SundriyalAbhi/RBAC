@@ -98,6 +98,7 @@ exports.deleteAdmin = async (req, res) => {
   }
 };
 
+
 exports.assignRole = async (req, res) => {
     const { userId, role } = req.body;
     try {
