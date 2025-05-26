@@ -105,6 +105,15 @@ async function profileupdate(authData,body) {
   }
 }
 
+async function AdminLogin(body) {
+     try {
+        const response= await API.post(`${baseURL}/admin/login`,body)
+         return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
+}
+
 function reducer(state,action){
 
     switch (action.type) {
@@ -135,7 +144,7 @@ export const AuthContext = createContext()
 export const AuthProvider = ({children})=>{
     const [state,Authdispatch] = useReducer(reducer,initialState)
     return(
-        <AuthContext.Provider value={{AuthData:state,Authdispatch,UserSignUp,UserSignIn,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate}}>
+        <AuthContext.Provider value={{AuthData:state,Authdispatch,UserSignUp,UserSignIn,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate,AdminLogin}}>
             {children}
         </AuthContext.Provider>
 

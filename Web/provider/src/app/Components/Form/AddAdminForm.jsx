@@ -1,11 +1,14 @@
 'use client';
+import { AuthContext } from '@/app/Context/AuthContext';
 import { CompanyContext } from '@/app/Context/CompanyContext';
 import React, { useContext, useEffect, useState } from 'react';
 
-const AddAdminForm = ({ DataForUpdate, setIsOpenModal, ownerId = 'Abhi', companies = [], ADDADMIN, UPDATEADMIN }) => {
+const AddAdminForm = ({ DataForUpdate, setIsOpenModal, companies = [], ADDADMIN, UPDATEADMIN }) => {
+  const {AuthData} = useContext(AuthContext)
+  let ownerId = AuthData.adminId
   const isEditMode = !!DataForUpdate && Object.keys(DataForUpdate).length > 0;
   const {AddAdmin} = useContext(CompanyContext)
-
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -14,13 +17,12 @@ const AddAdminForm = ({ DataForUpdate, setIsOpenModal, ownerId = 'Abhi', compani
     role:'admin',
     createdBy: ownerId,
   });
-
+  
   useEffect(() => {
     if (isEditMode) {
       setFormData({
         name: DataForUpdate.name || '',
         email: DataForUpdate.email || '',
-        password: '',
         companyId: DataForUpdate.companyId || '',
         createdBy: ownerId,
       });

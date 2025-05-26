@@ -2,7 +2,8 @@ const roles = {
     admin: 'admin',
     moderator: 'moderator',
     client: 'client',
-    member:'member'
+    member:'member',
+    CISO:"CISO"
   };
 
   module.exports = roles

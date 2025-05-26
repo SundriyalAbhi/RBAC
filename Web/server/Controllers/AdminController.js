@@ -29,18 +29,9 @@ exports.registerAdmin = async (req, res) => {
 
 exports.updateAdmin = async (req, res) => {
   try {
-    const { id } = req.params; // Admin ID from URL
-    const updates = req.body;  // Data to update
-
-    // Optional: convert role to lowercase if included
-    // if (updates.role) {
-    //   updates.role = updates.role.toLowerCase();
-    // }
-
-    const updatedAdmin = await Admin.findByIdAndUpdate(id, updates, {
-      new: true,
-      runValidators: true,
-    });
+    const { id } = req.params; 
+    const updates = req.body;  
+    const updatedAdmin = await AdminModel.findByIdAndUpdate(id, updates);
 
     if (!updatedAdmin) {
       return res.status(404).json({ error: "Admin not found" });
@@ -180,3 +171,19 @@ exports.assignRole = async (req, res) => {
       res.status(500).json({ msg: 'Server error', error: err.message });
     }
   };
+
+  exports.GetAdminByName = async(req,res)=>{
+      try {
+          const {name} = req.query
+          const GetAdmin = await AdminModel.find({
+          name: { $regex: `^${name}`, $options: "i" }, 
+          }).limit(10); 
+          if(GetAdmin){
+              res.send(GetAdmin)
+          }else{
+              res.send({msg:"Found Nothing"})
+          }
+      } catch (error) {
+          console.log(error);
+      }
+  }
