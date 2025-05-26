@@ -33,8 +33,12 @@ exports.GetAllCompany = async(req,res)=>{
 
 exports.GetCompanyByName = async(req,res)=>{
     try {
-        const {name} = req.body
-        const GetCompany = await Company.findOne({name:name})
+      console.log(req.query);
+      
+        const {name} = req.query
+        const GetCompany = await Company.find({
+        name: { $regex: `^${name}`, $options: "i" }, 
+        }).limit(10); 
         if(GetCompany){
             res.send(GetCompany)
         }else{

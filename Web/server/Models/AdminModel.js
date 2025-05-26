@@ -9,6 +9,12 @@ const AdminSchema = new mongoose.Schema(
       ref: "Company",
       required: true,
     },
+
+    name:{
+      type:String,
+      required:true
+    },
+
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -27,7 +33,7 @@ const AdminSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: Object.values(roles), // dynamically adds all allowed roles
+      enum: Object.values(roles), 
       default: roles.client,
     },
     createdAt: {

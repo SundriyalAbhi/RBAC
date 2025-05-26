@@ -66,13 +66,44 @@ async function AddAdmin(body) {
   }
 }
 
+async function UPDATEADMIN(id,body) {
+  try {
+    const responce = await API.put(`${baseURL}/admin/update/${id}`,body)
+    return responce.status
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function SearchCompany(body) {
+  try {
+    const responce = await API.get(`${baseURL}/company/GetCompanyByName`,{
+            params:{name:body.searchD}
+        })
+    return responce.data
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function SearchAdmin(body) {
+  try {
+    const responce = await API.get(`${baseURL}/admin/GetAdminByName`,{
+            params:{name:body.searchD}
+        })
+    return responce.data
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 
 export const CompanyContext = createContext()
 
 export const CompanyProvider = ({children})=>{
 
 return(
-     <CompanyContext.Provider value={{ADDCOMPANY,GETALLCOMPANYS,UPDATECOMPANYDETAILS,GETALLADMINS,DELETECOMPANY,AddAdmin}}>
+     <CompanyContext.Provider value={{ADDCOMPANY,GETALLCOMPANYS,UPDATECOMPANYDETAILS,GETALLADMINS,DELETECOMPANY,AddAdmin,UPDATEADMIN,SearchCompany,SearchAdmin}}>
         {children}
     </CompanyContext.Provider>
 )

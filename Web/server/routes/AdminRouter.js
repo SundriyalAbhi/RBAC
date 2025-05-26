@@ -2,67 +2,54 @@ const express = require("express");
 const router = express.Router();
 
 const { verifyToken, allowRoles } = require("../Middlewares/Admin");
-const AdminController = require("../Controllers/AdminController");
+const { getAllAdmins, updateAdmin, loginAdmin, updateAdminRole, assignRole, getAllUsers, updateUser, deleteUser, registerAdmin, deleteAdmin, GetAdminByName } = require("../Controllers/AdminController");
 
 const AdminRouter = express.Router();
-AdminRouter.post("/register", AdminController.registerAdmin);
+AdminRouter.post("/register",registerAdmin);
 
-// ✅ Login admin
-AdminRouter.post("/login", AdminController.loginAdmin);
-AdminRouter.put("/admin/update/:id", AdminController.updateAdmin);
-AdminRouter.get(
-  "/all",
-  // verifyToken,
-  // allowRoles("admin"),
-  AdminController.getAllAdmins
-);
+AdminRouter.post("/login", loginAdmin);
 
-// ✅ Update role of an admin (only by admin)
-AdminRouter.put(
-  "/update-role",
-  verifyToken,
-  allowRoles("admin", "ciso"),
-  AdminController.updateAdminRole
-);
+AdminRouter.put("/update/:id", updateAdmin);
 
-// ✅ Delete an admin by ID (only by admin)
+AdminRouter.get("/all", getAllAdmins);
+
+AdminRouter.put("/update-role", verifyToken, allowRoles("admin", "ciso"), updateAdminRole);
+
+AdminRouter.get("/GetAdminByName",GetAdminByName)
+
 AdminRouter.delete(
   "/:adminId",
   verifyToken,
   allowRoles("admin"),
-  AdminController.deleteAdmin
+  deleteAdmin
 );
 
-// ✅ Only admin can assign roles
 AdminRouter.put(
   "/assign-role",
   verifyToken,
   allowRoles("admin"),
-  AdminController.assignRole
+  assignRole
 );
 
-// ✅ Optional: Admin can view all users
 AdminRouter.get(
   "/users",
   verifyToken,
   allowRoles("admin"),
-  AdminController.getAllUsers
+  getAllUsers
 );
 
-// ✅ Optional: Admin can update any user's profile
 AdminRouter.put(
   "/user/:id",
   verifyToken,
   allowRoles("admin"),
-  AdminController.updateUser
+  updateUser
 );
 
-// ✅ Optional: Admin can delete a user
 AdminRouter.delete(
   "/user/:id",
   verifyToken,
   allowRoles("admin"),
-  AdminController.deleteUser
+  deleteUser
 );
 
 module.exports = AdminRouter;

@@ -99,12 +99,17 @@ async function profileupdate(authData,body) {
   }
 }
 
-function reducer(state, action) {
-  switch (action.type) {
-    case "SIGN_IN":
-      const singinState = { ...action.payload };
-      localStorage.setItem("UserData", JSON.stringify(singinState));
-      return singinState;
+
+async function AdminLogin(body) {
+     try {
+        const response= await API.post(`${baseURL}/admin/login`,body)
+         return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
+}
+
+
 
     case "UPDATE_PROFILE":
       const updatedState = { ...state, profilepic: action.payload };
@@ -128,6 +133,6 @@ export const AuthContext = createContext()
 export const AuthProvider = ({children})=>{
     const [state,Authdispatch] = useReducer(reducer,initialState)
     return(
-        <AuthContext.Provider value={{AuthData:state,Authdispatch,UserSignUp,UserSignIn,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate}}>
+        <AuthContext.Provider value={{AuthData:state,Authdispatch,UserSignUp,UserSignIn,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate,AdminLogin}}>
             {children}
         </AuthContext.Provider>

@@ -4,45 +4,98 @@ import { Bounce, toast } from 'react-toastify';
 import { AuthContext } from '@/app/Context/AuthContext';
 
 export const SignIn = ({ setMode }) => {
-  const [formData, setFormData] = useState({ role: 'Administrator' }); // default role
-  const { Authdispatch, UserSignIn } = useContext(AuthContext);
+  const [formData, setFormData] = useState({ role: 'Admin' });
+  const { Authdispatch, UserSignIn, AdminLogin } = useContext(AuthContext);
   const router = useRouter();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const { companyId, password, role , email} = formData;
-      if (companyId && password && role && email) {
-        const logindata = await UserSignIn(formData);
+const handleSubmit = async (event) => {
+  event.preventDefault();
 
-        if (logindata.status === 404) {
-          toast.error('User does not exist', { position: 'top-center', autoClose: 5000, transition: Bounce });
-        } else if (logindata.status === 401) {
-          toast.error('Wrong password', { position: 'top-center', autoClose: 5000, transition: Bounce });
-        } else if (logindata.status === 200) {
-          toast.info('Login successful', { position: 'top-center', autoClose: 5000, transition: Bounce });
-          Authdispatch({ type: 'SIGN_IN', payload: logindata.data });
-          switch (role) {
-            case 'Administrator':
-              router.push('/pages/Home');
-              break;
-            case 'Provider':
-              router.push('/provider-dashboard');
-              break;
-            case 'User':
-              router.push('/user-dashboard');
-              break;
-            default:
-              router.push('/pages/Home');
-          }
-        }
-      } else {
-        toast.error('Please fill out all fields', { position: 'top-center', autoClose: 5000, transition: Bounce });
-      }
-    } catch (error) {
-      console.log(error);
+  const { password, role, email } = formData;
+
+  if (!password || !role || !email) {
+    toast.error('Please fill out all fields', {
+      position: 'top-center',
+      autoClose: 5000,
+      transition: Bounce,
+    });
+    return;
+  }
+
+  try {
+    let logindata;
+
+    if (role === 'Admin') {
+      logindata = await AdminLogin(formData);
+    } else {
+      logindata = await UserSignIn(formData);
     }
-  };
+
+    if (!logindata || !logindata.status) {
+      toast.error('Unexpected error during login.', {
+        position: 'top-center',
+        autoClose: 5000,
+        transition: Bounce,
+      });
+      return;
+    }
+
+    switch (logindata.status) {
+      case 200:
+        toast.info('Login successful', {
+          position: 'top-center',
+          autoClose: 5000,
+          transition: Bounce,
+        });
+        Authdispatch({ type: 'SIGN_IN', payload: logindata.data });
+        switch (logindata.data.role) {
+          case 'admin':
+            router.push('/pages/Admin');
+            break;
+          case 'Provider':
+            router.push('/provider-dashboard');
+            break;
+          case 'User':
+            router.push('/user-dashboard');
+            break;
+          default:
+            router.push('/pages/Home');
+        }
+        break;
+
+      case 401:
+        toast.error('Wrong password', {
+          position: 'top-center',
+          autoClose: 5000,
+          transition: Bounce,
+        });
+        break;
+
+      case 404:
+        toast.error('User does not exist', {
+          position: 'top-center',
+          autoClose: 5000,
+          transition: Bounce,
+        });
+        break;
+
+      default:
+        toast.error(`Login failed: ${logindata.message || 'Unknown error'}`, {
+          position: 'top-center',
+          autoClose: 5000,
+          transition: Bounce,
+        });
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    toast.error('Something went wrong. Please try again later.', {
+      position: 'top-center',
+      autoClose: 5000,
+      transition: Bounce,
+    });
+  }
+};
+
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -55,21 +108,13 @@ export const SignIn = ({ setMode }) => {
               onChange={(e) => setFormData((prev) => ({ ...prev, role: e.target.value }))}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600"
             >
-              <option value="Administrator">Administrator</option>
+              <option value="Admin">Administrator</option>
               <option value="Provider">CISO</option>
               <option value="User">Data Analyst</option>
              <option value="User">Auditor</option> 
             </select>
           </div>
 
-          <div>
-            <input
-              type="text"
-              placeholder="Enter Company ID"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-600"
-              onChange={(e) => setFormData((prev) => ({ ...prev, companyId: e.target.value }))}
-            />
-          </div>
 
              <div>
             <input

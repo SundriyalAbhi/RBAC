@@ -43,7 +43,7 @@ exports.Usersignin = async(req,res)=>{
             const verify = await bcrypt.compare(password,Member.password)
             if(verify){
                 const token = jwt.sign({email,password},process.env.SECRET)
-                res.send({token,userId:Member._id,ProfilePicture:Member.ProfilePicture,msg:"Welcome"})
+                res.send({token,userId:Member._id,ProfilePicture:Member.ProfilePicture,role:Member.role,msg:"Welcome"})
             }else{
                 res.status(401).send("Wrong Password")
             }
