@@ -5,13 +5,11 @@ const { verifyToken, allowRoles } = require("../Middlewares/Admin");
 const AdminController = require("../Controllers/AdminController");
 
 const AdminRouter = express.Router();
-// ✅ Register a new admin (open or protected based on your logic)
 AdminRouter.post("/register", AdminController.registerAdmin);
 
 // ✅ Login admin
 AdminRouter.post("/login", AdminController.loginAdmin);
-
-// ✅ Get all admins (protected, only accessible to existing admins)
+AdminRouter.put("/admin/update/:id", AdminController.updateAdmin);
 AdminRouter.get(
   "/all",
   // verifyToken,

@@ -9,14 +9,14 @@ import { AuthContext } from '@/app/Context/AuthContext';
 export const Main = () => {
     const {AuthData} = useContext(AuthContext)
   const router = useRouter()
-  useEffect(()=>{
-    if(AuthData.token == ""){
-      router.push("/")
-    }
+  // useEffect(()=>{
+  //   if(AuthData.token == ""){
+  //     router.push("/")
+  //   }
 
-  },[])
+  // },[])
   return (
-    <div className="flex flex-col bg-[rgba(19,33,46,1)] min-h-screen">
+    <div className="flex flex-col bg-[#12161c] min-h-screen">
       
       <div className="h-16">
         <Navbar />

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const roles = require('../Config/role');
 
 const companyMemberSchema = new mongoose.Schema({
   companyId: {
@@ -10,11 +11,10 @@ const companyMemberSchema = new mongoose.Schema({
   name: { type: String },
   password: { type: String },
   role: {
-    type: String,
-    enum: ['ADMIN', 'Manager', 'Employee'],
-    default:'Employee',
-    required: true,
-  },
+      type: String,
+      enum: Object.values(roles), // dynamically adds all allowed roles
+      default: roles.member,
+    },
   addedBy: {
     type: String,
     ref: 'CompanyAdmin',

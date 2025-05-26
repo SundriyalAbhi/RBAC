@@ -1,19 +1,17 @@
 import React, { useContext, useEffect } from 'react'
 import { Navbar } from './Navbar'
 import { Sidebaar } from './Sidebaar'
-import Dashboard from './Dashboard'
-import { AuthContext } from '@/app/Context/AuthContext'
-import { useRouter } from 'next/navigation'
+import { AllTools } from './AllTools'
 
 export const Main = () => {
-  const {AuthData} = useContext(AuthContext)
-  const router = useRouter()
-  useEffect(()=>{
-    if(AuthData.token == ""){
-      router.push("/")
-    }
+  // const {AuthData} = useContext(AuthContext)
+  // const router = useRouter()
+  // useEffect(()=>{
+  //   if(AuthData.token == ""){
+  //     router.push("/")
+  //   }
 
-  },[])
+  // },[])
   return (
 
     <div className="flex flex-col  bg-[rgba(19,33,46,1)]">
@@ -27,9 +25,9 @@ export const Main = () => {
       
   
       <div className="flex-1 " >
-        <Dashboard/> 
+        <AllTools/> 
       </div>
-    </div>
+  </div>
   </div>
   )
 }
