@@ -1,64 +1,91 @@
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 import {
   FaHome,
   FaMapMarkedAlt,
   FaFileAlt,
   FaCog,
-  FaBars,
-  FaUserPlus ,
-  FaTimes
-} from 'react-icons/fa';
-import { MdGridView } from 'react-icons/md';
-import { motion } from 'framer-motion';
+  FaUserCog,
+  FaUserPlus,
+  FaTimes,
+} from "react-icons/fa";
+import { MdGridView } from "react-icons/md";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export const AdminSideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const router = useRouter();
   const menuItems = [
-    { icon: <FaHome />, label: 'Home' },
-    { icon: <FaMapMarkedAlt />, label: 'Threat Map' },
-    { icon: <FaFileAlt />, label: 'Reports' },
-    { icon: <FaUserPlus />, label: 'Manage Users' }
+    { icon: <MdGridView />, label: "DashBoard", route: "Admin" },
+    { icon: <FaUserPlus />, label: "Add Users", route: "Add Users" },
+    { icon: <FaUserCog />, label: "Manage Users", route: "Manage User" },
   ];
 
-  return (
-    <div  className="flex">
-      <motion.div
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
-        animate={{ width: isOpen ? 250 : 80 }}
-        transition={{ duration: 0.3, type: 'tween' }}
-        className={` bg-[${isOpen?"#8A1C1C":"#111827"}] p-4 text-white shadow-lg flex flex-col overflow-hidden`}
-      >
+  const handleClick = (route) => {
+    const cleanedRoute = route.replace(/\s+/g, ""); // Removes all whitespace
 
-        <nav onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)} className="flex flex-col space-y-3">
-        <a
-              href="#"
-              className="flex items-center gap-4 px-3 py-2 rounded-md hover:bg-white hover:text-red-600 transition duration-200"
-              onClick={() => setIsOpen(!isOpen)}>
-              <span className="text-lg"><MdGridView /></span>
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: isOpen ? 1 : 0 }}
-                transition={{ duration: 0.2 }}
-                className={`${isOpen ? 'block' : 'hidden'} text-sm font-medium whitespace-nowrap`}
-              >
-                Dashboard
-              </motion.span>
-            </a>
+    if (cleanedRoute.startsWith("http")) {
+      window.location.href = cleanedRoute;
+    } else if (cleanedRoute == "Admin") {
+      router.push(`/${cleanedRoute}`);
+    } else {
+      router.push(`/Admin/${cleanedRoute}`);
+    }
+  };
+
+  return (
+    <div className="flex">
+      <motion.div
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+        animate={{ width: isOpen ? 250 : 80 }}
+        transition={{ duration: 0.3, type: "tween" }}
+        className={` bg-[${
+          isOpen ? "#8A1C1C" : "#111827"
+        }] p-4 text-white shadow-lg flex flex-col overflow-hidden`}
+      >
+        <nav
+          onMouseEnter={() => setIsOpen(true)}
+          onMouseLeave={() => setIsOpen(false)}
+          className="flex flex-col space-y-3"
+        >
+          <a
+            href="#"
+            className="flex items-center gap-4 px-3 py-2 rounded-md hover:bg-white hover:text-red-600 transition duration-200"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <span className="text-lg">
+              <FaHome />
+            </span>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isOpen ? 1 : 0 }}
+              transition={{ duration: 0.2 }}
+              className={`${
+                isOpen ? "block" : "hidden"
+              } text-sm font-medium whitespace-nowrap`}
+            >
+              Home
+            </motion.span>
+          </a>
           {menuItems.map((item, index) => (
             <a
               key={index}
               href="#"
               className="flex items-center gap-4 px-3 py-2 rounded-md hover:bg-white hover:text-red-600 transition duration-200"
+              onClick={() => {
+                handleClick(item.route);
+              }}
             >
               <span className="text-lg">{item.icon}</span>
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isOpen ? 1 : 0 }}
                 transition={{ duration: 0.2 }}
-                className={`${isOpen ? 'block' : 'hidden'} text-sm font-medium whitespace-nowrap`}
+                className={`${
+                  isOpen ? "block" : "hidden"
+                } text-sm font-medium whitespace-nowrap`}
               >
                 {item.label}
               </motion.span>
