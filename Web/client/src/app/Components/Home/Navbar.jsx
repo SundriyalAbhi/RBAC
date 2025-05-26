@@ -1,40 +1,35 @@
 import React from "react";
-import "@/app/style.css";
+import "@/app/style.css"; // Ensure Tailwind CSS is properly applied
 import { IoSearch } from "react-icons/io5";
-import style from "./NavStyle.css";
+
 export const Navbar = () => {
   return (
     <nav className="bg-[#1E293B] h-[10vh] flex items-center justify-between px-6 shadow-md">
-      <span className="text-transparent bg-clip-text text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400">
+      {/* Logo Section */}
+      <span className="text-transparent bg-clip-text font-bold bg-gradient-to-r from-blue-400 to-purple-400 
+        text-lg sm:text-xl md:text-2xl">
         PHANTOM RADAR
       </span>
 
-      <div className="cursor-pointer flex gap-4 items-center">
-        <form className="flex items-center space-x-2">
-          <div className="search-container">
-            <input type="text" placeholder="Search" />
-            <button>
-              <IoSearch className="icon" />
-            </button>
-          </div>
-
-          {/* <input
-          type="search"
-          placeholder="Search"
-          aria-label="Search"
-          className="px-4 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent"
-        />
-        <button
-          type="submit"
-          className="px-4 py-1 text-white border border-white rounded-md hover:bg-white hover:text-red-600 transition duration-200"
-        >
-          Search
-        </button> */}
+      {/* Right Section */}
+      <div className="flex items-center gap-4">
+        {/* Search Box */}
+        <form className="relative flex items-center">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="bg-gray-800 text-white px-4 py-2 rounded-md focus:outline-none focus:ring focus:ring-blue-500 w-32 sm:w-48 md:w-64"
+          />
+          <button className="absolute right-2">
+            <IoSearch className="text-white text-xl" />
+          </button>
         </form>
+
+        {/* Profile Image */}
         <img
           src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740"
           alt="Profile"
-          className="w-10 h-10 rounded-full outline-green-600 outline"
+          className="w-8 sm:w-10 h-8 sm:h-10 rounded-full border border-blue-500 hover:border-white transition duration-300"
         />
       </div>
     </nav>

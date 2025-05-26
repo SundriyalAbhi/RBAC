@@ -1,26 +1,22 @@
-"use client"
+"use client";
 
 import { API, baseURL } from "@/Utils/Utils";
 
+let initialState = {};
 
-let initialState={}
-
-if(typeof window !=="undefined")
-{
-    
-    initialState=JSON.parse(localStorage.getItem("UserData"))||{
-        token:"",
-        userId:""
-    }
-}else{
-    initialState={
-        token:"",
-        userId:""
-    }
+if (typeof window !== "undefined") {
+  initialState = JSON.parse(localStorage.getItem("UserData")) || {
+    token: null,
+    userId: null,
+  };
+} else {
+  initialState = {
+    token: "",
+    userId: "",
+  };
 }
 
-const { createContext, useReducer } = require("react")
-
+const { createContext, useReducer } = require("react");
 
 async function UserSignUp(body) {
     try {
@@ -40,7 +36,6 @@ async function UserSignIn(body) {
   }
 }
 
-
 async function getprofile(authData) {
     try {
         const response = await API.get(`${baseURL}/profile/getprofile/${authData.userId}`)
@@ -58,7 +53,6 @@ async function findAccount(body) {
     return { status: error?.response?.status, data: error?.response?.data };
   }
 }
-
 
 async function SENDOTP(body) {
     try {
@@ -105,6 +99,7 @@ async function profileupdate(authData,body) {
   }
 }
 
+
 async function AdminLogin(body) {
      try {
         const response= await API.post(`${baseURL}/admin/login`,body)
@@ -114,18 +109,12 @@ async function AdminLogin(body) {
   }
 }
 
-function reducer(state,action){
 
-    switch (action.type) {
-        case "SIGN_IN":
-        const singinState={...action.payload}
-        localStorage.setItem("UserData",JSON.stringify(singinState));
-        return singinState;
 
-        case "UPDATE_PROFILE":
-        const updatedState={...state,profilepic:action.payload}
-        localStorage.setItem("UserData",JSON.stringify(updatedState));
-        return updatedState;
+    case "UPDATE_PROFILE":
+      const updatedState = { ...state, profilepic: action.payload };
+      localStorage.setItem("UserData", JSON.stringify(updatedState));
+      return updatedState;
 
         case"SIGN_OUT":
         const signoutstate = {token:"",userId:""}
@@ -147,6 +136,3 @@ export const AuthProvider = ({children})=>{
         <AuthContext.Provider value={{AuthData:state,Authdispatch,UserSignUp,UserSignIn,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate,AdminLogin}}>
             {children}
         </AuthContext.Provider>
-
-    )
-}

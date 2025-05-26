@@ -67,7 +67,7 @@ function ThreatTable() {
     return 0;
   });
 
-  const ThreatTableContent = (
+  const ThreatTable = (
     <div className="w-full overflow-x-auto scrollbar-hide max-h-[80vh]" onClick={() => !isOpen && setIsOpen(true)}
     style={{scrollbarWidth:"none"}}>
       <div className="flex justify-center gap-4 mb-4 flex-wrap">
