@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import "@/app/style.css";
-import { IoSearch } from 'react-icons/io5';
-
+import { IoSearch } from "react-icons/io5";
 
 export const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -11,49 +9,59 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
+    <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+      <div className="max-w-screen-xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="#" className="flex items-center gap-2">
           <img
             src="https://flowbite.com/docs/images/logo.svg"
-            className="h-8"
-            alt="Flowbite Logo"
+            alt="Logo"
+            className="h-8 w-8"
           />
-           <span className="text-transparent bg-clip-text text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400">
-        PHANTOM RADAR
-      </span>
+          <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            PHANTOM RADAR
+          </span>
         </a>
 
-        <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative">
+        <ul className="hidden md:flex gap-8 font-medium text-gray-700 dark:text-white">
+          {["Home", "About", "Services", "Pricing", "Contact"].map((item) => (
+            <li key={item}>
+              <a
+                href="#"
+                className="hover:text-blue-600 dark:hover:text-blue-400 transition"
+              >
+                {item}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div className="relative">
           <button
-            type="button"
-            className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
             onClick={toggleDropdown}
+            className="w-10 h-10 rounded-full border-2 border-transparent hover:border-blue-500 transition"
           >
-            <span className="sr-only">Open user menu</span>
             <img
-              className="w-8 h-8 rounded-full"
               src="/docs/images/people/profile-picture-3.jpg"
-              alt="user photo"
+              alt="user"
+              className="w-full h-full object-cover rounded-full"
             />
           </button>
 
           {dropdownOpen && (
-            <div className="absolute left-1/2 top-8 mt-2 w-48 z-50 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600 transform -translate-x-1/2">
-
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-50">
               <div className="px-4 py-3">
-                <span className="block text-sm text-gray-900 dark:text-white">
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
                   Bonnie Green
-                </span>
-                <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
+                </p>
+                <p className="text-sm text-gray-500 truncate dark:text-gray-400">
                   name@flowbite.com
-                </span>
+                </p>
               </div>
               <ul className="py-2">
                 <li>
                   <a
                     href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white transition"
                   >
                     Sign out
                   </a>
@@ -62,55 +70,21 @@ export const Navbar = () => {
             </div>
           )}
         </div>
+      </div>
 
-        <div
-          className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
-          id="navbar-user"
-        >
-          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-            <li>
+      <div className="md:hidden px-4 pb-3 pt-2 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+        <ul className="flex flex-col gap-2 text-gray-700 dark:text-white font-medium">
+          {["Home", "About", "Services", "Pricing", "Contact"].map((item) => (
+            <li key={item}>
               <a
                 href="#"
-                className="block py-2 px-3 text-white bg-blue-700 rounded-sm md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
-                aria-current="page"
+                className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"
               >
-                Home
+                {item}
               </a>
             </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                About
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Services
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Pricing
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Contact
-              </a>
-            </li>
-          </ul>
-        </div>
+          ))}
+        </ul>
       </div>
     </nav>
   );

@@ -11,10 +11,10 @@ const path = require('path');
 const { connectdb } = require("./Config/db")
 const OTPRouter = require("./routes/OTPRoute")
 const validateEmailRouter = require("./routes/ValidateEmailRouter")
-const ProviderAuthRouter = require("./routes/ProviderAuthRoute")
 const UserAuthRouter = require("./routes/MemberAuthRouter");
 const ComapnyRouter = require("./routes/CompanyRouter");
 const AdminRouter = require("./routes/AdminRouter");
+const ProviderRouter = require("./routes/ProviderRoute");
 dotenv.config({path:"./Config/config.env"})
 const app = express()
 app.use(helmet()); 
@@ -66,7 +66,7 @@ app.get("/",(req,res)=>{
 app.use("/MamberAuth",UserAuthRouter)
 app.use("/otp",OTPRouter)
 app.use("/checkEmail",validateEmailRouter)
-app.use("/ProviderAuth",ProviderAuthRouter)
+app.use("/Provider",ProviderRouter)
 app.use("/company",ComapnyRouter)
 app.use('/admin', AdminRouter);
 

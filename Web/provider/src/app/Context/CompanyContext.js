@@ -15,7 +15,7 @@ async function ADDCOMPANY(body) {
 
 async function GETALLCOMPANYS() {
     try {
-       const responce = await API.get(`${baseURL}/company/GetAllCompany`) 
+       const responce = await API.get(`${baseURL}/Provider/GetAllCompany`) 
        return responce.data
     } catch (error) {
         return { status: error?.status}
@@ -39,7 +39,7 @@ async function UPDATECOMPANYDETAILS(id, body) {
 
 async function GETALLADMINS() {
   try {
-    const responce = await API.get(`${baseURL}/company/AllAdmins`)
+    const responce = await API.get(`${baseURL}/Provider/AllAdmins`)
     return responce.data
   } catch (error) {
     console.log(error);
@@ -77,7 +77,7 @@ async function UPDATEADMIN(id,body) {
 
 async function SearchCompany(body) {
   try {
-    const responce = await API.get(`${baseURL}/company/GetCompanyByName`,{
+    const responce = await API.get(`${baseURL}/Provider/GetCompanyByName`,{
             params:{name:body.searchD}
         })
     return responce.data
@@ -86,9 +86,9 @@ async function SearchCompany(body) {
   }
 }
 
-async function SearchAdmin(body) {
+async function SearchAdminByCompanyName(body) {
   try {
-    const responce = await API.get(`${baseURL}/admin/GetAdminByName`,{
+    const responce = await API.get(`${baseURL}/Provider/GetAdminByCompanyName`,{
             params:{name:body.searchD}
         })
     return responce.data
@@ -97,13 +97,34 @@ async function SearchAdmin(body) {
   }
 }
 
+async function GetCompanyDetails(body) {
+  try {
+    const responce = await API.get(`${baseURL}/Provider/GetCompanyDetails`,{
+            params:body
+        })
+    return responce.data
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function GetAdminDetails(body) {
+  try {
+    const responce = await API.get(`${baseURL}/Provider/GetAdminDetails`,{
+            params:body
+        })
+    return responce.data
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 export const CompanyContext = createContext()
 
 export const CompanyProvider = ({children})=>{
 
 return(
-     <CompanyContext.Provider value={{ADDCOMPANY,GETALLCOMPANYS,UPDATECOMPANYDETAILS,GETALLADMINS,DELETECOMPANY,AddAdmin,UPDATEADMIN,SearchCompany,SearchAdmin}}>
+     <CompanyContext.Provider value={{ADDCOMPANY,GETALLCOMPANYS,UPDATECOMPANYDETAILS,GETALLADMINS,DELETECOMPANY,AddAdmin,UPDATEADMIN,SearchCompany,SearchAdminByCompanyName,GetCompanyDetails,GetAdminDetails}}>
         {children}
     </CompanyContext.Provider>
 )

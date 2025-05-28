@@ -22,7 +22,7 @@ export const AuthContext = createContext();
 
 async function ProviderSignUp(body) {
   try {
-    const response = await API.post(`${baseURL}/ProviderAuth/Providersignup`, body);
+    const response = await API.post(`${baseURL}/Provider/Providersignup`, body);
     return { status: response?.status, data: response?.data };
   } catch (error) {
     return { status: error?.response?.status, data: error?.response?.data };
@@ -31,7 +31,7 @@ async function ProviderSignUp(body) {
 
 async function ProviderSignIn(body) {
   try {
-    const response = await API.post(`${baseURL}/ProviderAuth/Providersignin`, body);
+    const response = await API.post(`${baseURL}/Provider/Providersignin`, body);
     return { status: response?.status, data: response?.data };
   } catch (error) {
     return { status: error?.response?.status, data: error?.response?.data };
