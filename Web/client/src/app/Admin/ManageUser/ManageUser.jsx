@@ -128,15 +128,17 @@ const ManageUser = () => {
       registered: "2023-04-05",
       active: true,
     },
-    {
+
+      {
       id: 15,
-      name: "Sarah Johnson",
-      companyId: "C245",
-      role: "Security Analyst",
-      lastLogin: "2024-05-06",
-      registered: "2023-03-25",
+      name: "James Carter",
+      companyId: "C235",
+      role: "AI Developer",
+      lastLogin: "2024-05-03",
+      registered: "2023-04-05",
       active: true,
     },
+   
   ];
 
   const [selectedUser, setSelectedUser] = useState(null);
@@ -148,8 +150,9 @@ const ManageUser = () => {
   };
 
   return (
-    <div className="relative flex flex-col items-center p-4 bg-[#06b5d411] ">
-      <div className="w-[80vw] border border-gray-700 shadow-lg rounded-lg flex justify-center">
+    // bg-[#06b5d411]
+    <div className="relative flex flex-col items-center p-2  ">
+      <div className="w-[100%] border border-gray-700 shadow-lg rounded-lg flex justify-center">
         <table className="w-full bg-[#334155] text-white text-sm text-center">
           <thead className="bg-gray-800 sticky top-0">
             <tr>
@@ -196,7 +199,7 @@ const ManageUser = () => {
       {/* View Popup Modal */}
       {selectedUser && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-white w-[400px]">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-black w-[400px]">
             <h2 className="text-lg font-bold mb-2">User Information</h2>
             <p>
               <strong>ID:</strong> {selectedUser.id}
@@ -234,7 +237,7 @@ const ManageUser = () => {
       {/* Edit Popup Modal */}
       {editUser && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-white w-[400px]">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-black w-[400px]">
             <h2 className="text-lg font-bold mb-4">Edit User</h2>
             <label className="block mb-2">Name:</label>
             <input

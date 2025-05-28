@@ -42,7 +42,7 @@ export const AdminSideBar = () => {
         animate={{ width: isOpen ? 250 : 80 }}
         transition={{ duration: 0.3, type: "tween" }}
         className={` bg-[${
-          isOpen ? "#8A1C1C" : "#111827"
+          isOpen ? "#111827" : "#111827"
         }] p-4 text-white shadow-lg flex flex-col overflow-hidden`}
       >
         <nav
