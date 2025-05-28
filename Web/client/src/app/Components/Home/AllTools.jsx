@@ -10,10 +10,10 @@ export const AllTools = () => {
     { name: "AutoCom", icon: "💬", link: "" },
     { name: "Phantom Radar", icon: "📡", link: "https://phantom-radar.vercel.app/" },
     { name: "CyberKnowledge Engine Agent", icon: "🧠", link: "" },
-    { name: "AutoRed", icon: "⚙️", link: "" },
+    { name: "AutoRed", icon: "⚙️", link: "https://auto-red-35f6.vercel.app/" },
     { name: "ZeroCodeSec", icon: "</>", link: "" },
     { name: "GhostIntel", icon: "👻", link: "" },
-    { name: "Real-Time Radar", icon: "📈", link: "" },
+    { name: "Real-Time Radar", icon: "📈", link: "https://real-time-radar.vercel.app/" },
   ];
 
   const handleClick = (feature) => {

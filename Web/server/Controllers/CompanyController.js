@@ -1,4 +1,5 @@
 const AdminModel = require("../Models/AdminModel");
+const CompanyMember = require("../Models/CompanyMemberModel");
 const Company = require("../Models/CompanyModel");
 
 
@@ -22,36 +23,11 @@ exports.AddCompany = async(req,res)=>{
     }
 }
 
-exports.GetAllCompany = async(req,res)=>{
-    try {
-        const AllCompanyS = await Company.find()
-        res.send({AllCompanyS,msg:"ALl CompanyS"})
-    } catch (error) {
-        console.log(error);
-    }
-}
 
-exports.GetCompanyByName = async(req,res)=>{
-    try {
-      console.log(req.query);
-      
-        const {name} = req.query
-        const GetCompany = await Company.find({
-        name: { $regex: `^${name}`, $options: "i" }, 
-        }).limit(10); 
-        if(GetCompany){
-            res.send(GetCompany)
-        }else{
-            res.send({msg:"Found Nothing"})
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 exports.UpdateCompanyDetails = async(req,res)=>{
     try {
-        const {email , name , industry , city , state , country} = req.body
+        const { name , industry , city , state , country} = req.body
         const {id} = req.params
         const findCompany = await Company.findOneAndUpdate({_id:id}, {name:name , industry:industry , address:{city:city,state:state,country:country}})
         const SavedDetails = await findCompany.save()
@@ -88,11 +64,3 @@ exports.DeleteCompany = async (req, res) => {
   }
 };
 
-exports.getAllAdminsforProvider = async (req, res) => {
-  try {
-    const admins = await AdminModel.find().select('-password');
-    res.status(200).send(admins);
-  } catch (err) {
-    res.status(500).json({ msg: 'Failed to fetch admins' });
-  }
-};

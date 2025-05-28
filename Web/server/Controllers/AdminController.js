@@ -17,7 +17,7 @@ exports.registerAdmin = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const CompanyName = await Company.findById(companyId)
-    const newAdmin = new AdminModel({ email, password: hashedPassword, role , companyId, name, company:CompanyName.name});
+    const newAdmin = new AdminModel({ email, password: hashedPassword, role , companyId, name, companyName:CompanyName.name});
     
     await newAdmin.save();
     res.status(201).json({ msg: 'Admin registered successfully' });
