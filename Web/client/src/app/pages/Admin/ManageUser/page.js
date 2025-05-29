@@ -1,8 +1,9 @@
 "use client";
+import { AdminSideBar } from "@/app/Admin/AdminSideBar";
+import ManageUser from "@/app/Admin/ManageUser/ManageUser";
 import { Navbar } from "@/app/Components/Home/Navbar";
 import React from "react";
-import { AdminSideBar } from "../AdminSideBar";
-import ManageUser from "./ManageUser";
+
 
 const page = () => {
   return (
@@ -16,7 +17,6 @@ const page = () => {
         <div className="flex-1 ">
           <ManageUser />
         </div>
-          
       </div>
     </div>
   );

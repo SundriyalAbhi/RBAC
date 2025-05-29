@@ -2,10 +2,10 @@ import React, { useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useRouter } from 'next/navigation';
 import "./Main.css"
-import { AuthContext } from '@/app/Context/AuthContext';
+import { AdminContext} from '@/app/Context/AdminContext';
 const Navbar = () => {
     const router = useRouter()
-    const {AuthData,Authdispatch} = useContext(AuthContext)
+    const {AuthData,Admindispatch} = useContext(AdminContext)
 
     
   return (
@@ -39,7 +39,7 @@ const Navbar = () => {
           router.push("/pages/Profile")
         }}>Profile</button></li>
         <li className='mt-2'><button onClick={()=>{
-          Authdispatch({
+          Admindispatch({
             type:"SIGN_OUT"
           })
           router.push("/")

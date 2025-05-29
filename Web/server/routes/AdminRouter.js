@@ -33,8 +33,8 @@ AdminRouter.put(
 
 AdminRouter.get(
   "/users",
-  verifyToken,
-  allowRoles("admin"),
+  // verifyToken,
+  // allowRoles("admin"),
   getAllUsers
 );
 

@@ -1,9 +1,9 @@
 "use client"
 import React from "react";
-import AuthForm from "./Auth";
 import "@/app/style.css";
+import { AdminSideBar } from "@/app/Admin/AdminSideBar";
 import { Navbar } from "@/app/Components/Home/Navbar";
-import { AdminSideBar } from "../AdminSideBar";
+import AuthForm from "@/app/Admin/AddUsers/Auth";
 const page = () => {
   return (
     <>

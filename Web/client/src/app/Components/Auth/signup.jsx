@@ -1,11 +1,11 @@
 import React, { useContext, useState, useRef } from 'react';
 import { Bounce, toast } from 'react-toastify';
 import '@/app/style.css';
-import { AuthContext } from '@/app/Context/AuthContext';
+import { AdminContext } from '@/app/Context/AdminContext';
 
 export const SignUp = ({ setMode }) => {
   const [formData, setFormData] = useState({});
-  const { UserSignUp, SENDOTP, VERIFYOTP } = useContext(AuthContext);
+  const { UserSignUp, SENDOTP, VERIFYOTP } = useContext(AdminContext);
   const [enterOtp, setEnterOtp] = useState(false);
   const [otpArray, setOtpArray] = useState(new Array(6).fill(''));
   const [loading, setLoading] = useState(false);
