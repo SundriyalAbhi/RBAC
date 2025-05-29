@@ -18,18 +18,10 @@ if (typeof window !== "undefined") {
 
 const { createContext, useReducer } = require("react");
 
-async function UserSignUp(body) {
-    try {
-        const response= await API.post(`${baseURL}/MamberAuth/MemberSignup`,body)
-  return { status: response?.status, data: response?.data };
-  } catch (error) {
-    return { status: error?.response?.status, data: error?.response?.data };
-  }
-}
 
-async function UserSignIn(body) {
+async function AdminLogin(body) {
     try {
-        const response= await API.post(`${baseURL}/MamberAuth/MemberSignin`,body)
+        const response= await API.post(`${baseURL}/admin/login`,body)
          return { status: response?.status, data: response?.data };
   } catch (error) {
     return { status: error?.response?.status, data: error?.response?.data };
@@ -99,6 +91,15 @@ async function profileupdate(authData,body) {
   }
 }
 
+async function GetUsersforAdmin(body) {
+  try {
+    const response = await API.get(`${baseURL}/admin/users`,{params:{companyId:body}})
+    return { status: response?.status, data: response?.data }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function reducer(state, action) {
   switch (action.type) {
     case "SIGN_IN":
@@ -123,12 +124,12 @@ function reducer(state, action) {
 }
 
 
-export const AuthContext = createContext()
+export const AdminContext = createContext()
 
-export const AuthProvider = ({children})=>{
-    const [state,Authdispatch] = useReducer(reducer,initialState)
+export const AdminProvider = ({children})=>{
+    const [state,Admindispatch] = useReducer(reducer,initialState)
     return(
-        <AuthContext.Provider value={{AuthData:state,Authdispatch,UserSignUp,UserSignIn,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate}}>
+        <AdminContext.Provider value={{AuthData:state,Admindispatch,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate,AdminLogin,GetUsersforAdmin}}>
             {children}
-        </AuthContext.Provider>
+        </AdminContext.Provider>
     )}

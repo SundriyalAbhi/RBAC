@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { Bounce, toast } from 'react-toastify';
 import { NewPassword } from './NewPassword';
-import { AuthContext } from '@/app/Context/AuthContext';
+import { AdminContext } from '@/app/Context/AdminContext';
 
 const ForgotPass = ({ setMode }) => {
-  const { findAccount, SENDOTP, VERIFYOTP } = useContext(AuthContext);
+  const { findAccount, SENDOTP, VERIFYOTP } = useContext(AdminContext);
   const [data, setFormData] = useState({});
   const [user, setUser] = useState(false);
   const [email, setEmail] = useState('');

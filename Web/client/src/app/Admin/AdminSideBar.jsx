@@ -23,14 +23,13 @@ export const AdminSideBar = () => {
   ];
 
   const handleClick = (route) => {
-    const cleanedRoute = route.replace(/\s+/g, ""); // Removes all whitespace
-
+    const cleanedRoute = route.replace(/\s+/g, ""); 
     if (cleanedRoute.startsWith("http")) {
       window.location.href = cleanedRoute;
     } else if (cleanedRoute == "Admin") {
-      router.push(`/${cleanedRoute}`);
+      router.push(`/pages/${cleanedRoute}`);
     } else {
-      router.push(`/Admin/${cleanedRoute}`);
+      router.push(`/pages/Admin/${cleanedRoute}`);
     }
   };
 
@@ -53,7 +52,10 @@ export const AdminSideBar = () => {
           <a
             href="#"
             className="flex items-center gap-4 px-3 py-2 rounded-md hover:bg-white hover:text-red-600 transition duration-200"
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => {
+              setIsOpen(!isOpen)
+              router.push("/pages/Home")
+            }}
           >
             <span className="text-lg">
               <FaHome />

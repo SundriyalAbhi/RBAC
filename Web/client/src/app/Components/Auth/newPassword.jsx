@@ -1,10 +1,10 @@
-import { AuthContext } from '@/app/Context/AuthContext';
+import { AdminContext } from '@/app/Context/AdminContext';
 import React, { useContext, useState } from 'react'
 import { Bounce, toast } from 'react-toastify';
 
 export const NewPassword = ({setMode,Email}) => {
     const [formData,setFormData] = useState({})
-    const{PasswordUpdate} = useContext(AuthContext)
+    const{PasswordUpdate} = useContext(AdminContext)
     async function handleSubmit(e) {
       e.preventDefault();
       try {

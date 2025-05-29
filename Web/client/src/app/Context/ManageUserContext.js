@@ -1,56 +1,46 @@
-"use client";
+"use client"
 
 import { API, baseURL } from "@/Utils/Utils";
 
-const { createContext, useReducer } = require("react");
+const { createContext } = require("react");
 
-async function CreateUser(body) {
+
+async function UserSignUp(body) {
+    console.log("ll");
+  
   try {
-    console.log("Auth Body",body);
-    
-    const response = await API.post(`${baseURL}/admin/register`, body);
-    // return { status: response?.status, data: response?.data };
-  } catch (error) {
-    console.log(error);
-
-    // return { status: error?.response?.status, data: error?.response?.data };
-  }
-}
-
-async function UpdateUser(body) {
-  try {
-    console.log("AuthBody", body);
-
-    // const response = await API.post(`${baseURL}/MamberAuth/MemberSignin`, body);
-    // return { status: response?.status, data: response?.data };
-  } catch (error) {
-    console.log(error);
-
-    // return { status: error?.response?.status, data: error?.response?.data };
-  }
-}
-
-async function DeleteUser(authData) {
-  try {
-    const response = await API.get(
-      `${baseURL}/profile/getprofile/${authData.userId}`
-    );
+    const response = await API.post(`${baseURL}/Member/MemberSignup`, body)
     return { status: response?.status, data: response?.data };
   } catch (error) {
     return { status: error?.response?.status, data: error?.response?.data };
   }
 }
 
-export const AdminContext = createContext();
+async function UserSignIn(body) {
+  try {
+    const response = await API.post(`${baseURL}/Member/MemberSignin`, body)
+    return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
+}
 
-export const AdminProvider = ({ children }) => {
+async function UPDATEUSER(body) {
+  try {
+    const response = await API.put(`${baseURL}/Member/UpdateMember`,body)
+    return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
+}
+
+export const UserContext = createContext()
+
+export const UserProvider = ({ children }) => {
+
   return (
-    <AdminContext.Provider
-      value={{
-        CreateUser,
-      }}
-    >
+    <UserContext.Provider value={{ UserSignIn, UserSignUp, UPDATEUSER }}>
       {children}
-    </AdminContext.Provider>
-  );
-};
+    </UserContext.Provider>
+  )
+}
