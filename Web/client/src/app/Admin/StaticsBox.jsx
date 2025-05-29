@@ -22,6 +22,7 @@ const StaticsBox = () => {
           { icon: <MdAdminPanelSettings />, label: "CISO", count: "5" },
           { icon: <FaHeadSideVirus />, label: "AI Developers", count: "6" },
           { icon: <FaUserShield />, label: "Security Analyst", count: "7" },
+          { icon: <FaUserShield />, label: "Data Analyst", count: "8" },
         ].map((item, index) => (
           <div key={index} className="rounded-xl h-full text-white shadow-lg">
             <div
