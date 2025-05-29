@@ -1,0 +1,20 @@
+ <div className="flex flex-col md:flex-row gap-4 h-[60%]">
+        <div
+          className="flex-1 rounded-xl p-4 flex flex-col text-white text-sm "
+          style={{
+            background: "linear-gradient(145deg, #0b1f33, #081a2a)",
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
+          }}
+        >
+          <h2 className="text-center text-lg font-semibold mb-4">
+            Total Employees
+          </h2>
+          <EmployeesTable />
+        </div>
+        <div className="flex-1 rounded   text-black font-bold text-lg ">
+          <UserList />
+        </div>
+      </div>
+
+
+      Backup

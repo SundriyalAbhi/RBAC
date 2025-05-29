@@ -7,132 +7,38 @@ import {
   FaUserShield,
   FaFileInvoiceDollar,
 } from "react-icons/fa";
+
 const StaticsBox = () => {
   return (
     <>
       {/* Parent Container */}
-      <div style={{ width: "100%" }} className="flex flex-row gap-4 flex-wrap">
-        {/* First Child Layout */}
-        <div className="flex-1 flex flex-col rounded-xl h-full text-white">
-          <div
-            className="flex items-center bg-[#334155] rounded-md p-4"
-            style={{
-              background: "linear-gradient(145deg, #0b1f33, #081a2a)",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            <MdAdminPanelSettings style={{ fontSize: "5.5rem" }} />
-            <div className="flex flex-col">
-              <h1 className="font-bold" style={{ fontSize: "1rem" }}>
-                Admins 5
-              </h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
+        {/* Data Cards */}
+        {[
+          { icon: <MdAdminPanelSettings />, label: "Admins", count: "5" },
+          { icon: <FaShieldAlt />, label: "SOC Analysts", count: "2" },
+          { icon: <GiArtificialIntelligence />, label: "Threat Analysts", count: "2" },
+          { icon: <MdAssignment />, label: "Auditors", count: "4" },
+          { icon: <MdAdminPanelSettings />, label: "CISO", count: "5" },
+          { icon: <FaHeadSideVirus />, label: "AI Developers", count: "6" },
+          { icon: <FaUserShield />, label: "Security Analyst", count: "7" },
+        ].map((item, index) => (
+          <div key={index} className="rounded-xl h-full text-white shadow-lg">
+            <div
+              className="flex items-center justify-start rounded-md p-4 space-x-4"
+              style={{
+                background: "linear-gradient(145deg, #0b1f33, #081a2a)",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
+              }}
+            >
+              <div className="text-6xl">{item.icon}</div>
+              <div className="flex flex-col">
+                <h1 className="font-bold text-lg">{item.label}</h1>
+                <h2 className="text-xl">{item.count}</h2>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Repeat the above structure 6 more times */}
-        <div className="flex-1 flex flex-col rounded-xl h-full text-white">
-          <div
-            className="flex items-center bg-[#334155] rounded-md p-4 gap-2"
-            style={{
-              background: "linear-gradient(145deg, #0b1f33, #081a2a)",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            <FaShieldAlt style={{ fontSize: "5.5rem" }} />
-            <div className="flex flex-col">
-              <h1 className="font-bold" style={{ fontSize: "1rem" }}>
-                Soc Analysts 2
-              </h1>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1 flex flex-col rounded-xl h-full text-white">
-          <div
-            className="flex items-center bg-[#334155] rounded-md p-4 gap-3"
-            style={{
-              background: "linear-gradient(145deg, #0b1f33, #081a2a)",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            <GiArtificialIntelligence style={{ fontSize: "5.5rem" }} />
-            <div className="flex flex-col">
-              <h1 className="font-bold" style={{ fontSize: "1rem" }}>
-                Threat Analysts 2
-              </h1>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1 flex flex-col rounded-xl h-full text-white">
-          <div
-            className="flex items-center bg-[#334155] rounded-md p-4 gap-1"
-            style={{
-              background: "linear-gradient(145deg, #0b1f33, #081a2a)",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            <MdAssignment style={{ fontSize: "5.5rem" }} />
-            <div className="flex flex-col">
-              <h1 className="font-bold" style={{ fontSize: "1rem" }}>
-                Auditors 4
-              </h1>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1 flex flex-col rounded-xl h-full text-white">
-          <div
-            className="flex items-center bg-[#334155] rounded-md p-4"
-            style={{
-              background: "linear-gradient(145deg, #0b1f33, #081a2a)",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            <MdAdminPanelSettings style={{ fontSize: "5.5rem" }} />
-            <div className="flex flex-col">
-              <h1 className="font-bold" style={{ fontSize: "1rem" }}>
-                CISO
-              </h1>
-              <h1>5</h1>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1 flex flex-col rounded-xl h-full text-white">
-          <div
-            className="flex items-center bg-[#334155] rounded-md p-4 gap-2"
-            style={{
-              background: "linear-gradient(145deg, #0b1f33, #081a2a)",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            <FaHeadSideVirus style={{ fontSize: "5.5rem" }} />
-            <div className="flex flex-col">
-              <h1 className="font-bold" style={{ fontSize: "1rem" }}>
-                AI Developers 6
-              </h1>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1 flex flex-col rounded-xl h-full text-white">
-          <div
-            className="flex items-center bg-[#334155] rounded-md p-4"
-            style={{
-              background: "linear-gradient(145deg, #0b1f33, #081a2a)",
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            <FaUserShield style={{ fontSize: "5.5rem" }} />
-            <div className="flex flex-col">
-              <h1 className="font-bold" style={{ fontSize: "1rem" }}>
-                Security Analyst 7
-              </h1>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
     </>
   );

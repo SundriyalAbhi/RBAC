@@ -131,3 +131,4 @@ export const AuthProvider = ({children})=>{
         <AuthContext.Provider value={{AuthData:state,Authdispatch,UserSignUp,UserSignIn,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate}}>
             {children}
         </AuthContext.Provider>
+    )}
