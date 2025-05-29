@@ -4,7 +4,7 @@ import { Sidebaar } from './Sidebaar'
 import { AllTools } from './AllTools'
 
 export const Main = () => {
-  // const {AuthData} = useContext(AuthContext)
+  // const {AuthData} = useContext()
   // const router = useRouter()
   // useEffect(()=>{
   //   if(AuthData.token == ""){
@@ -15,9 +15,9 @@ export const Main = () => {
   return (
 
     <div className="flex flex-col  bg-[rgba(19,33,46,1)]">
-    <div className="h-16">
+    {/* <div className="h-16">
       <Navbar />
-    </div>
+    </div> */}
   
     <div className="flex flex-1">
       

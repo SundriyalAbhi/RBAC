@@ -61,6 +61,7 @@ exports.loginAdmin = async (req, res) => {
       token,
       adminId: admin._id,
       role: admin.role,
+      companyId:admin.companyId,
       msg: 'Login successful',
     });
   } catch (err) {
@@ -140,7 +141,7 @@ exports.assignRole = async (req, res) => {
 
   exports.getAllUsers = async (req, res) => {
     try {
-      const {companyId} = req.body
+      const {companyId} = req.query
       const users = await CompanyMember.find({companyId:companyId}, '-password'); 
       res.status(200).json(users);
     } catch (err) {

@@ -8,11 +8,12 @@ const companyMemberSchema = new mongoose.Schema({
     required: true,
   },
   email: { type: String, required: true },
-  name: { type: String },
+  firstName: { type: String },
+  lastName: { type: String },
   password: { type: String },
   role: {
       type: String,
-      enum: Object.values(roles), // dynamically adds all allowed roles
+      enum: Object.values(roles),
       default: roles.member,
     },
   addedBy: {

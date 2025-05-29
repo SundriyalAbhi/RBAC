@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Bounce, toast } from 'react-toastify';
-import { AuthContext } from '@/app/Context/AuthContext';
+import { AdminContext } from '@/app/Context/AdminContext';
 
 export const SignIn = ({ setMode }) => {
   const [formData, setFormData] = useState({ role: 'Admin' });
-  const { Authdispatch, UserSignIn, AdminLogin } = useContext(AuthContext);
+  const { Admindispatch, UserSignIn, AdminLogin } = useContext(AdminContext);
   const router = useRouter();
 
 const handleSubmit = async (event) => {
@@ -47,7 +47,7 @@ const handleSubmit = async (event) => {
           autoClose: 5000,
           transition: Bounce,
         });
-        Authdispatch({ type: 'SIGN_IN', payload: logindata.data });
+        Admindispatch({ type: 'SIGN_IN', payload: logindata.data });
         switch (logindata.data.role) {
           case 'admin':
             router.push('/pages/Admin');

@@ -3,7 +3,11 @@ const roles = {
     moderator: 'moderator',
     client: 'client',
     member:'member',
-    CISO:"CISO"
+    CISO:"CISO",
+    User:"User",
+    Manager:"Manager",
+    Auditor:"Auditor",
+    SOCAnalyst:"SOC Analyst"
   };
 
   module.exports = roles

@@ -55,6 +55,39 @@ exports.Usersignin = async(req,res)=>{
     }
 }
 
+exports.UpdateUserDetails = async (req, res) => {
+  try {
+    const { _id, email, firstName, lastName, role } = req.body;
+    if (!_id || !email || !firstName || !lastName || !role) {
+      return res.status(400).json({ message: "All fields are required." });
+    }
+
+    const updatedUser = await CompanyMember.findByIdAndUpdate(
+      _id,
+      {
+        email,
+        firstName,
+        lastName,
+        role
+      },
+      { new: true } 
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.status(200).json({
+      message: "User details updated successfully.",
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+
 exports.UserfindAccount = async(req,res)=>{
     try {
         const account = await CompanyMember.findOne({email:req.params.email})

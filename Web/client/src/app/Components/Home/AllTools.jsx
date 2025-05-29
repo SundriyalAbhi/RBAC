@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import "@/app/style.css";
 import { useRouter } from 'next/navigation';
+import { AdminContext } from '@/app/Context/AdminContext';
 
 export const AllTools = () => {
   const router = useRouter();
+  const {Admindispatch,AuthData} = useContext(AdminContext)
+
+ useEffect(()=>{
+    if(!AuthData.token){
+      router.push("/pages/Auth")
+    }
+
+  },[AuthData])
 
   const features = [
     { name: "AutoSOC", icon: "🖥️", link: "" },
@@ -27,12 +36,16 @@ export const AllTools = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white px-6 py-8">
-      {/* Header */}
       <header className="flex items-center justify-between mb-12">
         <h1 className="text-3xl font-bold tracking-wide">SENTINELSEC</h1>
         <div className="space-x-6">
           <button className="text-gray-300 hover:text-white transition">Settings</button>
-          <button className="text-gray-300 hover:text-white transition">Logout</button>
+          <button className="text-gray-300 hover:text-white transition" onClick={()=>{
+            Admindispatch({
+              type: "SIGN_OUT"
+            })
+
+          }}>Logout</button>
         </div>
       </header>
 
