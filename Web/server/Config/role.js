@@ -7,7 +7,7 @@ const roles = {
     User:"User",
     Manager:"Manager",
     Auditor:"Auditor",
-    SOCAnalyst:"SOC Analyst"
+    SOCAnalyst:"SOCAnalyst"
   };
 
   module.exports = roles

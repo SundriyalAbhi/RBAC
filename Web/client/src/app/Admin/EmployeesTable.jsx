@@ -1,141 +1,100 @@
+import React, { useContext, useEffect, useState } from "react";
+import { AdminContext } from "../Context/AdminContext";
 
+function EmployeesTable({users}) {
+  const { GetUsersforAdmin, AdminAuthData } = useContext(AdminContext);
+  const companyId = AdminAuthData?.companyId;
+  // const [users, setUsers] = useState([]);
 
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     try {
+  //       const response = await GetUsersforAdmin(companyId);
+  //       const fetchedUsers = response.data || [];
 
-import React, { useState } from "react";
-import { UilTimes } from "@iconscout/react-unicons";
+  //       const processedUsers = fetchedUsers.map((user) => ({
+  //         id: user._id,
+  //         name: `${user.firstName} ${user.lastName}`,
+  //         location: user.Address || "N/A",
+  //         role: user.role || "Employee", // Use default if role not present
+  //       }));
 
-const threatsData = [
-  { Id: 1, Name: "Rohit Sharma", Role: "Admin", Address: "New Delhi, India" },
-  { Id: 2, Name: "Aisha Patel", Role: "CISO", Address: "Mumbai, India" },
-  {
-    Id: 3,
-    Name: "Rahul Verma",
-    Role: "Data Analytics",
-    Address: "Bengaluru, India",
-  },
-  {
-    Id: 4,
-    Name: "Sophia Fernandez",
-    Role: "Auditor",
-    Address: "Kolkata, India",
-  },
-  { Id: 5, Name: "Vikram Mehra", Role: "Admin", Address: "Hyderabad, India" },
-  { Id: 6, Name: "Neha Kapoor", Role: "CISO", Address: "Pune, India" },
-  {
-    Id: 7,
-    Name: "Arjun Sen",
-    Role: "Data Analytics",
-    Address: "Chennai, India",
-  },
-  { Id: 8, Name: "Meera Das", Role: "Auditor", Address: "Ahmedabad, India" },
-  { Id: 9, Name: "Karan Malhotra", Role: "Admin", Address: "Jaipur, India" },
-  { Id: 10, Name: "Sanjana Iyer", Role: "CISO", Address: "Lucknow, India" },
-];
+  //       setUsers(processedUsers);
+  //     } catch (error) {
+  //       console.error("Failed to fetch users:", error);
+  //     }
+  //   };
 
-const priorityRank = {
-  High: 3,
-  Medium: 2,
-  Low: 1,
-};
+  //   fetchUsers();
+  // }, []);
 
-function EmployeesTable() {
-  const [sortType, setSortType] = useState("time");
-  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="p-4 rounded-xl shadow-lg bg-gradient-to-br from-[#0b1f33] to-[#081a2a] text-white max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500">
+      <h2 className="text-xl font-bold mb-4 text-center">Employee List</h2>
 
-  const sortedThreats = [...threatsData].sort((a, b) => {
-    if (sortType === "time") {
-      return new Date(b.timestamp) - new Date(a.timestamp);
-    } else if (sortType === "priority") {
-      return priorityRank[b.threatPriority] - priorityRank[a.threatPriority];
-    }
-    return 0;
-  });
-
-  const ThreatTableContent = (
-    <div
-      className="w-full overflow-x-auto scrollbar-hide max-h-[80vh]"
-      onClick={() => !isOpen && setIsOpen(true)}
-      style={{ scrollbarWidth: "none" }}
-    >
-      <table className="w-full table-auto text-sm rounded-md overflow-hidden shadow-md">
+      <table className="w-full table-auto border-collapse rounded overflow-hidden">
         <thead>
-          <tr className="bg-[#334155] text-white text-center">
-            <th className="py-2 px-3">ID</th>
-            <th className="py-2 px-3"> Name</th>
-            <th className="py-2 px-3">Location</th>
+          <tr className="bg-[#334155] text-white text-center text-sm">
+            <th className="py-3 px-4 border-b border-[#1e293b]">ID</th>
+            <th className="py-3 px-4 border-b border-[#1e293b]">Name</th>
+            <th className="py-3 px-4 border-b border-[#1e293b]">Location</th>
+            <th className="py-3 px-4 border-b border-[#1e293b]">Role</th>
           </tr>
         </thead>
         <tbody>
-          {sortedThreats.map((threat) => (
-            <tr
-              key={threat.Id}
-              className="text-center border-b border-[#1e293b] hover:bg-[#1e293b]/40"
-            >
-              <td className="py-2 px-3 text-white/90">{threat.Id}</td>
-              <td className="py-2 px-3">{threat.Name}</td>
-          
-              <td className="py-2 px-3 text-white/90">
-                {threat.Address}
+          {users.length > 0 ? (
+            users.map((user,i) => (
+              <tr
+                key={i}
+                className="text-center hover:bg-[#1e293b]/40 transition-colors"
+              >
+                <td className="py-3 px-4 text-white/90">{user._id}</td>
+                <td className="py-3 px-4">{`${user.firstName} ${user.lastName}`}</td>
+                <td className="py-3 px-4 text-white/90">{user.location || "N/A"}</td>
+                <td className="py-3 px-4">
+                  <span
+                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                      user.role === "Admin"
+                        ? "bg-red-500/20 text-red-400"
+                        : user.role === "CISO"
+                        ? "bg-yellow-500/20 text-yellow-300"
+                        : user.role === "Auditor"
+                        ? "bg-blue-500/20 text-blue-300"
+                        : user.role === "Data Analytics"
+                        ? "bg-green-500/20 text-green-300"
+                        : "bg-gray-500/20 text-gray-300"
+                    }`}
+                  >
+                    {user.role}
+                  </span>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td
+                colSpan={4}
+                className="text-center py-5 text-gray-400 text-sm"
+              >
+                No users found.
               </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
+
+      {/* Custom scrollbar styling */}
+      <style jsx>{`
+        .scrollbar-thin::-webkit-scrollbar {
+          width: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+          background-color: #555;
+          border-radius: 4px;
+        }
+      `}</style>
     </div>
-  );
-
-  return (
-    <>
-      {!isOpen ? (
-        ThreatTableContent
-      ) : (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.8)",
-            zIndex: 9999,
-            padding: "2rem",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              position: "relative",
-              width: "90%",
-              height: "90%",
-            }}
-          >
-            <button
-              onClick={() => setIsOpen(false)}
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                zIndex: 10000,
-              }}
-            >
-              <UilTimes size="28" color="#ffffff" />
-            </button>
-
-            {ThreatTableContent}
-          </div>
-        </div>
-      )}
-    </>
   );
 }
 
 export default EmployeesTable;
-
-
-
-

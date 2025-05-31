@@ -15,8 +15,8 @@ const ComapnyRouter = require("./routes/CompanyRouter");
 const AdminRouter = require("./routes/AdminRouter");
 const ProviderRouter = require("./routes/ProviderRoute");
 const MemberRouter = require("./routes/MemberRouter");
+const { app } = require("./Socket.IO/SocketIO");
 dotenv.config({path:"./Config/config.env"})
-const app = express()
 app.use(helmet()); 
 
 const allowedOrigins = [
@@ -70,8 +70,3 @@ app.use("/Provider",ProviderRouter)
 app.use("/company",ComapnyRouter)
 app.use('/admin', AdminRouter);
 
-
-
-app.listen(process.env.PORT,()=>{
-    console.log("server is running");
-})
