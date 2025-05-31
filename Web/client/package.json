@@ -26,6 +26,7 @@
     "react-svg-worldmap": "^2.0.0-alpha.16",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.3",
+    "socket.io-client": "^4.8.1",
     "three": "^0.176.0"
   },
   "devDependencies": {

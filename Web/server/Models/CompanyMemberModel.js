@@ -20,6 +20,9 @@ const companyMemberSchema = new mongoose.Schema({
     type: String,
     ref: 'CompanyAdmin',
   },
+  tollsAccess:{
+    type:Array
+  }
 });
 
 const CompanyMember = mongoose.model('CompanyMember', companyMemberSchema);

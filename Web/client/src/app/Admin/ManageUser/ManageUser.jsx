@@ -1,40 +1,41 @@
 import { AdminContext } from "@/app/Context/AdminContext";
 import { UserContext } from "@/app/Context/ManageUserContext";
+import { useSocket } from "@/Utils/Socket";
 import React, { useContext, useEffect, useState } from "react";
 
 const ManageUser = () => {
-  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [editUser, setEditUser] = useState(null);
 
-  const { GetUsersforAdmin, AuthData } = useContext(AdminContext);
   const { UPDATEUSER } = useContext(UserContext);
+  const { onlineUsers } = useSocket();
 
-  const companyId = AuthData.companyId;
-  const GETUSERS = async () => {
-    try {
-      const ALLUSERS = await GetUsersforAdmin(companyId);
-      setUsers(ALLUSERS.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { GetUsersforAdmin, AdminAuthData } = useContext(AdminContext);
+  const companyId = AdminAuthData.companyId;
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await GetUsersforAdmin(companyId);
+        setUsers(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleUpdate = async () => {
     try {
       const updated = await UPDATEUSER(editUser);
       if (updated) {
-        GETUSERS();
         setEditUser(null);
       }
     } catch (error) {
-      console.log(error);
+      console.log("Update Error:", error);
     }
   };
-
-  useEffect(() => {
-    GETUSERS();
-  }, []);
 
   return (
     <div className="relative flex flex-col items-center p-2">
@@ -48,7 +49,7 @@ const ManageUser = () => {
               <th className="p-2">Role</th>
               <th className="p-2">Last Login</th>
               <th className="p-2">Registered</th>
-              <th className="p-2">Active</th>
+              <th className="p-2">Online</th>
               <th className="p-2">Options</th>
             </tr>
           </thead>
@@ -59,9 +60,11 @@ const ManageUser = () => {
                 <td className="p-2">{`${user.firstName} ${user.lastName}`}</td>
                 <td className="p-2">{user.companyId}</td>
                 <td className="p-2">{user.role}</td>
-                <td className="p-2">{user.lastLogin}</td>
-                <td className="p-2">{user.registered}</td>
-                <td className="p-2">{user.active ? "🟢" : "🔴"}</td>
+                <td className="p-2">{user.lastLogin || "N/A"}</td>
+                <td className="p-2">{user.registered || "N/A"}</td>
+                <td className="p-2">
+                  {onlineUsers.includes(user._id) ? "🟢" : "🔴"}
+                </td>
                 <td className="p-2 flex justify-center gap-2">
                   <button
                     className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs"
@@ -87,13 +90,31 @@ const ManageUser = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-black w-[400px]">
             <h2 className="text-lg font-bold mb-2">User Information</h2>
-            <p><strong>ID:</strong> {selectedUser._id}</p>
-            <p><strong>Name:</strong> {selectedUser.firstName} {selectedUser.lastName}</p>
-            <p><strong>Company ID:</strong> {selectedUser.companyId}</p>
-            <p><strong>Role:</strong> {selectedUser.role}</p>
-            <p><strong>Last Login:</strong> {selectedUser.lastLogin}</p>
-            <p><strong>Registered:</strong> {selectedUser.registered}</p>
-            <p><strong>Active:</strong> {selectedUser.active ? "🟢 Active" : "🔴 Inactive"}</p>
+            <p>
+              <strong>ID:</strong> {selectedUser._id}
+            </p>
+            <p>
+              <strong>Name:</strong> {selectedUser.firstName}{" "}
+              {selectedUser.lastName}
+            </p>
+            <p>
+              <strong>Company ID:</strong> {selectedUser.companyId}
+            </p>
+            <p>
+              <strong>Role:</strong> {selectedUser.role}
+            </p>
+            <p>
+              <strong>Last Login:</strong> {selectedUser.lastLogin || "N/A"}
+            </p>
+            <p>
+              <strong>Registered:</strong> {selectedUser.registered || "N/A"}
+            </p>
+            <p>
+              <strong>Status:</strong>{" "}
+              {onlineUsers.includes(selectedUser._id)
+                ? "🟢 Online"
+                : "🔴 Offline"}
+            </p>
             <button
               className="mt-4 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
               onClick={() => setSelectedUser(null)}
@@ -143,7 +164,7 @@ const ManageUser = () => {
             <label className="block mb-1">Active Status:</label>
             <select
               className="w-full p-2 mb-3 bg-gray-200 rounded"
-              value={editUser.active || ""}
+              value={editUser.active ? "true" : "false"}
               onChange={(e) =>
                 setEditUser({ ...editUser, active: e.target.value === "true" })
               }

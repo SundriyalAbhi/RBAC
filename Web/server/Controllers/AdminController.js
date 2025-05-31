@@ -73,7 +73,7 @@ exports.loginAdmin = async (req, res) => {
 
 exports.getAllAdmins = async (req, res) => {
   try {
-    const {companyId} = req.body
+    const {companyId} = req.query
     const admins = await AdminModel.find({companyId:companyId}).select('-password');
     res.status(200).send(admins);
   } catch (err) {

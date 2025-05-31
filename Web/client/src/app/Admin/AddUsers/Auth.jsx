@@ -7,14 +7,14 @@ import { UserContext } from "@/app/Context/ManageUserContext";
 import "@/app/style.css";
 
 const AuthForm = () => {
-  const { AuthData } = useContext(AdminContext);
+  const { AdminAuthData } = useContext(AdminContext);
   const { UserSignUp } = useContext(UserContext);
 
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
     role: "",
-    companyId: AuthData?.companyId || "",
+    companyId: AdminAuthData?.companyId || "",
     email: "",
     password: "",
   });
@@ -43,30 +43,42 @@ const AuthForm = () => {
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validate()) return;
 
-    try {
-      setLoading(true);
-      const response = await UserSignUp(data);
+  try {
+    setLoading(true);
+    const response = await UserSignUp(data);
+
+    if (response.status === 200) {
       toast.success("User created successfully!");
       setData({
         firstName: "",
         lastName: "",
         role: "",
-        companyId: AuthData?.companyId || "",
+        companyId: AdminAuthData?.companyId || "",
         email: "",
         password: "",
       });
       setErrors({});
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to create user.");
-    } finally {
-      setLoading(false);
+    } else {
+      const errorMessage = response.data?.message || "Signup failed.";
+
+      if (response.data?.errors) {
+        setErrors(response.data.errors);
+      }
+
+      toast.error(errorMessage);
     }
-  };
+  } catch (error) {
+    toast.error("Unexpected error occurred.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4">
@@ -133,7 +145,7 @@ const AuthForm = () => {
               <option value="User">User</option>
               <option value="Manager">Manager</option>
               <option value="Auditor">Auditor</option>
-              <option value="SOC Analyst">SOC Analyst</option>
+              <option value="SOCAnalyst">SOC Analyst</option>
             </select>
             {errors.role && (
               <p className="text-red-500 text-sm mt-1 pl-2">{errors.role}</p>

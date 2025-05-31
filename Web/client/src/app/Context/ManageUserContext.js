@@ -2,12 +2,23 @@
 
 import { API, baseURL } from "@/Utils/Utils";
 
-const { createContext } = require("react");
+const { createContext, useReducer } = require("react");
 
+let initialState = {};
+
+if (typeof window !== "undefined") {
+  initialState = JSON.parse(localStorage.getItem("UserData")) || {
+    token: null,
+    userId: null,
+  };
+} else {
+  initialState = {
+    token: "",
+    userId: "",
+  };
+}
 
 async function UserSignUp(body) {
-    console.log("ll");
-  
   try {
     const response = await API.post(`${baseURL}/Member/MemberSignup`, body)
     return { status: response?.status, data: response?.data };
@@ -36,10 +47,34 @@ async function UPDATEUSER(body) {
 
 export const UserContext = createContext()
 
-export const UserProvider = ({ children }) => {
+function reducer(state, action) {
 
+  switch (action.type) {
+    case "SIGN_IN":
+      const singinState = { ...action.payload };
+      localStorage.setItem("UserData", JSON.stringify(singinState));
+      return singinState;
+
+    case "UPDATE_PROFILE":
+      const updatedState = { ...state, profilepic: action.payload };
+      localStorage.setItem("UserData", JSON.stringify(updatedState));
+      return updatedState;
+
+        case"SIGN_OUT":
+        const signoutstate = {token:"",userId:""}
+        localStorage.setItem("UserData",JSON.stringify(signoutstate));
+            return signoutstate
+    
+        default:
+            state;
+    }
+
+}
+
+export const UserProvider = ({ children }) => {
+  const [state,Userdispatch] = useReducer(reducer,initialState)
   return (
-    <UserContext.Provider value={{ UserSignIn, UserSignUp, UPDATEUSER }}>
+    <UserContext.Provider value={{ UserAuthData:state, Userdispatch,UserSignIn, UserSignUp, UPDATEUSER }}>
       {children}
     </UserContext.Provider>
   )

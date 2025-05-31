@@ -3,9 +3,10 @@
 import { API, baseURL } from "@/Utils/Utils";
 
 let initialState = {};
+let UsersforAdmin = [];
 
 if (typeof window !== "undefined") {
-  initialState = JSON.parse(localStorage.getItem("UserData")) || {
+  initialState = JSON.parse(localStorage.getItem("AdminData")) || {
     token: null,
     userId: null,
   };
@@ -40,6 +41,15 @@ async function getprofile(authData) {
 async function findAccount(body) {
     try {
         const response= await API.get(`${baseURL}/Userauth/MemberFindAccount/${body.email}`)
+         return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
+}
+
+async function GetAllAdmins(body) {
+  try {
+        const response= await API.get(`${baseURL}/admin/all`,{params:{companyId:body}})
          return { status: response?.status, data: response?.data };
   } catch (error) {
     return { status: error?.response?.status, data: error?.response?.data };
@@ -100,21 +110,21 @@ async function GetUsersforAdmin(body) {
   }
 }
 
-function reducer(state, action) {
+function Adminreducer(state, action) {
   switch (action.type) {
     case "SIGN_IN":
       const singinState = { ...action.payload };
-      localStorage.setItem("UserData", JSON.stringify(singinState));
+      localStorage.setItem("AdminData", JSON.stringify(singinState));
       return singinState;
 
     case "UPDATE_PROFILE":
       const updatedState = { ...state, profilepic: action.payload };
-      localStorage.setItem("UserData", JSON.stringify(updatedState));
+      localStorage.setItem("AdminData", JSON.stringify(updatedState));
       return updatedState;
 
         case"SIGN_OUT":
         const signoutstate = {token:"",userId:""}
-        localStorage.setItem("UserData",JSON.stringify(signoutstate));
+        localStorage.setItem("AdminData",JSON.stringify(signoutstate));
             return signoutstate
     
         default:
@@ -124,12 +134,13 @@ function reducer(state, action) {
 }
 
 
+
 export const AdminContext = createContext()
 
 export const AdminProvider = ({children})=>{
-    const [state,Admindispatch] = useReducer(reducer,initialState)
+    const [state,Admindispatch] = useReducer(Adminreducer,initialState)
     return(
-        <AdminContext.Provider value={{AuthData:state,Admindispatch,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate,AdminLogin,GetUsersforAdmin}}>
+        <AdminContext.Provider value={{AdminAuthData:state,Admindispatch,getprofile,deleteaccount,profileupdate,findAccount,SENDOTP,VERIFYOTP,PasswordUpdate,AdminLogin,GetUsersforAdmin,GetAllAdmins}}>
             {children}
         </AdminContext.Provider>
     )}
