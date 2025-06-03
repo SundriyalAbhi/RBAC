@@ -1,12 +1,23 @@
 "use client";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AdminContext } from "@/app/Context/AdminContext";
 import { UserContext } from "@/app/Context/ManageUserContext";
 import "@/app/style.css";
 
-const AuthForm = () => {
+const roles = [
+  "Admin",
+  "User",
+  "Administrator",
+  "Provider",
+  "DataAnalyst",
+  "Auditor",
+  "Manager",
+  "SOCAnalyst",
+];
+
+const AuthForm = ({ onClose, onSuccess, userData }) => {
   const { AdminAuthData } = useContext(AdminContext);
   const { UserSignUp } = useContext(UserContext);
 
@@ -19,180 +30,198 @@ const AuthForm = () => {
     password: "",
   });
 
+  useEffect(() => {
+    if (userData) {
+      setData((prev) => ({
+        ...prev,
+        ...userData,
+        password: "", // never prefill password
+      }));
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    if (!userData && AdminAuthData?.companyId) {
+      setData((prev) => ({ ...prev, companyId: AdminAuthData.companyId }));
+    }
+  }, [AdminAuthData, userData]);
+
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   const validate = () => {
-    let newErrors = {};
-
-    if (!data.firstName.trim()) newErrors.firstName = "First Name is required";
-    if (!data.lastName.trim()) newErrors.lastName = "Last Name is required";
-    if (!data.role) newErrors.role = "Role selection is required";
-    if (!data.companyId.trim()) newErrors.companyId = "Company ID is required";
-    if (!data.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
-      newErrors.email = "Invalid email format";
-    if (data.password.length < 6)
-      newErrors.password = "Password must be at least 6 characters";
+    const newErrors = {};
+    if (!data.firstName.trim()) newErrors.firstName = "First name is required.";
+    if (!data.lastName.trim()) newErrors.lastName = "Last name is required.";
+    if (!data.role.trim()) newErrors.role = "Please select a role.";
+    if (!data.companyId.trim()) newErrors.companyId = "Company ID is required.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
+      newErrors.email = "Invalid email format.";
+    if (!userData && data.password.length < 6)
+      newErrors.password = "Password must be at least 6 characters.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
+    const { name, value } = e.target;
+    setData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validate()) return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
 
-  try {
     setLoading(true);
-    const response = await UserSignUp(data);
+    try {
+      const response = await UserSignUp(data);
 
-    if (response.status === 200) {
-      toast.success("User created successfully!");
-      setData({
-        firstName: "",
-        lastName: "",
-        role: "",
-        companyId: AdminAuthData?.companyId || "",
-        email: "",
-        password: "",
-      });
-      setErrors({});
-    } else {
-      const errorMessage = response.data?.message || "Signup failed.";
-
-      if (response.data?.errors) {
-        setErrors(response.data.errors);
+      if (response.status === 200) {
+        toast.success(userData ? "User updated successfully!" : "User created successfully!");
+        setData({
+          firstName: "",
+          lastName: "",
+          role: "",
+          companyId: AdminAuthData?.companyId || "",
+          email: "",
+          password: "",
+        });
+        setErrors({});
+        onSuccess?.();
+        onClose?.();
+      } else {
+        toast.error(response.data?.message || "Submission failed.");
+        if (response.data?.errors) setErrors(response.data.errors);
       }
-
-      toast.error(errorMessage);
+    } catch (err) {
+      toast.error("Something went wrong.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    toast.error("Unexpected error occurred.");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
+  };
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4">
+    <div className="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md relative">
       <ToastContainer />
-      <div className="w-full max-w-[70%] bg-[#111827] p-8 rounded-lg shadow-lg border border-gray-600">
-        <h2 className="text-2xl font-bold text-center text-gray-100 mb-4">
-          Add User
-        </h2>
+      <button
+        onClick={onClose}
+        className="absolute top-2 right-3 text-gray-500 hover:text-black text-xl"
+        aria-label="Close"
+      >
+        &times;
+      </button>
 
-        <form
-          className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4"
-          onSubmit={handleSubmit}
-        >
-          {/* First Name */}
-          <InputField
-            label="First Name"
-            name="firstName"
-            value={data.firstName}
+      <h2 className="text-2xl font-bold mb-5 text-center">
+        {userData ? "Edit User" : "Add New User"}
+      </h2>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* First Name & Last Name */}
+        {["firstName", "lastName"].map((name) => (
+          <div key={name}>
+            <label className="block text-sm font-medium mb-1">
+              {name === "firstName" ? "First Name" : "Last Name"}
+            </label>
+            <input
+              name={name}
+              value={data[name]}
+              onChange={handleChange}
+              className="w-full border px-3 py-2 rounded bg-gray-100"
+            />
+            {errors[name] && (
+              <p className="text-red-500 text-xs mt-1">{errors[name]}</p>
+            )}
+          </div>
+        ))}
+
+        {/* Role */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Role</label>
+          <select
+            name="role"
+            value={data.role}
             onChange={handleChange}
-            error={errors.firstName}
-          />
+            className="w-full border px-3 py-2 rounded bg-gray-100"
+          >
+            <option value="">Select a role</option>
+            {roles.map((role) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+          {errors.role && (
+            <p className="text-red-500 text-xs mt-1">{errors.role}</p>
+          )}
+        </div>
 
-          {/* Last Name */}
-          <InputField
-            label="Last Name"
-            name="lastName"
-            value={data.lastName}
-            onChange={handleChange}
-            error={errors.lastName}
+        {/* Company ID */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Company ID</label>
+          <input
+            name="companyId"
+            value={data.companyId}
+            disabled
+            className="w-full border px-3 py-2 rounded bg-gray-100 text-gray-500"
           />
+          {errors.companyId && (
+            <p className="text-red-500 text-xs mt-1">{errors.companyId}</p>
+          )}
+        </div>
 
-          {/* Email */}
-          <InputField
-            label="Email"
+        {/* Email */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Email</label>
+          <input
             name="email"
             type="email"
             value={data.email}
             onChange={handleChange}
-            error={errors.email}
+            className="w-full border px-3 py-2 rounded bg-gray-100"
           />
+          {errors.email && (
+            <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+          )}
+        </div>
 
-          {/* Password */}
-          <InputField
-            label="Password"
+        {/* Password */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Password</label>
+          <input
             name="password"
             type="password"
             value={data.password}
             onChange={handleChange}
-            error={errors.password}
+            className="w-full border px-3 py-2 rounded bg-gray-100"
+            placeholder={userData ? "Leave blank to keep existing password" : ""}
           />
+          {errors.password && (
+            <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+          )}
+        </div>
 
-          {/* Role Selection */}
-          <div className="mb-4">
-            <label className="block text-gray-400 text-md mb-2">Role</label>
-            <select
-              name="role"
-              value={data.role}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-600 rounded-lg bg-[#0D1117] text-gray-400 text-md focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="" disabled>Select your role</option>
-              <option value="Admin">Admin</option>
-              <option value="User">User</option>
-              <option value="Manager">Manager</option>
-              <option value="Auditor">Auditor</option>
-              <option value="SOCAnalyst">SOC Analyst</option>
-            </select>
-            {errors.role && (
-              <p className="text-red-500 text-sm mt-1 pl-2">{errors.role}</p>
-            )}
-          </div>
-
-          {/* Submit Button */}
-          <div className="col-span-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-4 rounded-lg text-lg transition bg-green-700 text-gray-100 ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              {loading ? "Creating..." : "Create User"}
-            </button>
-          </div>
-        </form>
-      </div>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition ${
+            loading && "opacity-50 cursor-not-allowed"
+          }`}
+        >
+          {loading
+            ? userData
+              ? "Updating..."
+              : "Submitting..."
+            : userData
+            ? "Update User"
+            : "Create User"}
+        </button>
+      </form>
     </div>
   );
 };
-
-// Reusable Input Component
-const InputField = ({
-  label,
-  name,
-  value,
-  onChange,
-  type = "text",
-  error,
-}) => (
-  <div className="mb-4">
-    <label className="block text-gray-400 text-md mb-2">{label}</label>
-    <input
-      type={type}
-      name={name}
-      value={value}
-      onChange={onChange}
-      autoComplete="off"
-      className="w-full px-4 py-3 border border-gray-600 rounded-lg bg-[#0D1117] text-gray-100 text-md focus:ring-2 focus:ring-blue-500"
-      placeholder={`Enter ${label.toLowerCase()}`}
-      required
-    />
-    {error && <p className="text-red-500 text-sm mt-1 pl-2">{error}</p>}
-  </div>
-);
 
 export default AuthForm;
