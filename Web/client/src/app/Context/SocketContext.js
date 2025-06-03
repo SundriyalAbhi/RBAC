@@ -1,11 +1,24 @@
-import { useContext, useState, useEffect, useRef } from "react";
-import { UserContext } from "@/app/Context/ManageUserContext";
-import { AdminContext } from "@/app/Context/AdminContext";
-import { io } from "socket.io-client";
+"use client";
 
-export const useSocket = () => {
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { io } from "socket.io-client";
+import { UserContext } from "./ManageUserContext";
+import { AdminContext } from "./AdminContext";
+
+export const SocketContext = createContext();
+
+export const useSocket = () => useContext(SocketContext);
+
+export const SocketProvider = ({ children }) => {
   const { UserAuthData } = useContext(UserContext);
   const { AdminAuthData } = useContext(AdminContext);
+
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socketRef = useRef(null);
 
@@ -18,19 +31,20 @@ export const useSocket = () => {
     if (userId) {
       const socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8087", {
         query: { userId },
+        transports: ["websocket"],
       });
 
       socketRef.current = socket;
 
-      // socket.on("connect", () => {
-      //   console.log("Connected:", socket.id);
-      // });
+    //   socket.on("connect", () => {
+    //     console.log("Connected:", socket.id);
+    //   });
 
       socket.on("getOnlineUsers", (users) => {
         setOnlineUsers(users);
       });
 
-      // Cleanup on unmount or logout
+      // Disconnect on tab/browser close
       const cleanup = () => {
         if (socketRef.current) {
           socketRef.current.emit("manualLogout", { userId });
@@ -38,7 +52,7 @@ export const useSocket = () => {
         }
       };
 
-      window.addEventListener("beforeunload", cleanup); // tab/browser close
+      window.addEventListener("beforeunload", cleanup);
 
       return () => {
         cleanup();
@@ -47,14 +61,22 @@ export const useSocket = () => {
     }
   }, [userId]);
 
-  return {
-    socket: socketRef.current,
-    onlineUsers,
-    disconnectSocket: () => {
-      if (socketRef.current) {
-        socketRef.current.emit("manualLogout", { userId });
-        socketRef.current.disconnect();
-      }
-    },
+  const disconnectSocket = () => {
+    if (socketRef.current) {
+      socketRef.current.emit("manualLogout", { userId });
+      socketRef.current.disconnect();
+    }
   };
+
+  return (
+    <SocketContext.Provider
+      value={{
+        socket: socketRef.current,
+        onlineUsers,
+        disconnectSocket,
+      }}
+    >
+      {children}
+    </SocketContext.Provider>
+  );
 };

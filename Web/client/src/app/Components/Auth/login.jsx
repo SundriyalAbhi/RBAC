@@ -7,7 +7,7 @@ import { UserContext } from "@/app/Context/ManageUserContext";
 export const SignIn = ({ setMode }) => {
   const [formData, setFormData] = useState({ role: "Admin" });
   const { Admindispatch, AdminLogin } = useContext(AdminContext);
-  const { Userdispatch, UserSignIn, UserAuthData } = useContext(UserContext);
+  const { Userdispatch, UserSignIn, recordActivity } = useContext(UserContext);
   const router = useRouter();
 
   const handleSubmit = async (event) => {
@@ -31,6 +31,7 @@ export const SignIn = ({ setMode }) => {
         logindata = await AdminLogin(formData);
       } else {
         logindata = await UserSignIn(formData);
+        // await recordActivity(logindata._id)
       }
 
       if (!logindata || !logindata.status) {

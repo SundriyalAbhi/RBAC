@@ -3,6 +3,7 @@ import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import { AdminProvider } from "./Context/AdminContext";
 import { UserProvider } from "./Context/ManageUserContext";
+import { SocketProvider } from "./Context/SocketContext";
 
 
 const geistSans = Geist({
@@ -30,7 +31,9 @@ export default function RootLayout({ children }) {
        <UserProvider>
         <AdminProvider>
          <ToastContainer/>
-        {children}
+        <SocketProvider>
+          {children}
+        </SocketProvider>
        </AdminProvider>
        </UserProvider>
       </body>

@@ -8,7 +8,8 @@ require('dotenv').config();
 
 exports.registerAdmin = async (req, res) => {
   try {
-    const { email, password, role ,companyId,name} = req.body;
+    const { email, password, role ,companyId, firstName,
+  lastName} = req.body;
 
     const existingAdmin = await AdminModel.findOne({ email });
     if (existingAdmin) {
@@ -17,7 +18,7 @@ exports.registerAdmin = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const CompanyName = await Company.findById(companyId)
-    const newAdmin = new AdminModel({ email, password: hashedPassword, role , companyId, name, companyName:CompanyName.name});
+    const newAdmin = new AdminModel({ email, password: hashedPassword, role , companyId, firstName, lastName,companyName:CompanyName.name});
     
     await newAdmin.save();
     res.status(201).json({ msg: 'Admin registered successfully' });
@@ -31,6 +32,8 @@ exports.updateAdmin = async (req, res) => {
   try {
     const { id } = req.params; 
     const updates = req.body;  
+    console.log(id);
+    
     const updatedAdmin = await AdminModel.findByIdAndUpdate(id, updates);
 
     if (!updatedAdmin) {
@@ -142,7 +145,10 @@ exports.assignRole = async (req, res) => {
   exports.getAllUsers = async (req, res) => {
     try {
       const {companyId} = req.query
-      const users = await CompanyMember.find({companyId:companyId}, '-password'); 
+      let users = []
+      const members = await CompanyMember.find({companyId:companyId}, '-password'); 
+      const admins =  await AdminModel.find({companyId:companyId}, '-password');
+       users = [...members,...admins]
       res.status(200).json(users);
     } catch (err) {
       res.status(500).json({ msg: 'Server error', error: err.message });
@@ -188,3 +194,19 @@ exports.assignRole = async (req, res) => {
           console.log(error);
       }
   }
+
+  exports.GetUserByName = async(req,res)=>{
+    try {
+        const {name} = req.query
+        const GetUser = await CompanyMember.find({
+        firstName: { $regex: `^${name}`, $options: "i" }, 
+        }).limit(10); 
+        if(GetUser){
+            res.send(GetUser)
+        }else{
+            res.send({msg:"Found Nothing"})
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
