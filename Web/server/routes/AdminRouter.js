@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { verifyToken, allowRoles } = require("../Middlewares/Admin");
-const { getAllAdmins, updateAdmin, loginAdmin, updateAdminRole, assignRole, getAllUsers, updateUser, deleteUser, registerAdmin, deleteAdmin, GetAdminByName } = require("../Controllers/AdminController");
+const { getAllAdmins, updateAdmin, loginAdmin, updateAdminRole, assignRole, getAllUsers, updateUser, deleteUser, registerAdmin, deleteAdmin, GetAdminByName, GetUserByName } = require("../Controllers/AdminController");
 
 const AdminRouter = express.Router();
 AdminRouter.post("/register",registerAdmin);
@@ -16,6 +16,8 @@ AdminRouter.get("/all", getAllAdmins);
 AdminRouter.put("/update-role", verifyToken, allowRoles("admin", "ciso"), updateAdminRole);
 
 AdminRouter.get("/GetAdminByName",GetAdminByName)
+
+AdminRouter.get("/GetUserByName",GetUserByName)
 
 AdminRouter.delete(
   "/:adminId",

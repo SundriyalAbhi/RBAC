@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import "@/app/style.css";
+import { AdminContext } from "../Context/AdminContext";
 import StaticsBox from "./StaticsBox";
 import EmployeesTable from "./EmployeesTable";
-import AdminTable from "./AdminsList";
-import { AdminContext } from "../Context/AdminContext";
+import RecentActivity from "./RecentActivity";
+import '@/app/style.css'
 
 export default function AdminDashBoard() {
   const { GetUsersforAdmin, GetAllAdmins, AdminAuthData } = useContext(AdminContext);
@@ -38,30 +38,27 @@ export default function AdminDashBoard() {
   }, [companyId]);
 
   return (
-    <div className="p-4 space-y-4 h-screen mt-3 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
-      {/* Statistics */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <StaticsBox users={users} />
+    <div className="bg-[#0f172a] min-h-screen text-white p-6 space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+        <p className="text-sm text-gray-400">Welcome back</p>
       </div>
 
-      {/* Tables Section */}
-      <div className="flex flex-col md:flex-row gap-4 h-[60%]">
-        {/* Employees Table */}
-        <div
-          className="flex-1 rounded-xl p-4 flex flex-col text-white text-sm"
-          style={{
-            background: "linear-gradient(145deg, #0b1f33, #081a2a)",
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-          }}
-        >
-          <EmployeesTable users={users} />
-        </div>
+      {/* Stats */}
+      <StaticsBox totalUsers={users} />
 
-        {/* Admin Table */}
-        <div className="flex-1 rounded text-black font-bold text-lg">
-          <AdminTable admins={admins} />
-        </div>
-      </div>
+      {/* Two-Column Layout */}
+     <div className="w-full mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div className="bg-gradient-to-br from-[#0b1f33] to-[#081a2a] p-6 rounded-xl shadow-md h-full">
+    <RecentActivity/>
+  </div>
+
+  <div className="bg-gradient-to-br from-[#0b1f33] to-[#081a2a] p-6 rounded-xl shadow-md h-full">
+    <EmployeesTable users={users} />
+  </div>
+</div>
+
     </div>
   );
 }

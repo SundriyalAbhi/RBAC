@@ -16,6 +16,7 @@ const AdminRouter = require("./routes/AdminRouter");
 const ProviderRouter = require("./routes/ProviderRoute");
 const MemberRouter = require("./routes/MemberRouter");
 const { app } = require("./Socket.IO/SocketIO");
+const ActivityRouter = require("./routes/ActivityRoute");
 dotenv.config({path:"./Config/config.env"})
 app.use(helmet()); 
 
@@ -69,4 +70,4 @@ app.use("/checkEmail",validateEmailRouter)
 app.use("/Provider",ProviderRouter)
 app.use("/company",ComapnyRouter)
 app.use('/admin', AdminRouter);
-
+app.use('/activity',ActivityRouter)

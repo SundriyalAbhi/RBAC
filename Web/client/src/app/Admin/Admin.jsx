@@ -4,6 +4,7 @@ import { Sidebaar } from "../Components/Home/Sidebaar";
 import Dashboard from "../Components/Home/Dashboard";
 import { AdminSideBar } from "./AdminSideBar";
 import AdminDashBoard from "./AdminDashBoard";
+import '@/app/style.css'
 
 const Admin = () => {
   return (

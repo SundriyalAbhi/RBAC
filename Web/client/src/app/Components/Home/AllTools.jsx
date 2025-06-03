@@ -3,7 +3,7 @@ import "@/app/style.css";
 import { useRouter } from "next/navigation";
 import { AdminContext } from "@/app/Context/AdminContext";
 import { UserContext } from "@/app/Context/ManageUserContext";
-import { useSocket } from "@/Utils/Socket";
+
 
 export const AllTools = () => {
   const router = useRouter();
@@ -13,9 +13,6 @@ export const AllTools = () => {
   const hasUser = UserAuthData?.token && UserAuthData?.userId;
 
   const AuthData = hasAdmin ? AdminAuthData : hasUser ? UserAuthData : null;
-  console.log(AuthData);
-
-  const { socket, onlineUsers } = useSocket();
 
   useEffect(() => {
     if (!AuthData?.token) {
@@ -42,15 +39,18 @@ export const AllTools = () => {
     },
   ];
 
-  const handleClick = (feature) => {
-    if (feature.link && feature.link.startsWith("http")) {
-      window.location.href = feature.link;
-    } else {
-      const route =
-        feature.link || `/pages/${feature.name.replace(/\s+/g, "")}`;
-      router.push(route);
-    }
-  };
+const handleClick = (feature) => {
+  if (feature.link && feature.link.startsWith("http")) {
+    const { token, userId } = AuthData;
+    const url = new URL(feature.link);
+    url.searchParams.set("token", token);
+    url.searchParams.set("userId", userId);
+    window.location.href = url.toString();
+  } else {
+    router.push(`/pages/${feature.name.replace(/\s+/g, "")}`);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gray-900 text-white px-6 py-8">

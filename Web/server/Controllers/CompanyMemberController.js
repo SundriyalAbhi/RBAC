@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv");
 const CompanyMember = require("../Models/CompanyMemberModel");
 const toolAccessByRole = require("../Config/ToolsAccess");
+const { AddActivity, logActivity } = require("./ActivityController");
 const cloudinary = require('cloudinary').v2;
 dotenv.config({path:"./Config/config.env"})
 cloudinary.config({
@@ -45,6 +46,8 @@ exports.Usersignin = async(req,res)=>{
             const verify = await bcrypt.compare(password,Member.password)
             if(verify){
                 const token = jwt.sign({email,password},process.env.SECRET)
+
+                await logActivity({companyId:Member.companyId,userId:Member._id,role:Member.role,action:"login"})
                 res.send({token,userId:Member._id,ProfilePicture:Member.ProfilePicture,role:Member.role ,toolsaccess:Member.tollsAccess,msg:"Welcome"})
             }else{
                 res.status(401).send("Wrong Password")
@@ -59,7 +62,7 @@ exports.Usersignin = async(req,res)=>{
 
 exports.UpdateUserDetails = async (req, res) => {
   try {
-    const { _id, email, firstName, lastName, role } = req.body;
+    const { _id, email, firstName, lastName, role ,tollsAccess } = req.body;
     if (!_id || !email || !firstName || !lastName || !role) {
       return res.status(400).json({ message: "All fields are required." });
     }
@@ -70,7 +73,8 @@ exports.UpdateUserDetails = async (req, res) => {
         email,
         firstName,
         lastName,
-        role
+        role,
+        tollsAccess
       },
       { new: true } 
     );
