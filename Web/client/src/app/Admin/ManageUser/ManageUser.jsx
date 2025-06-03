@@ -4,6 +4,7 @@ import { SocketContext } from "@/app/Context/SocketContext";
 import React, { useContext, useEffect, useState } from "react";
 import { FaSearch, FaPlus } from "react-icons/fa";
 import '@/app/style.css'
+import AuthForm from "../AddUsers/Auth";
 
 const ALL_TOOLS = [
   "AutoSOC",
@@ -18,6 +19,7 @@ const ALL_TOOLS = [
 const ManageUser = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [editUser, setEditUser] = useState(null);
+  const [createUser, setCreateUser] = useState(null)
   const [search, setSearch] = useState("");
   const [filterRole, setFilterRole] = useState("All");
 
@@ -118,7 +120,7 @@ const ManageUser = () => {
         <button
           className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
           onClick={() =>
-            setEditUser({
+            setCreateUser({
               _id: "",
               firstName: "",
               lastName: "",
@@ -305,6 +307,17 @@ const ManageUser = () => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {createUser && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <AuthForm
+            onClose={() => setCreateUser(null)}
+            onSuccess={() => {
+              fetchUsers();
+              setCreateUser(null);
+            }}
+          />
         </div>
       )}
     </div>

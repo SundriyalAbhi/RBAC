@@ -6,7 +6,7 @@ import React from 'react';
 
 const AllActivityPage = () => {
   return (
-    <div className="flex flex-col h-[94vh] bg-[rgba(19,33,46,1)]">
+    <div className="flex flex-col h-[100vh] bg-[rgba(19,33,46,1)]">
       <div>
         <Navbar />
       </div>
