@@ -1,9 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "@/app/style.css";
 import { useRouter } from "next/navigation";
 import { AdminContext } from "@/app/Context/AdminContext";
 import { UserContext } from "@/app/Context/ManageUserContext";
-
 
 export const AllTools = () => {
   const router = useRouter();
@@ -11,7 +10,6 @@ export const AllTools = () => {
   const { UserAuthData } = useContext(UserContext);
   const hasAdmin = AdminAuthData?.token && AdminAuthData?.userId;
   const hasUser = UserAuthData?.token && UserAuthData?.userId;
-
   const AuthData = hasAdmin ? AdminAuthData : hasUser ? UserAuthData : null;
 
   useEffect(() => {
@@ -29,7 +27,7 @@ export const AllTools = () => {
       link: "https://phantom-radar.vercel.app/",
     },
     { name: "CyberKnowledge Engine Agent", icon: "🧠", link: "" },
-    { name: "AutoRed", icon: "⚙️", link: "https://auto-red-35f6.vercel.app/" },
+    { name: "AutoRed", icon: "⚙️", link: "http://localhost:3001/" },
     { name: "ZeroCodeSec", icon: "</>", link: "" },
     { name: "GhostIntel", icon: "👻", link: "" },
     {
@@ -39,44 +37,39 @@ export const AllTools = () => {
     },
   ];
 
-const handleClick = (feature) => {
-  if (feature.link && feature.link.startsWith("http")) {
-    const { token, userId } = AuthData;
-    const url = new URL(feature.link);
-    url.searchParams.set("token", token);
-    url.searchParams.set("userId", userId);
-    window.location.href = url.toString();
-  } else {
-    router.push(`/pages/${feature.name.replace(/\s+/g, "")}`);
+const handleClick = async (feature) => {
+  if (!AuthData) return;
+
+  const { token, userId } = AuthData;
+  const toolName = feature.name;
+
+  try {
+    const response = await fetch("https://auto-red-delta.vercel.app/auth/addAuthData", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId, token, toolName }),
+    });
+
+    const { _id: sessionId } = await response.json();
+
+    if (feature.link && feature.link.startsWith("http") && sessionId) {
+      const url = new URL(feature.link);
+      url.searchParams.set("sessionId", sessionId);
+      window.location.href = url.toString();
+    } else {
+      router.push(`/pages/${feature.name.replace(/\s+/g, "")}?sessionId=${sessionId}`);
+    }
+  } catch (error) {
+    console.error("Failed to create session:", error);
   }
 };
 
 
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white px-6 py-8">
-      <header className="flex items-center justify-between mb-12">
-        <h1 className="text-3xl font-bold tracking-wide">SENTINELSEC</h1>
-        <div className="space-x-6">
-          <button className="text-gray-300 hover:text-white transition">
-            Settings
-          </button>
-          <button
-            className="text-gray-300 hover:text-white transition"
-            onClick={() => {
-              Admindispatch({
-                type: "SIGN_OUT",
-              });
-            }}
-          >
-            Logout
-          </button>
-        </div>
-      </header>
-
-      {/* Greeting */}
-      <h2 className="text-2xl font-semibold mb-6">Hello, User</h2>
-
-      {/* Features Grid */}
+    <section>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {features.map((feature) => {
           const hasAccess = AuthData?.toolsaccess?.includes(feature.name);
@@ -84,26 +77,85 @@ const handleClick = (feature) => {
           return (
             <div
               key={feature.name}
-              className={`bg-gray-800 transition p-6 rounded-xl shadow-md flex flex-col items-center justify-center text-center ${
+              onClick={() => hasAccess && handleClick(feature)}
+              className={`p-6 rounded-xl border border-gray-700 shadow-md bg-gray-800 flex flex-col items-center justify-center text-center transition ${
                 hasAccess
-                  ? "hover:bg-gray-700 cursor-pointer"
+                  ? "hover:bg-gray-700 hover:scale-[1.02] cursor-pointer"
                   : "opacity-50 cursor-not-allowed"
               }`}
-              onClick={() => {
-                if (hasAccess) handleClick(feature);
-              }}
             >
               <div className="text-4xl mb-4 relative">
                 {feature.icon}
                 {!hasAccess && (
-                  <span className="absolute top-0 right-0 text-sm">🔒</span>
+                  <span className="absolute top-0 right-0 text-xs text-red-400">🔒</span>
                 )}
               </div>
-              <h3 className="text-lg font-medium">{feature.name}</h3>
+              <h3 className="text-lg font-semibold">{feature.name}</h3>
+              {hasAccess ? (
+                <p className="text-sm text-green-400 mt-2">Access Granted</p>
+              ) : (
+                <p className="text-sm text-red-400 mt-2">No Access</p>
+              )}
             </div>
           );
         })}
       </div>
-    </div>
+    </section>
+  );
+};
+
+export const BottomPanel = () => {
+  const [feedback, setFeedback] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Feedback submitted: ${feedback}`);
+    setFeedback("");
+  };
+
+  return (
+    <section className="mt-12 bg-[#1f2f44] rounded-xl p-6 shadow-inner">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Recent Activity */}
+        <div>
+          <h4 className="text-xl font-semibold mb-3">Recent Activity</h4>
+          <ul className="list-disc list-inside text-gray-300 text-sm max-h-48 overflow-auto">
+            <li>Used AutoSOC - 10 mins ago</li>
+            <li>Launched Phantom Radar - 2 hours ago</li>
+            <li>Submitted Feedback - Yesterday</li>
+          </ul>
+        </div>
+
+        {/* Feedback Form */}
+        <div>
+          <h4 className="text-xl font-semibold mb-3">Feedback</h4>
+          <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
+            <textarea
+              rows={3}
+              className="resize-none p-3 rounded bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Your feedback..."
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              required
+            />
+            <button
+              type="submit"
+              className="self-end px-5 py-2 bg-blue-600 rounded hover:bg-blue-700 transition"
+            >
+              Submit
+            </button>
+          </form>
+        </div>
+
+        {/* System Notices */}
+        <div>
+          <h4 className="text-xl font-semibold mb-3">System Notices</h4>
+          <ul className="list-disc list-inside text-gray-300 text-sm max-h-48 overflow-auto">
+            <li>System maintenance on June 10th, 12AM - 4AM UTC.</li>
+            <li>New tool: GhostIntel available now.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
   );
 };

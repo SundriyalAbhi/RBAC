@@ -33,6 +33,10 @@ const io = new Server(expressServer, {
   pingInterval: 25000,
 });
 
+const getReceiverSocketId = (receiverId) => {
+    return users[receiverId];
+  };
+
 const users = {};
 
 io.on("connection", (socket) => {
@@ -68,4 +72,4 @@ io.on("connection", (socket) => {
   });
 });
 
-module.exports = { app, io };
+module.exports = { app, io, getReceiverSocketId };

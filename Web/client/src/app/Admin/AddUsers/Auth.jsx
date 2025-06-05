@@ -35,7 +35,7 @@ const AuthForm = ({ onClose, onSuccess, userData }) => {
       setData((prev) => ({
         ...prev,
         ...userData,
-        password: "", // never prefill password
+        password: "",
       }));
     }
   }, [userData]);
@@ -59,7 +59,6 @@ const AuthForm = ({ onClose, onSuccess, userData }) => {
       newErrors.email = "Invalid email format.";
     if (!userData && data.password.length < 6)
       newErrors.password = "Password must be at least 6 characters.";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -73,8 +72,8 @@ const AuthForm = ({ onClose, onSuccess, userData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
     setLoading(true);
+
     try {
       const response = await UserSignUp(data);
 
@@ -104,47 +103,43 @@ const AuthForm = ({ onClose, onSuccess, userData }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md relative">
+    <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-lg relative text-gray-900">
       <ToastContainer />
       <button
         onClick={onClose}
-        className="absolute top-2 right-3 text-gray-500 hover:text-black text-xl"
+        className="absolute top-3 right-4 text-gray-400 hover:text-gray-800 text-2xl"
         aria-label="Close"
       >
         &times;
       </button>
 
-      <h2 className="text-2xl font-bold mb-5 text-center">
+      <h2 className="text-2xl font-semibold text-center mb-6">
         {userData ? "Edit User" : "Add New User"}
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* First Name & Last Name */}
-        {["firstName", "lastName"].map((name) => (
-          <div key={name}>
-            <label className="block text-sm font-medium mb-1">
-              {name === "firstName" ? "First Name" : "Last Name"}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {["firstName", "lastName"].map((field) => (
+          <div key={field}>
+            <label className="block text-sm font-medium mb-1 capitalize">
+              {field.replace(/([A-Z])/g, " $1")}
             </label>
             <input
-              name={name}
-              value={data[name]}
+              name={field}
+              value={data[field]}
               onChange={handleChange}
-              className="w-full border px-3 py-2 rounded bg-gray-100"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {errors[name] && (
-              <p className="text-red-500 text-xs mt-1">{errors[name]}</p>
-            )}
+            {errors[field] && <p className="text-xs text-red-600 mt-1">{errors[field]}</p>}
           </div>
         ))}
 
-        {/* Role */}
         <div>
           <label className="block text-sm font-medium mb-1">Role</label>
           <select
             name="role"
             value={data.role}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded bg-gray-100"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select a role</option>
             {roles.map((role) => (
@@ -153,26 +148,20 @@ const AuthForm = ({ onClose, onSuccess, userData }) => {
               </option>
             ))}
           </select>
-          {errors.role && (
-            <p className="text-red-500 text-xs mt-1">{errors.role}</p>
-          )}
+          {errors.role && <p className="text-xs text-red-600 mt-1">{errors.role}</p>}
         </div>
 
-        {/* Company ID */}
         <div>
           <label className="block text-sm font-medium mb-1">Company ID</label>
           <input
             name="companyId"
             value={data.companyId}
             disabled
-            className="w-full border px-3 py-2 rounded bg-gray-100 text-gray-500"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500"
           />
-          {errors.companyId && (
-            <p className="text-red-500 text-xs mt-1">{errors.companyId}</p>
-          )}
+          {errors.companyId && <p className="text-xs text-red-600 mt-1">{errors.companyId}</p>}
         </div>
 
-        {/* Email */}
         <div>
           <label className="block text-sm font-medium mb-1">Email</label>
           <input
@@ -180,14 +169,11 @@ const AuthForm = ({ onClose, onSuccess, userData }) => {
             type="email"
             value={data.email}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded bg-gray-100"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.email && (
-            <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-          )}
+          {errors.email && <p className="text-xs text-red-600 mt-1">{errors.email}</p>}
         </div>
 
-        {/* Password */}
         <div>
           <label className="block text-sm font-medium mb-1">Password</label>
           <input
@@ -195,20 +181,17 @@ const AuthForm = ({ onClose, onSuccess, userData }) => {
             type="password"
             value={data.password}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded bg-gray-100"
             placeholder={userData ? "Leave blank to keep existing password" : ""}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.password && (
-            <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-          )}
+          {errors.password && <p className="text-xs text-red-600 mt-1">{errors.password}</p>}
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className={`w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition ${
-            loading && "opacity-50 cursor-not-allowed"
+          className={`w-full py-2 rounded-lg text-white font-medium transition ${
+            loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
           }`}
         >
           {loading
