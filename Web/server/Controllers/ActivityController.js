@@ -1,13 +1,28 @@
 const ActivityModel = require("../Models/ActivityModel");
 const AdminModel = require("../Models/AdminModel");
 const CompanyMember = require("../Models/CompanyMemberModel");
+const { io, getReceiverSocketId } = require("../Socket.IO/SocketIO");
 
 
 exports.storeActivity = async (req, res) => {
   try {
-    console.log(req.body);
-    const activity = new ActivityModel(req.body); 
+    const { companyId, userId } = req.body;
+    const activity = new ActivityModel(req.body);
     await activity.save();
+    const admins = await AdminModel.find({ companyId });
+
+    admins.forEach(admin => {
+      const socketId = getReceiverSocketId(admin._id); 
+      if (socketId) {
+        io.to(socketId).emit("RecentActivity", { Msg: activity });
+      }
+    });
+
+    const userSocketId = getReceiverSocketId(userId);
+    if (userSocketId) {
+      io.to(userSocketId).emit("RecentActivity", { Msg: activity });
+    }
+
     res.status(201).send(activity);
   } catch (error) {
     console.error("Error adding activity:", error);
@@ -15,19 +30,57 @@ exports.storeActivity = async (req, res) => {
   }
 };
 
- exports.logActivity = async ({ companyId, userId, role, action }) => {
+
+exports.logActivity = async ({ companyId, userId, AdminId, role, action }) => {
   try {
-    await ActivityModel.create({
+    const activity = await ActivityModel.create({
       companyId,
-      userId,
+      userId: userId || AdminId,
       role,
       action,
       timestamp: new Date()
     });
+
+    let activityDta = {
+      ...activity._doc 
+    };
+
+
+    if (userId) {
+      const user = await CompanyMember.findById(userId);
+      if (user) {
+        activityDta.firstName = user.firstName;
+        activityDta.lastName = user.lastName;
+      }
+    }
+
+     if (AdminId) {
+      const user = await AdminModel.findById(AdminId);
+      if (user) {
+        activityDta.firstName = user.firstName;
+        activityDta.lastName = user.lastName;
+      }
+    }
+
+    const admins = await AdminModel.find({ companyId });
+    admins.forEach(admin => {
+      let socketId = getReceiverSocketId(admin._id); 
+      if (socketId && AdminId !==admin._id) {
+        io.to(socketId).emit("RecentActivity", { Msg: activityDta });
+      }
+    });
+
+    const userSocketId = getReceiverSocketId(userId);
+    if (userSocketId) {
+      io.to(userSocketId).emit("RecentActivity", { Msg: activityDta });
+    }
+
   } catch (err) {
     console.error("Logging failed:", err.message);
   }
 };
+
+
 
 
 exports.GetActivityforAdmins = async (req, res) => {

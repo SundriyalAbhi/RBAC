@@ -14,3 +14,7 @@
 /Web/provider/next.jsconfig.mjs
 /Web/provider/jsconfig.jsconfig
 /Web/provider/package-lock.json
+
+/Web/server2/node_modules
+/Web/server2/Config/config.env
+/Web/server2/package-lock.json

@@ -1,21 +1,31 @@
+"use client";
 import React from "react";
-import '@/app/style.css'
+import { useRouter } from "next/navigation";
+import "@/app/style.css";
+
 function EmployeesTable({ users }) {
+  const router = useRouter();
+
   return (
-    <div className="text-white w-full">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Member List</h2>
-        <button className="text-sm text-blue-400 hover:underline">Show All</button>
+    <div className="bg-gradient-to-br from-[#0b1f33] to-[#081a2a] p-6 rounded-xl shadow-md h-full">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold tracking-tight">Members List</h2>
+        <button
+          onClick={() => router.push("/pages/Admin/ManageUser")}
+          className="text-sm font-medium text-blue-400 hover:text-blue-300"
+        >
+          View All
+        </button>
       </div>
 
-      <div className="rounded-xl overflow-hidden shadow-md bg-[#0b1f33]">
+      <div className="rounded-2xl overflow-hidden bg-[#0b1f33] border border-white/5">
         <table className="w-full table-auto text-sm">
           <thead>
-            <tr className="bg-[#132235] text-white text-center">
-              <th className="py-3 px-4 border-b border-[#1e293b]">ID</th>
-              <th className="py-3 px-4 border-b border-[#1e293b]">Name</th>
-              <th className="py-3 px-4 border-b border-[#1e293b]">Location</th>
-              <th className="py-3 px-4 border-b border-[#1e293b]">Role</th>
+            <tr className="bg-[#132235] text-left text-gray-300 uppercase text-xs tracking-wider">
+              <th className="py-3 px-5 border-b border-[#1e293b]">ID</th>
+              <th className="py-3 px-5 border-b border-[#1e293b]">Name</th>
+              <th className="py-3 px-5 border-b border-[#1e293b]">Location</th>
+              <th className="py-3 px-5 border-b border-[#1e293b]">Role</th>
             </tr>
           </thead>
           <tbody>
@@ -23,14 +33,18 @@ function EmployeesTable({ users }) {
               users.map((user, i) => (
                 <tr
                   key={i}
-                  className="text-center hover:bg-[#1e293b]/40 transition"
+                  className="hover:bg-[#1e293b]/40 transition duration-200 border-b border-[#1e293b]"
                 >
-                  <td className="py-2 px-4 text-white/80 truncate max-w-[100px]">{user._id}</td>
-                  <td className="py-2 px-4 text-white">{`${user.firstName} ${user.lastName}`}</td>
-                  <td className="py-2 px-4 text-white/80">{user.location || "N/A"}</td>
-                  <td className="py-2 px-4">
+                  <td className="py-3 px-5 text-white/80 max-w-[100px] truncate">
+                    {user._id}
+                  </td>
+                  <td className="py-3 px-5 font-medium text-white whitespace-nowrap">
+                    {`${user.firstName} ${user.lastName}`}
+                  </td>
+                  <td className="py-3 px-5 text-white/70">{user.location || "N/A"}</td>
+                  <td className="py-3 px-5">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
                         user.role === "admin"
                           ? "bg-red-500/20 text-red-400"
                           : user.role === "CISO"
@@ -51,7 +65,7 @@ function EmployeesTable({ users }) {
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="text-center py-4 text-gray-400">
+                <td colSpan={4} className="text-center py-6 text-gray-400">
                   No users found.
                 </td>
               </tr>

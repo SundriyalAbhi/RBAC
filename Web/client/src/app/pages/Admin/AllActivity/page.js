@@ -1,22 +1,23 @@
 "use client";
-import { AdminSideBar } from '@/app/Admin/AdminSideBar';
-import RecentActivity from '@/app/Admin/RecentActivity';
-import { Navbar } from '@/app/Components/Home/Navbar';
-import React from 'react';
+
+import { AdminSideBar } from "@/app/Admin/AdminSideBar";
+import RecentActivity from "@/app/Admin/RecentActivity";
+import { Navbar } from "@/app/Components/Home/Navbar";
+import React from "react";
 
 const AllActivityPage = () => {
   return (
-    <div className="flex flex-col h-[100vh] bg-[rgba(19,33,46,1)]">
-      <div>
-        <Navbar />
-      </div>
+    <div className="flex flex-col h-screen bg-[#131f2e]">
+      <Navbar />
 
-      <div className="flex flex-1 ">
+      <div className="flex flex-1 overflow-hidden">
         <AdminSideBar />
-        <div className="flex-1 mt-6">
-         <h1 className="text-2xl font-bold mb-6 border-b pb-2   text-white ml-20">All User Activity</h1>
-           <RecentActivity showAll={true} />
-        </div>
+        <main className="flex-1 overflow-y-auto p-8 bg-[#131f2e]">
+          <h1 className="text-3xl font-bold text-white mb-8 border-b pb-4">
+            All User Activity
+          </h1>
+          <RecentActivity showAll={true} />
+        </main>
       </div>
     </div>
   );
