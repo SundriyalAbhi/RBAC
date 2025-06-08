@@ -21,9 +21,9 @@ const SessionDataRouter = require("./routes/SessionDataRouter");
 dotenv.config({path:"./Config/config.env"})
 app.use(helmet()); 
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",")
-  : ["http://localhost:3000"];
+const allowedOrigins = process.env.CORS_PORT
+  ? process.env.CORS_PORT.split(",")
+  : "http://localhost:3000";
 
 const corsOptions = {
   origin: (origin, callback) => {
