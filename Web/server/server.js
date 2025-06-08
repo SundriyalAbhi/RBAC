@@ -37,6 +37,7 @@ const corsOptions = {
   credentials: true,
 };
 
+app.use(cors(corsOptions));
 
 app.use(bodyparser.json({
     limit:"30mb"
