@@ -21,28 +21,21 @@ const SessionDataRouter = require("./routes/SessionDataRouter");
 dotenv.config({path:"./Config/config.env"})
 app.use(helmet()); 
 
-const allowedOrigins = [
-  process.env.CORS_PORT || "http://localhost:3000",
-  "http://localhost:3001",
-  "https://phantom-radar.vercel.app",
-  "https://real-time-radar.vercel.app"
-];
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : ["http://localhost:3000"];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      console.log("Origin:", origin);
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS: " + origin));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
 
 
 app.use(bodyparser.json({
