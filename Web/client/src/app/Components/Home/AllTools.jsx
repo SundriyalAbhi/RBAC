@@ -7,7 +7,7 @@ import { UserContext } from "@/app/Context/ManageUserContext";
 export const AllTools = () => {
   const router = useRouter();
   const { Admindispatch, AdminAuthData } = useContext(AdminContext);
-  const { UserAuthData } = useContext(UserContext);
+  const { UserAuthData , StoreSessionData } = useContext(UserContext);
   const hasAdmin = AdminAuthData?.token && AdminAuthData?.userId;
   const hasUser = UserAuthData?.token && UserAuthData?.userId;
   const AuthData = hasAdmin ? AdminAuthData : hasUser ? UserAuthData : null;
@@ -27,7 +27,7 @@ export const AllTools = () => {
       link: "https://phantom-radar.vercel.app/",
     },
     { name: "CyberKnowledge Engine Agent", icon: "🧠", link: "" },
-    { name: "AutoRed", icon: "⚙️", link: "http://localhost:3001/" },
+    { name: "AutoRed", icon: "⚙️", link: "https://auto-red-35f6.vercel.app/" },
     { name: "ZeroCodeSec", icon: "</>", link: "" },
     { name: "GhostIntel", icon: "👻", link: "" },
     {
@@ -44,15 +44,8 @@ const handleClick = async (feature) => {
   const toolName = feature.name;
 
   try {
-    const response = await fetch("https://auto-red-delta.vercel.app/auth/addAuthData", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId, token, toolName }),
-    });
-
-    const { _id: sessionId } = await response.json();
+     const res = await StoreSessionData({ userId, token, toolName })
+    const sessionId = res.data._id
 
     if (feature.link && feature.link.startsWith("http") && sessionId) {
       const url = new URL(feature.link);
