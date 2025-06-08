@@ -17,29 +17,33 @@ const ProviderRouter = require("./routes/ProviderRoute");
 const MemberRouter = require("./routes/MemberRouter");
 const { app } = require("./Socket.IO/SocketIO");
 const ActivityRouter = require("./routes/ActivityRoute");
+const SessionDataRouter = require("./routes/SessionDataRouter");
 dotenv.config({path:"./Config/config.env"})
 app.use(helmet()); 
 
 const allowedOrigins = [
   process.env.CORS_PORT || "http://localhost:3000",
-  "http://localhost:3001"
+  "http://localhost:3001",
+  "https://phantom-radar.vercel.app",
+  "https://real-time-radar.vercel.app"
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
+      console.log("Origin:", origin);
       if (!origin) return callback(null, true);
-
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error("Not allowed by CORS: " + origin));
       }
     },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+
 
 app.use(bodyparser.json({
     limit:"30mb"
@@ -71,3 +75,4 @@ app.use("/Provider",ProviderRouter)
 app.use("/company",ComapnyRouter)
 app.use('/admin', AdminRouter);
 app.use('/activity',ActivityRouter)
+app.use('/session',SessionDataRouter)

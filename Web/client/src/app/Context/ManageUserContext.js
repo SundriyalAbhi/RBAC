@@ -46,6 +46,15 @@ async function recordActivity(body) {
   }
 }
 
+async function StoreSessionData(body) {
+  try {
+    const response = await API.post(`${baseURL}/session/storesessiondata`,body)
+    return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
+}
+
 function reducer(state, action) {
   switch (action.type) {
     case "SIGN_IN": {
@@ -118,6 +127,7 @@ export const UserProvider = ({ children }) => {
         UserSignUp,
         UPDATEUSER,
         recordActivity,
+        StoreSessionData
       }}
     >
       {children}
