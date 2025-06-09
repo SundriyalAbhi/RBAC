@@ -48,7 +48,7 @@ async function recordActivity(body) {
 
 async function StoreSessionData(body) {
   try {
-    const response = await API.post(`https://gtr-13sc.onrender.com/session/storesessiondata`,body)
+    const response = await API.post(`${baseURL}/session/storesessiondata`,body)
     return { status: response?.status, data: response?.data };
   } catch (error) {
     return { status: error?.response?.status, data: error?.response?.data };

@@ -23,7 +23,9 @@ app.use(helmet());
 
 const allowedOrigins = process.env.CORS_PORT
   ? process.env.CORS_PORT.split(",")
-  : "http://localhost:3000";
+  : ["http://localhost:3000"];
+
+console.log("Allowed Origins:", allowedOrigins);
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -31,6 +33,7 @@ const corsOptions = {
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.log("Blocked CORS request from:", origin);
       callback(new Error("Not allowed by CORS"));
     }
   },
@@ -38,6 +41,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
 
 app.use(bodyparser.json({
     limit:"30mb"
