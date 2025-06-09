@@ -23,7 +23,7 @@ app.use(helmet());
 
 const allowedOrigins = process.env.CORS_PORT
   ? process.env.CORS_PORT.split(",")
-  : ["http://localhost:3000"];
+  : ["http://localhost:3000","http://localhost:3001"];
 
 console.log("Allowed Origins:", allowedOrigins);
 
@@ -37,10 +37,32 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
+
+// const allowedOrigins = [
+//   process.env.CORS_PORT || "http://localhost:3000",
+//   "http://localhost:3001"
+// ];
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin) return callback(null, true);
+
+//       if (allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   })
+// );
 
 
 app.use(bodyparser.json({
