@@ -27,7 +27,7 @@ export const AllTools = () => {
       link: "https://phantom-radar.vercel.app/",
     },
     { name: "CyberKnowledge Engine Agent", icon: "🧠", link: "" },
-    { name: "AutoRed", icon: "⚙️", link: "https://auto-red-35f6.vercel.app/" },
+    { name: "AutoRed", icon: "⚙️", link: "http://localhost:3001" },
     { name: "ZeroCodeSec", icon: "</>", link: "" },
     { name: "GhostIntel", icon: "👻", link: "" },
     {
