@@ -10,8 +10,8 @@ const AdminSchema = new mongoose.Schema(
       required: true,
     },
 
-  firstName: { type: String },
-  lastName: { type: String },
+    firstName: { type: String },
+    lastName: { type: String },
 
     email: {
       type: String,
@@ -31,13 +31,16 @@ const AdminSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: Object.values(roles), 
+      enum: Object.values(roles),
       default: roles.client,
     },
     createdAt: {
       type: Date,
       default: Date.now,
     },
+    tollsAccess: {
+      type: Array
+    }
   },
   {
     timestamps: true, // adds createdAt and updatedAt automatically
@@ -45,6 +48,6 @@ const AdminSchema = new mongoose.Schema(
 );
 
 
-  const AdminModel = mongoose.model('Admin',AdminSchema);
+const AdminModel = mongoose.model('Admin', AdminSchema);
 
-  module.exports = AdminModel
+module.exports = AdminModel

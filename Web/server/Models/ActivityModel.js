@@ -8,10 +8,8 @@ const activitySchema = new mongoose.Schema({
       ref: "Company",
       required: true,
     },
-    userId: {
-        type: String,
-        required: true,
-    },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false },
+  AdminId: { type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: false },
     role: {
         type: String,
         enum: Object.values(roles),
