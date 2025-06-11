@@ -11,7 +11,8 @@ const RecentActivity = ({ showAll = false }) => {
   const { socket } = useContext(SocketContext);
   const companyId = AdminAuthData?.companyId;
   const router = useRouter();
-
+  console.log(activity);
+  
   useEffect(() => {
     const fetchActivity = async () => {
       try {
@@ -69,7 +70,11 @@ const RecentActivity = ({ showAll = false }) => {
         )}
       </div>
 
-      <div className={`${showAll ? "max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar" : ""}`}>
+      <div
+        className={`${
+          showAll ? "max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar" : ""
+        }`}
+      >
         {activity.length === 0 ? (
           <p className="text-gray-400 text-center py-6">No activity found.</p>
         ) : (
@@ -86,7 +91,8 @@ const RecentActivity = ({ showAll = false }) => {
                   <div className="text-xs leading-snug">
                     <p className="m-0">
                       <span className="font-semibold">
-                        {item.firstName} {item.lastName}
+                        {item.firstName} {item.lastName}{" "}
+                        {item.AdminId === AdminAuthData.adminId ? "(You)" : ""}
                       </span>{" "}
                       {item.toolName ? "accessed" : "performed"}{" "}
                       <span className="inline-block px-2 py-[1px] bg-blue-500/20 text-blue-300 text-[10px] rounded-full font-medium ml-1">

@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const Company = require('../Models/CompanyModel');
 const CompanyMember = require('../Models/CompanyMemberModel');
 const AdminModel = require('../Models/AdminModel');
+const toolAccessByRole = require('../Config/ToolsAccess');
 require('dotenv').config();
 
 
@@ -15,10 +16,10 @@ exports.registerAdmin = async (req, res) => {
     if (existingAdmin) {
       return res.status(400).json({ msg: 'Admin already exists' });
     }
-
+    const toolsaccess = toolAccessByRole[role] || []
     const hashedPassword = await bcrypt.hash(password, 10);
     const CompanyName = await Company.findById(companyId)
-    const newAdmin = new AdminModel({ email, password: hashedPassword, role , companyId, firstName, lastName,companyName:CompanyName.name});
+    const newAdmin = new AdminModel({ email, password: hashedPassword, role , companyId, firstName, lastName,companyName:CompanyName.name,tollsAccess:toolsaccess});
     
     await newAdmin.save();
     res.status(201).json({ msg: 'Admin registered successfully' });
@@ -65,6 +66,7 @@ exports.loginAdmin = async (req, res) => {
       adminId: admin._id,
       role: admin.role,
       companyId:admin.companyId,
+      toolsaccess:admin.tollsAccess,
       msg: 'Login successful',
     });
   } catch (err) {

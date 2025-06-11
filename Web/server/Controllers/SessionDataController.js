@@ -3,6 +3,8 @@ const ToolsSession = require("../Models/SessionDataModel");
 
 exports. StoreSessionData = async(req,res)=>{
     try {
+      console.log(req.body);
+      
         const SessionData = new ToolsSession(req.body)
         await SessionData.save()
         res.send(SessionData)

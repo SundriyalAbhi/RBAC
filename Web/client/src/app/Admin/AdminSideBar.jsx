@@ -14,7 +14,7 @@ export const AdminSideBar = () => {
   const menuItems = [
     { icon: <MdGridView />, label: "Dashboard", route: "Admin" },
     { icon: <FaUsers />, label: "Manage Users", route: "ManageUser" },
-    { icon: <FaTools />, label: "Manage Tool Access", route: "ManageToolAccess" },
+    { icon: <FaTools />, label: "Tools", route: "AllTools" },
     { icon: <FaChartBar />, label: "Real-Time Activity", route: "AllActivity" },
     { icon: <FaBug />, label: "Logs & Error Reports", route: "LogsAndErrors" },
     { icon: <FaComment />, label: "Feedback", route: "Feedback" },
