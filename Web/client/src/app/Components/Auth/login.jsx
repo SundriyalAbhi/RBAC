@@ -31,7 +31,6 @@ export const SignIn = ({ setMode }) => {
         logindata = await AdminLogin(formData);
       } else {
         logindata = await UserSignIn(formData);
-        // await recordActivity(logindata._id)
       }
 
       if (!logindata || !logindata.status) {

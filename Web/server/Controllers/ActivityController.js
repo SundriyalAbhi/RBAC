@@ -6,29 +6,51 @@ const { io, getReceiverSocketId } = require("../Socket.IO/SocketIO");
 
 exports.storeActivity = async (req, res) => {
   try {
-    const { companyId, userId } = req.body;
+    const { companyId, userId, AdminId, role } = req.body;
+    
+
     const activity = new ActivityModel(req.body);
     await activity.save();
-    const admins = await AdminModel.find({ companyId });
 
-    admins.forEach(admin => {
-      const socketId = getReceiverSocketId(admin._id); 
-      if (socketId) {
-        io.to(socketId).emit("RecentActivity", { Msg: activity });
+    let activityData = activity.toObject();
+
+    if (role === "admin") {
+      const admin = await AdminModel.findById(AdminId);
+      if (admin) {
+        activityData.firstName = admin.firstName;
+        activityData.lastName = admin.lastName;
       }
-    });
-
-    const userSocketId = getReceiverSocketId(userId);
-    if (userSocketId) {
-      io.to(userSocketId).emit("RecentActivity", { Msg: activity });
+    } else if (userId) {
+      const user = await CompanyMember.findById(userId);
+      if (user) {
+        activityData.firstName = user.firstName;
+        activityData.lastName = user.lastName;
+      }
     }
 
+    const admins = await AdminModel.find({ companyId });
+    if (admins.length > 0) {
+      admins.forEach(admin => {
+        const socketId = getReceiverSocketId(admin._id);
+        if (socketId) {
+          io.to(socketId).emit("RecentActivity", { Msg: activityData });
+        }
+      });
+    }
+
+    if (userId) {
+      const userSocketId = getReceiverSocketId(userId);
+      if (userSocketId) {
+        io.to(userSocketId).emit("RecentActivity", { Msg: activityData });
+      }
+    }
     res.status(201).send(activity);
   } catch (error) {
     console.error("Error adding activity:", error);
     res.status(500).json({ message: "Failed to add activity" });
   }
 };
+
 
 
 exports.logActivity = async ({ companyId, userId, AdminId, role, action }) => {
@@ -94,7 +116,7 @@ exports.GetActivityforAdmins = async (req, res) => {
         let user = null;
 
         if (activity.role === "admin") {
-          user = await AdminModel.findById(activity.userId).select("firstName lastName email");
+          user = await AdminModel.findById(activity.AdminId).select("firstName lastName email");
         } else {
           user = await CompanyMember.findById(activity.userId).select("firstName lastName email");
         }

@@ -7,17 +7,17 @@ import { UserContext } from "@/app/Context/ManageUserContext";
 export const AllTools = () => {
   const router = useRouter();
   const { Admindispatch, AdminAuthData } = useContext(AdminContext);
-  const { UserAuthData , StoreSessionData, recordActivity } = useContext(UserContext);
-  const hasAdmin = AdminAuthData?.token && AdminAuthData?.adminId;
-  const hasUser = UserAuthData?.token && UserAuthData?.userId;
-  const AuthData = hasAdmin ? AdminAuthData : hasUser ? UserAuthData : null;
+  const {StoreSessionData, recordActivity } = useContext(UserContext);
+  const AuthData = AdminAuthData
 
-  useEffect(() => {
-    if (!AuthData?.token) {
-      router.push("/pages/Auth");
-    }
-  }, [AuthData]);
+//   useEffect(() => {
+//     if (!AuthData?.token) {
+//       router.push("/pages/Auth");
+//     }
+//   }, [AuthData]);
 
+  console.log(AuthData);
+  
 
   const features = [
     { name: "AutoSOC", icon: "🖥️", link: "" },
@@ -47,10 +47,10 @@ export const AllTools = () => {
       toolName: featureName,
     };
 
-    if (AuthData.role === "admin") {
-      body.AdminId = AuthData.adminId;
-    }else{
+    if (AuthData.role === "user") {
       body.userId = AuthData.userId;
+    } else if (AuthData.role === "admin") {
+      body.AdminId = AuthData.adminId;
     }
 
     const res = await recordActivity(body);
@@ -63,11 +63,11 @@ export const AllTools = () => {
 const handleClick = async (feature) => {
   if (!AuthData) return;
 
-  const { token, userId , adminId } = AuthData;
+  const { token ,adminId } = AuthData;
   const toolName = feature.name;
 
   try {
-     const res = await StoreSessionData({ userId:userId||adminId, token, toolName })
+     const res = await StoreSessionData({ userId:adminId, token, toolName })
     const sessionId = res.data._id
     console.log(sessionId);
     
@@ -166,8 +166,6 @@ export const BottomPanel = () => {
             </button>
           </form>
         </div>
-
-        {/* System Notices */}
         <div>
           <h4 className="text-xl font-semibold mb-3">System Notices</h4>
           <ul className="list-disc list-inside text-gray-300 text-sm max-h-48 overflow-auto">
@@ -179,3 +177,4 @@ export const BottomPanel = () => {
     </section>
   );
 };
+

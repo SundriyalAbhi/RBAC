@@ -48,7 +48,7 @@ exports.Usersignin = async(req,res)=>{
                 const token = jwt.sign({email,password},process.env.SECRET)
 
                 await logActivity({companyId:Member.companyId,userId:Member._id,role:Member.role,action:"login"})
-                res.send({token,userId:Member._id,ProfilePicture:Member.ProfilePicture,role:Member.role ,toolsaccess:Member.tollsAccess,msg:"Welcome"})
+                res.send({token,userId:Member._id,companyId:Member.companyId,ProfilePicture:Member.ProfilePicture,role:Member.role ,toolsaccess:Member.tollsAccess,msg:"Welcome"})
             }else{
                 res.status(401).send("Wrong Password")
             }
