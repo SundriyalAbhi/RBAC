@@ -17,7 +17,7 @@ const page = () => {
           <div className="flex-1 ">
             <AuthForm />
           </div>
-            
+          
         </div>
       </div>
     </>
