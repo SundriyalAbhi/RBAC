@@ -18,8 +18,6 @@ export const AllTools = () => {
     }
   }, [AuthData]);
 
-  console.log(AuthData);
-  
 
   const features = [
     { name: "AutoSOC", icon: "🖥️", link: "" },
@@ -49,10 +47,10 @@ export const AllTools = () => {
       toolName: featureName,
     };
 
-    if (AuthData.role === "user") {
-      body.userId = AuthData.userId;
-    } else if (AuthData.role === "admin") {
+    if (AuthData.role === "admin") {
       body.AdminId = AuthData.adminId;
+    }else{
+      body.userId = AuthData.userId;
     }
 
     const res = await recordActivity(body);

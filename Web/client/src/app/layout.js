@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+// import "./globals.css";
+import '@/app/style.css'
 import { ToastContainer } from "react-toastify";
 import { AdminProvider } from "./Context/AdminContext";
 import { UserProvider } from "./Context/ManageUserContext";
