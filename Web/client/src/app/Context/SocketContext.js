@@ -29,8 +29,6 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (userId) {
-      console.log("kk");
-      
       const socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8087", {
         query: { userId },
         transports: ["websocket"],
@@ -38,9 +36,9 @@ export const SocketProvider = ({ children }) => {
 
       socketRef.current = socket;
 
-      socket.on("connect", () => {
-        console.log("Connected:", socket.id);
-      });
+    //   socket.on("connect", () => {
+    //     console.log("Connected:", socket.id);
+    //   });
 
       socket.on("getOnlineUsers", (users) => {
         setOnlineUsers(users);
