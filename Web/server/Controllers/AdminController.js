@@ -4,6 +4,7 @@ const Company = require('../Models/CompanyModel');
 const CompanyMember = require('../Models/CompanyMemberModel');
 const AdminModel = require('../Models/AdminModel');
 const toolAccessByRole = require('../Config/ToolsAccess');
+const { logActivity } = require('./ActivityController');
 require('dotenv').config();
 
 
@@ -55,7 +56,14 @@ exports.loginAdmin = async (req, res) => {
     if (!admin) return res.status(404).json({ msg: 'Admin not found' });
 
     const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) return res.status(401).json({ msg: 'Incorrect password' });
+         if(isMatch){
+                    const token = jwt.sign({email,password},process.env.SECRET)
+    
+                    await logActivity({companyId:admin.companyId,userId:admin._id,role:admin.role,action:"login"})
+                    res.send({token,userId:admin._id,companyId:admin.companyId,ProfilePicture:admin.ProfilePicture,role:admin.role ,toolsaccess:admin.tollsAccess,msg:"Welcome"})
+                }else{
+                    res.status(401).send("Wrong Password")
+                }
 
     const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.SECRET, {
       expiresIn: '7d',

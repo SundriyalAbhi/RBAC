@@ -18,7 +18,7 @@ function EmployeesTable({ users }) {
         </button>
       </div>
 
-      <div className="rounded-2xl overflow-hidden bg-[#0b1f33] border border-white/5">
+      <div className="rounded-2xl overflow-hidden bg-[#0b1f33] border border-white/5 h-[38vh]">
         <table className="w-full table-auto text-sm">
           <thead>
             <tr className="bg-[#132235] text-left text-gray-300 uppercase text-xs tracking-wider">

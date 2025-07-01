@@ -116,7 +116,7 @@ exports.GetActivityforAdmins = async (req, res) => {
         let user = null;
 
         if (activity.role === "admin") {
-          user = await AdminModel.findById(activity.AdminId).select("firstName lastName email");
+          user = await AdminModel.findById(activity.userId).select("firstName lastName email");
         } else {
           user = await CompanyMember.findById(activity.userId).select("firstName lastName email");
         }
@@ -141,9 +141,24 @@ exports.GetActivityforAdmins = async (req, res) => {
 
 exports.GetActivityforMember = async (req, res) => {
   try {
-    const { companyId, userId } = req.body;
+    const { companyId, userId } = req.query;
     const activities = await ActivityModel.find({ companyId, userId }).sort({ timestamp: -1 });
-    res.send(activities);
+    const enhancedActivities = await Promise.all(
+      activities.map(async (activity) => {
+        let user = null;
+
+          user = await CompanyMember.findById(activity.userId).select("firstName lastName email");
+
+        return {
+          ...activity._doc,
+          firstName: user?.firstName || "Unknown",
+          lastName: user?.lastName || "Unknown",
+          userEmail: user?.email || "Unknown",
+        };
+      })
+    );
+
+    res.send(enhancedActivities);
   } catch (error) {
     console.error("Error fetching member activities:", error);
     res.status(500).json({ message: "Failed to fetch member activity" });

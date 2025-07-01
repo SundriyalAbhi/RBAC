@@ -18,6 +18,7 @@ const MemberRouter = require("./routes/MemberRouter");
 const { app } = require("./Socket.IO/SocketIO");
 const ActivityRouter = require("./routes/ActivityRoute");
 const SessionDataRouter = require("./routes/SessionDataRouter");
+const SystemAnnouncementsRouter = require("./routes/SystemAnnouncementRoute");
 dotenv.config({path:"./Config/config.env"})
 app.use(helmet()); 
 
@@ -96,3 +97,4 @@ app.use("/company",ComapnyRouter)
 app.use('/admin', AdminRouter);
 app.use('/activity',ActivityRouter)
 app.use('/session',SessionDataRouter)
+app.use('/SystemAnnouncements',SystemAnnouncementsRouter)

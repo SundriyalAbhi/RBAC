@@ -2,8 +2,8 @@
 import React from "react";
 
 import { Sidebaar } from "./Sidebar";
-import Navbar from "./Navbar";
 import Dashbord from "./Dashbord";
+import { Navbar } from "./Navbar";
 
 export default function Main() {
   return (

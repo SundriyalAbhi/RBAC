@@ -49,7 +49,7 @@ async function getprofile(authData) {
 
 async function findAccount(body) {
   try {
-    const response = await API.get(`${baseURL}/Userauth/MemberFindAccount/${body.email}`)
+    const response = await API.get(`${baseURL}/Member/MemberFindAccount/${body.email}`)
     return { status: response?.status, data: response?.data };
   } catch (error) {
     return { status: error?.response?.status, data: error?.response?.data };
@@ -137,6 +137,24 @@ async function Activitylog(body) {
   }
 }
 
+async function SendSystemAnnouncement(body) {
+  try {
+    const response = await API.post(`${baseURL}/SystemAnnouncements/AddSystemAnnouncement`,body)
+    return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
+}
+
+async function GetSystemAnnouncement(body) {
+  try {
+    const response = await API.get(`${baseURL}/SystemAnnouncements/GetSystemAnnouncements`, { params: { companyId: body.companyId } })
+    return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
+}
+
 function Adminreducer(state, action) {
   switch (action.type) {
     case "SIGN_IN":
@@ -167,7 +185,7 @@ export const AdminContext = createContext()
 export const AdminProvider = ({ children }) => {
   const [state, Admindispatch] = useReducer(Adminreducer, initialState)
   return (
-    <AdminContext.Provider value={{ AdminAuthData: state, Admindispatch, getprofile, deleteaccount, profileupdate, findAccount, SENDOTP, VERIFYOTP, PasswordUpdate, AdminLogin, GetUsersforAdmin, GetAllAdmins, GetUsersforAdminByName, Activitylog, UPDATEADMIN }}>
+    <AdminContext.Provider value={{ AdminAuthData: state, Admindispatch, getprofile, deleteaccount, profileupdate, findAccount, SENDOTP, VERIFYOTP, PasswordUpdate, AdminLogin, GetUsersforAdmin, GetAllAdmins, GetUsersforAdminByName, Activitylog, UPDATEADMIN, SendSystemAnnouncement, GetSystemAnnouncement }}>
       {children}
     </AdminContext.Provider>
   )
