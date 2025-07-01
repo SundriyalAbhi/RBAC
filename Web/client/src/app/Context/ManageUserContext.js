@@ -55,6 +55,24 @@ async function StoreSessionData(body) {
   }
 }
 
+async function MemberActivitylog(body) {
+  try {
+    const response = await API.get(`${baseURL}/activity/getActivityforMember`, { params: { companyId: body.companyId , userId:body.userId } })
+    return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
+}
+
+async function GetSystemAnnouncement(body) {
+  try {
+    const response = await API.get(`${baseURL}/SystemAnnouncements/GetSystemAnnouncements`, { params: { companyId: body.companyId } })
+    return { status: response?.status, data: response?.data };
+  } catch (error) {
+    return { status: error?.response?.status, data: error?.response?.data };
+  }
+}
+
 function reducer(state, action) {
   switch (action.type) {
     case "SIGN_IN": {
@@ -127,7 +145,9 @@ export const UserProvider = ({ children }) => {
         UserSignUp,
         UPDATEUSER,
         recordActivity,
-        StoreSessionData
+        StoreSessionData,
+        MemberActivitylog,
+        GetSystemAnnouncement
       }}
     >
       {children}

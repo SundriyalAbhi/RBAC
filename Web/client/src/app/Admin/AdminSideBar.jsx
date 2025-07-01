@@ -17,8 +17,7 @@ export const AdminSideBar = () => {
     { icon: <FaTools />, label: "Tools", route: "AllTools" },
     { icon: <FaChartBar />, label: "Real-Time Activity", route: "AllActivity" },
     { icon: <FaBug />, label: "Logs & Error Reports", route: "LogsAndErrors" },
-    { icon: <FaComment />, label: "Feedback", route: "Feedback" },
-    { icon: <FaBullhorn />, label: "System Announcements", route: "Announcements" },
+    { icon: <FaBullhorn />, label: "System Announcements", route: "SystemAnnouncement" },
   ];
 
   const handleClick = (route) => {

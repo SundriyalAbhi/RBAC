@@ -29,16 +29,18 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (userId) {
-      const socket = io(process.env.NEXT_PUBLIC_API_URL || "https://gtr-unpf.onrender.com", {
+      console.log("kk");
+      
+      const socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8087", {
         query: { userId },
         transports: ["websocket"],
       });
 
       socketRef.current = socket;
 
-    //   socket.on("connect", () => {
-    //     console.log("Connected:", socket.id);
-    //   });
+      socket.on("connect", () => {
+        console.log("Connected:", socket.id);
+      });
 
       socket.on("getOnlineUsers", (users) => {
         setOnlineUsers(users);

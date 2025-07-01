@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import { SignUp } from './SignUp'
-import { SignIn } from './login'
 import ForgotPass from './forgotPassword';
 import dynamic from 'next/dynamic';
 
