@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const dotenv = require("dotenv");
 const CompanyMember = require("../Models/CompanyMemberModel");
+const toolAccessByRole = require("../Config/ToolsAccess");
+const { AddActivity, logActivity } = require("./ActivityController");
 const cloudinary = require('cloudinary').v2;
 dotenv.config({path:"./Config/config.env"})
 cloudinary.config({
@@ -12,11 +14,12 @@ cloudinary.config({
 
 exports.Usersignup = async(req,res)=>{
     try {
-        const {companyId} = req.body
+        const {companyId , role} = req.body
         const checkuser = await CompanyMember.findOne({email:req.body.email})
         if(checkuser){
             return res.status(409).json({ message: "User already exists" });
         }
+        const toolsaccess = toolAccessByRole[role] || []
         const {password , ProfilePicture} = req.body
         let ProfilePictureUrl;
         if (ProfilePicture) {
@@ -26,9 +29,9 @@ exports.Usersignup = async(req,res)=>{
         }
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password,salt)
-        const MemberTobeadded = new CompanyMember({...req.body,ProfilePicture:ProfilePictureUrl,password:hashedPassword,companyId:companyId})
+        const MemberTobeadded = new CompanyMember({...req.body,ProfilePicture:ProfilePictureUrl,password:hashedPassword,companyId:companyId,tollsAccess:toolsaccess})
         const Member = await MemberTobeadded.save()
-        res.status(201).json({Member,msg:"user created"})
+        res.status(200).json({Member,msg:"user created"})
     } catch (error) {
         console.error("Signup Error:", error);
         res.status(500).json({ message: "Internal Server Error" }); 
@@ -43,7 +46,9 @@ exports.Usersignin = async(req,res)=>{
             const verify = await bcrypt.compare(password,Member.password)
             if(verify){
                 const token = jwt.sign({email,password},process.env.SECRET)
-                res.send({token,userId:Member._id,ProfilePicture:Member.ProfilePicture,role:Member.role,msg:"Welcome"})
+
+                await logActivity({companyId:Member.companyId,userId:Member._id,role:Member.role,action:"login"})
+                res.send({token,userId:Member._id,companyId:Member.companyId,ProfilePicture:Member.ProfilePicture,role:Member.role ,toolsaccess:Member.tollsAccess,msg:"Welcome"})
             }else{
                 res.status(401).send("Wrong Password")
             }
@@ -57,7 +62,7 @@ exports.Usersignin = async(req,res)=>{
 
 exports.UpdateUserDetails = async (req, res) => {
   try {
-    const { _id, email, firstName, lastName, role } = req.body;
+    const { _id, email, firstName, lastName, role ,tollsAccess } = req.body;
     if (!_id || !email || !firstName || !lastName || !role) {
       return res.status(400).json({ message: "All fields are required." });
     }
@@ -68,7 +73,8 @@ exports.UpdateUserDetails = async (req, res) => {
         email,
         firstName,
         lastName,
-        role
+        role,
+        tollsAccess
       },
       { new: true } 
     );

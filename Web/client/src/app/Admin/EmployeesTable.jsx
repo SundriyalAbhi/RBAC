@@ -1,141 +1,80 @@
+"use client";
+import React from "react";
+import { useRouter } from "next/navigation";
+import "@/app/style.css";
 
-
-
-import React, { useState } from "react";
-import { UilTimes } from "@iconscout/react-unicons";
-
-const threatsData = [
-  { Id: 1, Name: "Rohit Sharma", Role: "Admin", Address: "New Delhi, India" },
-  { Id: 2, Name: "Aisha Patel", Role: "CISO", Address: "Mumbai, India" },
-  {
-    Id: 3,
-    Name: "Rahul Verma",
-    Role: "Data Analytics",
-    Address: "Bengaluru, India",
-  },
-  {
-    Id: 4,
-    Name: "Sophia Fernandez",
-    Role: "Auditor",
-    Address: "Kolkata, India",
-  },
-  { Id: 5, Name: "Vikram Mehra", Role: "Admin", Address: "Hyderabad, India" },
-  { Id: 6, Name: "Neha Kapoor", Role: "CISO", Address: "Pune, India" },
-  {
-    Id: 7,
-    Name: "Arjun Sen",
-    Role: "Data Analytics",
-    Address: "Chennai, India",
-  },
-  { Id: 8, Name: "Meera Das", Role: "Auditor", Address: "Ahmedabad, India" },
-  { Id: 9, Name: "Karan Malhotra", Role: "Admin", Address: "Jaipur, India" },
-  { Id: 10, Name: "Sanjana Iyer", Role: "CISO", Address: "Lucknow, India" },
-];
-
-const priorityRank = {
-  High: 3,
-  Medium: 2,
-  Low: 1,
-};
-
-function EmployeesTable() {
-  const [sortType, setSortType] = useState("time");
-  const [isOpen, setIsOpen] = useState(false);
-
-  const sortedThreats = [...threatsData].sort((a, b) => {
-    if (sortType === "time") {
-      return new Date(b.timestamp) - new Date(a.timestamp);
-    } else if (sortType === "priority") {
-      return priorityRank[b.threatPriority] - priorityRank[a.threatPriority];
-    }
-    return 0;
-  });
-
-  const ThreatTableContent = (
-    <div
-      className="w-full overflow-x-auto scrollbar-hide max-h-[80vh]"
-      onClick={() => !isOpen && setIsOpen(true)}
-      style={{ scrollbarWidth: "none" }}
-    >
-      <table className="w-full table-auto text-sm rounded-md overflow-hidden shadow-md">
-        <thead>
-          <tr className="bg-[#334155] text-white text-center">
-            <th className="py-2 px-3">ID</th>
-            <th className="py-2 px-3"> Name</th>
-            <th className="py-2 px-3">Location</th>
-          </tr>
-        </thead>
-        <tbody>
-          {sortedThreats.map((threat) => (
-            <tr
-              key={threat.Id}
-              className="text-center border-b border-[#1e293b] hover:bg-[#1e293b]/40"
-            >
-              <td className="py-2 px-3 text-white/90">{threat.Id}</td>
-              <td className="py-2 px-3">{threat.Name}</td>
-          
-              <td className="py-2 px-3 text-white/90">
-                {threat.Address}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+function EmployeesTable({ users }) {
+  const router = useRouter();
 
   return (
-    <>
-      {!isOpen ? (
-        ThreatTableContent
-      ) : (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(0,0,0,0.8)",
-            zIndex: 9999,
-            padding: "2rem",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
+    <div className="bg-gradient-to-br from-[#0b1f33] to-[#081a2a] p-6 rounded-xl shadow-md h-full">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold tracking-tight">Members List</h2>
+        <button
+          onClick={() => router.push("/pages/Admin/ManageUser")}
+          className="text-sm font-medium text-blue-400 hover:text-blue-300"
         >
-          <div
-            style={{
-              position: "relative",
-              width: "90%",
-              height: "90%",
-            }}
-          >
-            <button
-              onClick={() => setIsOpen(false)}
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                zIndex: 10000,
-              }}
-            >
-              <UilTimes size="28" color="#ffffff" />
-            </button>
+          View All
+        </button>
+      </div>
 
-            {ThreatTableContent}
-          </div>
-        </div>
-      )}
-    </>
+      <div className="rounded-2xl overflow-hidden bg-[#0b1f33] border border-white/5 h-[38vh]">
+        <table className="w-full table-auto text-sm">
+          <thead>
+            <tr className="bg-[#132235] text-left text-gray-300 uppercase text-xs tracking-wider">
+              <th className="py-3 px-5 border-b border-[#1e293b]">ID</th>
+              <th className="py-3 px-5 border-b border-[#1e293b]">Name</th>
+              <th className="py-3 px-5 border-b border-[#1e293b]">Location</th>
+              <th className="py-3 px-5 border-b border-[#1e293b]">Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.length > 0 ? (
+              users.map((user, i) => (
+                <tr
+                  key={i}
+                  className="hover:bg-[#1e293b]/40 transition duration-200 border-b border-[#1e293b]"
+                >
+                  <td className="py-3 px-5 text-white/80 max-w-[100px] truncate">
+                    {user._id}
+                  </td>
+                  <td className="py-3 px-5 font-medium text-white whitespace-nowrap">
+                    {`${user.firstName} ${user.lastName}`}
+                  </td>
+                  <td className="py-3 px-5 text-white/70">{user.location || "N/A"}</td>
+                  <td className="py-3 px-5">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
+                        user.role === "admin"
+                          ? "bg-red-500/20 text-red-400"
+                          : user.role === "CISO"
+                          ? "bg-yellow-500/20 text-yellow-300"
+                          : user.role === "Auditor"
+                          ? "bg-blue-500/20 text-blue-300"
+                          : user.role === "SOCAnalyst"
+                          ? "bg-purple-500/20 text-purple-300"
+                          : user.role === "Data Analytics"
+                          ? "bg-green-500/20 text-green-300"
+                          : "bg-gray-500/20 text-gray-300"
+                      }`}
+                    >
+                      {user.role}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} className="text-center py-6 text-gray-400">
+                  No users found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 
 export default EmployeesTable;
-
-
-
-

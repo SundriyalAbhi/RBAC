@@ -1,77 +1,176 @@
 import { AdminContext } from "@/app/Context/AdminContext";
 import { UserContext } from "@/app/Context/ManageUserContext";
+import { SocketContext } from "@/app/Context/SocketContext";
 import React, { useContext, useEffect, useState } from "react";
+import { FaSearch, FaPlus } from "react-icons/fa";
+import '@/app/style.css'
+import AuthForm from "../AddUsers/Auth";
+
+const ALL_TOOLS = [
+  "AutoSOC",
+  "Phantom Radar",
+  "Real-Time Radar",
+  "GhostIntel",
+  "ThreatMapper",
+  "DataVault",
+  "AI Sentinel",
+];
 
 const ManageUser = () => {
-  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [editUser, setEditUser] = useState(null);
+  const [createUser, setCreateUser] = useState(null)
+  const [search, setSearch] = useState("");
+  const [filterRole, setFilterRole] = useState("All");
 
-  const { GetUsersforAdmin, AuthData } = useContext(AdminContext);
   const { UPDATEUSER } = useContext(UserContext);
+  const { onlineUsers } = useContext(SocketContext);
+  const {
+    GetUsersforAdmin,
+    AdminAuthData,
+    GetUsersforAdminByName,
+    UPDATEADMIN,
+  } = useContext(AdminContext);
 
-  const companyId = AuthData.companyId;
-  const GETUSERS = async () => {
-    try {
-      const ALLUSERS = await GetUsersforAdmin(companyId);
-      setUsers(ALLUSERS.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const companyId = AdminAuthData.companyId;
+  const [users, setUsers] = useState([]);
 
-  const handleUpdate = async () => {
+  const fetchUsers = async () => {
     try {
-      const updated = await UPDATEUSER(editUser);
-      if (updated) {
-        GETUSERS();
-        setEditUser(null);
-      }
+      const response = await GetUsersforAdmin(companyId);
+      setUsers(response.data || []);
     } catch (error) {
-      console.log(error);
+      console.error("Failed to fetch users:", error);
     }
   };
 
   useEffect(() => {
-    GETUSERS();
+    fetchUsers();
   }, []);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    const handler = setTimeout(async () => {
+      try {
+        const response = search.trim()
+          ? await GetUsersforAdminByName(search, controller.signal)
+          : await GetUsersforAdmin(companyId);
+        setUsers(response.data || []);
+      } catch (err) {
+        if (err.name !== "AbortError") console.error("Search error:", err);
+      }
+    }, 300);
+
+    return () => {
+      controller.abort();
+      clearTimeout(handler);
+    };
+  }, [search]);
+
+  const handleUpdate = async () => {
+    try {
+      let updated;
+      if (editUser.role == "admin") {
+        updated = await UPDATEADMIN(editUser);
+      } else {
+        updated = await UPDATEUSER(editUser);
+      }
+      if (updated) {
+        await fetchUsers();
+        setEditUser(null);
+      }
+    } catch (error) {
+      console.log("Update Error:", error);
+    }
+  };
+
+  const filteredUsers = users.filter(
+    (user) => filterRole === "All" || user.role === filterRole
+  );
+
+  const uniqueRoles = ["All", ...new Set(users.map((u) => u.role))];
+
   return (
-    <div className="relative flex flex-col items-center p-2">
-      <div className="w-full border border-gray-700 shadow-lg rounded-lg flex justify-center">
-        <table className="w-full bg-[#334155] text-white text-sm text-center">
-          <thead className="bg-gray-800 sticky top-0">
+        <div className="p-8 bg-[#0f172a] min-h-screen text-white space-y-8">
+      {/* Header Controls */}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="relative w-full max-w-xs">
+          <FaSearch className="absolute top-3.5 left-3 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search users..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-800 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
+        </div>
+
+        <div className="flex gap-4 items-center">
+          <select
+            className="px-4 py-2 rounded-lg bg-gray-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+            value={filterRole}
+            onChange={(e) => setFilterRole(e.target.value)}
+          >
+            {uniqueRoles.map((role, idx) => (
+              <option key={idx} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
+
+          <button
+            onClick={() =>
+              setCreateUser({
+                _id: "",
+                firstName: "",
+                lastName: "",
+                email: "",
+                companyId,
+                role: "",
+                active: true,
+                tollsAccess: [],
+              })
+            }
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg shadow"
+          >
+            <FaPlus /> Add Member
+          </button>
+        </div>
+      </div>
+
+      {/* Users Table */}
+      <div className="overflow-auto rounded-xl shadow ring-1 ring-gray-700">
+        <table className="min-w-full divide-y divide-gray-600">
+          <thead className="bg-gray-800 text-sm uppercase text-gray-300">
             <tr>
-              <th className="p-2">User ID</th>
-              <th className="p-2">Name</th>
-              <th className="p-2">Company ID</th>
-              <th className="p-2">Role</th>
-              <th className="p-2">Last Login</th>
-              <th className="p-2">Registered</th>
-              <th className="p-2">Active</th>
-              <th className="p-2">Options</th>
+              {["User ID", "Name", "Email", "Company ID", "Role", "Status", "Actions"].map((header) => (
+                <th key={header} className="px-4 py-3 text-left">
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody>
-            {users.map((user, i) => (
-              <tr key={i} className="hover:bg-gray-800">
-                <td className="p-2">{user._id}</td>
-                <td className="p-2">{`${user.firstName} ${user.lastName}`}</td>
-                <td className="p-2">{user.companyId}</td>
-                <td className="p-2">{user.role}</td>
-                <td className="p-2">{user.lastLogin}</td>
-                <td className="p-2">{user.registered}</td>
-                <td className="p-2">{user.active ? "🟢" : "🔴"}</td>
-                <td className="p-2 flex justify-center gap-2">
+          <tbody className="bg-[#1e293b] divide-y divide-gray-700">
+            {filteredUsers.map((user, i) => (
+              <tr key={i} className="hover:bg-gray-700">
+                <td className="px-4 py-2">{user._id}</td>
+                <td className="px-4 py-2">{`${user.firstName || ""} ${user.lastName || ""}`.trim()}</td>
+                <td className="px-4 py-2">{user.email}</td>
+                <td className="px-4 py-2">{user.companyId}</td>
+                <td className="px-4 py-2">{user.role}</td>
+                <td className="px-4 py-2 text-lg">
+                  {onlineUsers.includes(user._id) ? "🟢" : "🔴"}
+                </td>
+                <td className="px-4 py-2 space-x-2">
                   <button
-                    className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs"
                     onClick={() => setSelectedUser(user)}
+                    className="bg-gray-600 hover:bg-gray-700 px-3 py-1 rounded text-xs"
                   >
                     View
                   </button>
                   <button
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-xs"
                     onClick={() => setEditUser({ ...user })}
+                    className="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs"
                   >
                     Edit
                   </button>
@@ -84,89 +183,111 @@ const ManageUser = () => {
 
       {/* View Modal */}
       {selectedUser && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-black w-[400px]">
-            <h2 className="text-lg font-bold mb-2">User Information</h2>
-            <p><strong>ID:</strong> {selectedUser._id}</p>
-            <p><strong>Name:</strong> {selectedUser.firstName} {selectedUser.lastName}</p>
-            <p><strong>Company ID:</strong> {selectedUser.companyId}</p>
-            <p><strong>Role:</strong> {selectedUser.role}</p>
-            <p><strong>Last Login:</strong> {selectedUser.lastLogin}</p>
-            <p><strong>Registered:</strong> {selectedUser.registered}</p>
-            <p><strong>Active:</strong> {selectedUser.active ? "🟢 Active" : "🔴 Inactive"}</p>
-            <button
-              className="mt-4 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-              onClick={() => setSelectedUser(null)}
-            >
-              Close
-            </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="bg-white text-black rounded-xl p-6 max-w-md w-full shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">User Details</h2>
+            <div className="space-y-2 text-sm">
+              {[
+                ["ID", selectedUser._id],
+                ["Name", `${selectedUser.firstName} ${selectedUser.lastName}`],
+                ["Email", selectedUser.email],
+                ["Company ID", selectedUser.companyId],
+                ["Role", selectedUser.role],
+                ["Status", onlineUsers.includes(selectedUser._id) ? "🟢 Online" : "🔴 Offline"],
+                ["Tools", selectedUser.tollsAccess?.join(", ") || "None"],
+              ].map(([label, value]) => (
+                <p key={label}>
+                  <strong>{label}:</strong> {value}
+                </p>
+              ))}
+            </div>
+            <div className="text-right mt-4">
+              <button
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                onClick={() => setSelectedUser(null)}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Edit Modal */}
       {editUser && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-black w-[400px]">
-            <h2 className="text-lg font-bold mb-4">Edit User</h2>
-
-            <label className="block mb-1">First Name:</label>
-            <input
-              className="w-full p-2 mb-3 bg-gray-200 rounded"
-              type="text"
-              value={editUser.firstName || ""}
-              onChange={(e) =>
-                setEditUser({ ...editUser, firstName: e.target.value })
-              }
-            />
-
-            <label className="block mb-1">Last Name:</label>
-            <input
-              className="w-full p-2 mb-3 bg-gray-200 rounded"
-              type="text"
-              value={editUser.lastName || ""}
-              onChange={(e) =>
-                setEditUser({ ...editUser, lastName: e.target.value })
-              }
-            />
-
-            <label className="block mb-1">Role:</label>
-            <input
-              className="w-full p-2 mb-3 bg-gray-200 rounded"
-              type="text"
-              value={editUser.role || ""}
-              onChange={(e) =>
-                setEditUser({ ...editUser, role: e.target.value })
-              }
-            />
-
-            <label className="block mb-1">Active Status:</label>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+          <div className="bg-white text-black rounded-xl p-6 max-w-md w-full shadow-lg space-y-4">
+            <h2 className="text-xl font-semibold">
+              {editUser._id ? "Edit User" : "Add New User"}
+            </h2>
+            {["firstName", "lastName", "role"].map((field) => (
+              <input
+                key={field}
+                placeholder={field.replace(/^\w/, (c) => c.toUpperCase())}
+                value={editUser[field] || ""}
+                onChange={(e) => setEditUser({ ...editUser, [field]: e.target.value })}
+                className="w-full p-2 rounded bg-gray-100"
+              />
+            ))}
             <select
-              className="w-full p-2 mb-3 bg-gray-200 rounded"
-              value={editUser.active || ""}
-              onChange={(e) =>
-                setEditUser({ ...editUser, active: e.target.value === "true" })
-              }
+              className="w-full p-2 bg-gray-100 rounded"
+              value={editUser.active ? "true" : "false"}
+              onChange={(e) => setEditUser({ ...editUser, active: e.target.value === "true" })}
             >
               <option value="true">Active</option>
               <option value="false">Inactive</option>
             </select>
 
+            <div>
+              <label className="block text-sm font-medium mb-2">Tool Access:</label>
+              <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto bg-gray-100 p-2 rounded">
+                {ALL_TOOLS.map((tool) => (
+                  <label key={tool} className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      className="accent-blue-600"
+                      checked={editUser.tollsAccess?.includes(tool)}
+                      onChange={() => {
+                        const updated = editUser.tollsAccess?.includes(tool)
+                          ? editUser.tollsAccess.filter((t) => t !== tool)
+                          : [...(editUser.tollsAccess || []), tool];
+                        setEditUser({ ...editUser, tollsAccess: updated });
+                      }}
+                    />
+                    {tool}
+                  </label>
+                ))}
+              </div>
+            </div>
+
             <div className="flex justify-between">
               <button
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
                 onClick={handleUpdate}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
               >
-                Update
+                {editUser._id ? "Update" : "Create"}
               </button>
               <button
-                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
                 onClick={() => setEditUser(null)}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded"
               >
                 Cancel
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Create Modal */}
+      {createUser && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex items-center justify-center">
+          <AuthForm
+            onClose={() => setCreateUser(null)}
+            onSuccess={() => {
+              fetchUsers();
+              setCreateUser(null);
+            }}
+          />
         </div>
       )}
     </div>

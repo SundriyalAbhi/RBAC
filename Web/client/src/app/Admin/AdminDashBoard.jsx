@@ -1,42 +1,56 @@
-import React from "react";
-import "@/app/style.css";
+"use client";
+import React, { useContext, useEffect, useState } from "react";
+import { AdminContext } from "../Context/AdminContext";
 import StaticsBox from "./StaticsBox";
-import UserList from "./ManageUsers";
 import EmployeesTable from "./EmployeesTable";
+import RecentActivity from "./RecentActivity";
+import "@/app/style.css";
 
 export default function AdminDashBoard() {
+  const { GetUsersforAdmin, GetAllAdmins, AdminAuthData } = useContext(AdminContext);
+  const companyId = AdminAuthData?.companyId;
+
+  const [users, setUsers] = useState([]);
+  const [admins, setAdmins] = useState([]);
+
+  useEffect(() => {
+    if (!companyId) return;
+
+    const fetchUsers = async () => {
+      try {
+        const response = await GetUsersforAdmin(companyId);
+        setUsers(response?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+
+    const fetchAdmins = async () => {
+      try {
+        const response = await GetAllAdmins(companyId);
+        setAdmins(response?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch admins:", error);
+      }
+    };
+
+    fetchUsers();
+    fetchAdmins();
+  }, [companyId]);
+
   return (
-    <div
-      // bg-[#06b5d411]
-      className="p-4 space-y-4 h-screen mt-3 overflow-y-auto "
-      style={{ scrollbarWidth: "none" }}
-    >
-      {/* Admin DashBoard First ROw */}
-      <div className="flex flex-col md:flex-row gap-4  ">
-        <StaticsBox />
+    <div className="bg-[#0f172a] min-h-screen text-white p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+        <p className="text-sm text-gray-400">Welcome back</p>
       </div>
 
-      {/* Admin DashBoard First ROw */}
+      <StaticsBox totalUsers={users} />
 
-      {/* NEW ROW: Table and Radar Chart */}
-      <div className="flex flex-col md:flex-row gap-4 h-[60%]">
-        <div
-          className="flex-1 rounded-xl p-4 flex flex-col text-white text-sm "
-          style={{
-            background: "linear-gradient(145deg, #0b1f33, #081a2a)",
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
-          }}
-        >
-          <h2 className="text-center text-lg font-semibold mb-4">
-            Total Employees
-          </h2>
-          <EmployeesTable />
-        </div>
-        <div className="flex-1 rounded   text-black font-bold text-lg ">
-          <UserList />
-        </div>
+      <div className="w-full mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <RecentActivity />
+        <EmployeesTable users={users} />
       </div>
-      {/* ThreatTable and RaderChart */}
     </div>
   );
 }

@@ -15,30 +15,56 @@ const ComapnyRouter = require("./routes/CompanyRouter");
 const AdminRouter = require("./routes/AdminRouter");
 const ProviderRouter = require("./routes/ProviderRoute");
 const MemberRouter = require("./routes/MemberRouter");
+const { app } = require("./Socket.IO/SocketIO");
+const ActivityRouter = require("./routes/ActivityRoute");
+const SessionDataRouter = require("./routes/SessionDataRouter");
+const SystemAnnouncementsRouter = require("./routes/SystemAnnouncementRoute");
 dotenv.config({path:"./Config/config.env"})
-const app = express()
 app.use(helmet()); 
 
-const allowedOrigins = [
-  process.env.CORS_PORT || "http://localhost:3000",
-  "http://localhost:3001"
-];
+const allowedOrigins = process.env.CORS_PORT
+  ? process.env.CORS_PORT.split(",")
+  : ["http://localhost:3000","http://localhost:3001"];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
+console.log("Allowed Origins:", allowedOrigins);
 
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log("Blocked CORS request from:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+// const allowedOrigins = [
+//   process.env.CORS_PORT || "http://localhost:3000",
+//   "http://localhost:3001"
+// ];
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin) return callback(null, true);
+
+//       if (allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   })
+// );
+
 
 app.use(bodyparser.json({
     limit:"30mb"
@@ -69,9 +95,6 @@ app.use("/checkEmail",validateEmailRouter)
 app.use("/Provider",ProviderRouter)
 app.use("/company",ComapnyRouter)
 app.use('/admin', AdminRouter);
-
-
-
-app.listen(process.env.PORT,()=>{
-    console.log("server is running");
-})
+app.use('/activity',ActivityRouter)
+app.use('/session',SessionDataRouter)
+app.use('/SystemAnnouncements',SystemAnnouncementsRouter)
