@@ -22,11 +22,13 @@ export const SocketProvider = ({ children }) => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const socketRef = useRef(null);
 
-  const hasAdmin = AdminAuthData?.token && AdminAuthData?.adminId;
+  const hasAdmin = AdminAuthData?.token && AdminAuthData?.userId;
   const hasUser = UserAuthData?.token && UserAuthData?.userId;
 
-  const userId = hasAdmin ? AdminAuthData.adminId : hasUser ? UserAuthData.userId : null;
-
+  const userId = hasAdmin ? hasAdmin : hasUser ? hasUser:null;
+ 
+  
+  
   useEffect(() => {
     if (userId) {
       const socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8087", {
