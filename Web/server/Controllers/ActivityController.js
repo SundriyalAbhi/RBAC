@@ -1,3 +1,4 @@
+const { client } = require("../Config/redis");
 const ActivityModel = require("../Models/ActivityModel");
 const AdminModel = require("../Models/AdminModel");
 const CompanyMember = require("../Models/CompanyMemberModel");
@@ -7,7 +8,7 @@ const { io, getReceiverSocketId } = require("../Socket.IO/SocketIO");
 exports.storeActivity = async (req, res) => {
   try {
     const { companyId, userId, AdminId, role } = req.body;
-    
+
 
     const activity = new ActivityModel(req.body);
     await activity.save();
@@ -64,7 +65,7 @@ exports.logActivity = async ({ companyId, userId, AdminId, role, action }) => {
     });
 
     let activityDta = {
-      ...activity._doc 
+      ...activity._doc
     };
 
 
@@ -76,7 +77,7 @@ exports.logActivity = async ({ companyId, userId, AdminId, role, action }) => {
       }
     }
 
-     if (AdminId) {
+    if (AdminId) {
       const user = await AdminModel.findById(AdminId);
       if (user) {
         activityDta.firstName = user.firstName;
@@ -86,8 +87,8 @@ exports.logActivity = async ({ companyId, userId, AdminId, role, action }) => {
 
     const admins = await AdminModel.find({ companyId });
     admins.forEach(admin => {
-      let socketId = getReceiverSocketId(admin._id); 
-      if (socketId && AdminId !==admin._id) {
+      let socketId = getReceiverSocketId(admin._id);
+      if (socketId && AdminId !== admin._id) {
         io.to(socketId).emit("RecentActivity", { Msg: activityDta });
       }
     });
@@ -108,6 +109,17 @@ exports.logActivity = async ({ companyId, userId, AdminId, role, action }) => {
 exports.GetActivityforAdmins = async (req, res) => {
   try {
     const { companyId } = req.query;
+
+    if (!companyId) {
+      return res.status(400).json({ message: "companyId is required" });
+    }
+
+    const cacheKey = `enhancedActivities:${companyId}`;
+    const cacheData = await client.get(cacheKey);
+
+    if (cacheData) {
+      return res.status(200).json({ data: cacheData});
+    }
 
     const activities = await ActivityModel.find({ companyId }).sort({ timestamp: -1 });
 
@@ -130,12 +142,16 @@ exports.GetActivityforAdmins = async (req, res) => {
       })
     );
 
-    res.status(200).json(enhancedActivities);
+    await client.set(cacheKey, JSON.stringify(enhancedActivities), { ex: 300 });
+
+    return res.status(200).json({ data: enhancedActivities, source: "db" });
   } catch (error) {
     console.error("Error fetching admin activities:", error);
     res.status(500).json({ message: "Failed to fetch activities" });
   }
 };
+
+
 
 
 
@@ -147,7 +163,7 @@ exports.GetActivityforMember = async (req, res) => {
       activities.map(async (activity) => {
         let user = null;
 
-          user = await CompanyMember.findById(activity.userId).select("firstName lastName email");
+        user = await CompanyMember.findById(activity.userId).select("firstName lastName email");
 
         return {
           ...activity._doc,

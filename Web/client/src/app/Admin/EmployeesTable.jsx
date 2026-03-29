@@ -5,6 +5,9 @@ import "@/app/style.css";
 
 function EmployeesTable({ users }) {
   const router = useRouter();
+  const employlist = Array.isArray(users)
+    ? users
+    : users?.users || [];
 
   return (
     <div className="bg-gradient-to-br from-[#0b1f33] to-[#081a2a] p-6 rounded-xl shadow-md h-full">
@@ -29,8 +32,8 @@ function EmployeesTable({ users }) {
             </tr>
           </thead>
           <tbody>
-            {users.length > 0 ? (
-              users.map((user, i) => (
+            {employlist.length > 0 ? (
+              employlist.map((user, i) => (
                 <tr
                   key={i}
                   className="hover:bg-[#1e293b]/40 transition duration-200 border-b border-[#1e293b]"

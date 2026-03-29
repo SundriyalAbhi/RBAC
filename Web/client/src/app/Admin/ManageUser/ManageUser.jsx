@@ -35,18 +35,24 @@ const ManageUser = () => {
   const companyId = AdminAuthData.companyId;
   const [users, setUsers] = useState([]);
 
-  const fetchUsers = async () => {
-    try {
-      const response = await GetUsersforAdmin(companyId);
-      setUsers(response.data || []);
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-    }
-  };
+const fetchUsers = async () => {
+  try {
+    const response = await GetUsersforAdmin(companyId);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+    const data = response.data;
+
+    const usersArray = Array.isArray(data) ? data : data?.users || [];
+
+    setUsers(usersArray);
+
+  } catch (error) {
+    console.error("Failed to fetch users:", error);
+  }
+};
+
+useEffect(() => {
+  fetchUsers();
+}, []);
 
   useEffect(() => {
     const controller = new AbortController();
