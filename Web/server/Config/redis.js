@@ -5,9 +5,9 @@ const client = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN,
 });
 
-exports.client = client;
-
 const testRedisConnection = async () => {
+  console.log("🔥 Redis function called");
+
   try {
     if (!process.env.UPSTASH_REDIS_REST_URL) {
       throw new Error("Missing Redis ENV");
@@ -22,13 +22,4 @@ const testRedisConnection = async () => {
   }
 };
 
-module.exports = { testRedisConnection };
-
-// exports.connectRedis = async () => {
-//   try {
-//     await client.connect();
-//     console.log("✅ Redis connected");
-//   } catch (error) {
-//     console.error("❌ Redis connection error:", error);
-//   }
-// };
+module.exports = { client, testRedisConnection };
