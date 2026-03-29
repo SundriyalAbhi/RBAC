@@ -24,7 +24,6 @@ dotenv.config({path:"./Config/config.env"})
 app.use(helmet()); 
 
 // connectRedis()
-
 // client.on('error', (err) => console.log('Redis Client Error', err));
 
 
