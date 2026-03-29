@@ -1,14 +1,14 @@
+const dotenv = require("dotenv");
+dotenv.config({ path: "./Config/config.env" });
 const express = require("express");
 const bodyparser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
-const dotenv = require("dotenv");
 const dns = require("dns");
 const fs = require("fs");
 const path = require("path");
 
-dotenv.config({ path: "./Config/config.env" });
 
 dns.setServers(["8.8.8.8"]);
 
