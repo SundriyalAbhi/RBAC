@@ -19,9 +19,12 @@ const { app } = require("./Socket.IO/SocketIO");
 const ActivityRouter = require("./routes/ActivityRoute");
 const SessionDataRouter = require("./routes/SessionDataRouter");
 const SystemAnnouncementsRouter = require("./routes/SystemAnnouncementRoute");
-const { connectRedis, client } = require("./Config/redis");
+const { connectRedis, client, testRedisConnection, } = require("./Config/redis");
+const { testRedis } = require("./Controllers/AdminController");
 dotenv.config({path:"./Config/config.env"})
 app.use(helmet()); 
+
+testRedisConnection()
 
 // connectRedis()
 // client.on('error', (err) => console.log('Redis Client Error', err));
@@ -95,6 +98,7 @@ app.get("/",(req,res)=>{
       console.log(error);
   }
 })
+
 app.use("/Member",MemberRouter)
 app.use("/otp",OTPRouter)
 app.use("/checkEmail",validateEmailRouter)
