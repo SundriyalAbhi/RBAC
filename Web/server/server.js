@@ -81,15 +81,34 @@ app.use("/session", SessionDataRouter);
 app.use("/SystemAnnouncements", SystemAnnouncementsRouter);
 
 const startServer = async () => {
+  console.log("1️⃣ startServer running");
+
+  console.log("2️⃣ ENV:", {
+    upstash_url: process.env.UPSTASH_REDIS_REST_URL ? "set" : "MISSING",
+    upstash_token: process.env.UPSTASH_REDIS_REST_TOKEN ? "set" : "MISSING",
+    port: process.env.PORT,
+    mongo: process.env.MONGO_URI ? "set" : "MISSING",
+  });
+
+  console.log("3️⃣ calling testRedisConnection...");
   await testRedisConnection();
+  console.log("4️⃣ Redis done");
+
   connectdb();
+  console.log("5️⃣ DB connected");
 
   const expressServer = app.listen(process.env.PORT, () => {
-    console.log("server is running");
+    console.log("6️⃣ server is running on port", process.env.PORT);
   });
 
   initSocket(expressServer, allowedOrigins);
 };
+
+startServer().catch((err) => {
+  console.error("💥 startServer crashed:", err.message);
+  console.error(err.stack);
+});
+
 
 startServer();
 
