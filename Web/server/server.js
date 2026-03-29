@@ -24,7 +24,13 @@ const { testRedis } = require("./Controllers/AdminController");
 dotenv.config({path:"./Config/config.env"})
 app.use(helmet()); 
 
-testRedisConnection()
+const startServer = async () => {
+
+    await testRedisConnection(); // 🔥 runs first
+
+};
+
+startServer();
 
 // connectRedis()
 // client.on('error', (err) => console.log('Redis Client Error', err));
