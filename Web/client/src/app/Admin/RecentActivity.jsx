@@ -11,23 +11,29 @@ const RecentActivity = ({ showAll = false }) => {
   const { socket } = useContext(SocketContext);
   const companyId = AdminAuthData?.companyId;
   const router = useRouter();
+
   
-  useEffect(() => {
-    const fetchActivity = async () => {
-      try {
-        const res = await Activitylog(companyId);
-        if (res.data && Array.isArray(res.data)) {
-          const sorted = res.data.sort(
-            (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
-          );
-          setActivity(sorted);
-        }
-      } catch (error) {
-        console.error("Failed to fetch activity:", error);
+ useEffect(() => {
+  const fetchActivity = async () => {
+    try {
+      const res = await Activitylog(companyId);
+
+      const rawData = Array.isArray(res.data) ? res.data : res.data?.data;
+
+      if (rawData && Array.isArray(rawData)) {
+        const sorted = rawData.sort(
+          (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+        );
+        setActivity(sorted);
       }
-    };
-    if (companyId) fetchActivity();
-  }, [companyId]);
+    } catch (error) {
+      console.error("Failed to fetch activity:", error);
+    }
+  };
+
+  if (companyId) fetchActivity();
+}, [companyId]);
+
 
   useEffect(() => {
     if (!socket) return;

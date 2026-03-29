@@ -1,37 +1,46 @@
-import axios from "axios"
-const baseURL = process.env.NEXT_PUBLIC_API_URL||"http://localhost:8087"
-const API = axios.create({baseURL:baseURL})
+import axios from "axios";
 
-export{axios,API,baseURL}
+const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8087";
 
+const API = axios.create({
+  baseURL,
+  headers: {
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache",
+  },
+});
 
-// import { toast } from 'react-toastify';
+// ✅ Request interceptor — attach token + cache buster
+API.interceptors.request.use(
+  (config) => {
+    // Attach auth token if available
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
 
-// const API = axios.create({
-//   baseURL: 'https://your-api.com/api',
-//   withCredentials: true, // if using cookies
-// });
+    // Cache buster — prevents 304 Not Modified
+    config.params = {
+      ...config.params,
+      _t: Date.now(),
+    };
 
-// // 🔐 Request Interceptor (Optional - for auth headers)
-// API.interceptors.request.use(
-//   (config) => {
-//     const token = localStorage.getItem('token'); // or your token storage
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-// // ❌ Response Interceptor for Errors
-// API.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     const message = error?.response?.data?.error || "Something went wrong";
-//     toast.error(message); // 🔥 show toast error globally
-//     return Promise.reject(error); // still let you catch it manually if needed
-//   }
-// );
+// ✅ Response interceptor — handle token expiry globally
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired — redirect to login
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
 
-// export default API;
+export { axios, API, baseURL };

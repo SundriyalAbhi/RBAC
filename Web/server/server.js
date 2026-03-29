@@ -19,8 +19,15 @@ const { app } = require("./Socket.IO/SocketIO");
 const ActivityRouter = require("./routes/ActivityRoute");
 const SessionDataRouter = require("./routes/SessionDataRouter");
 const SystemAnnouncementsRouter = require("./routes/SystemAnnouncementRoute");
+const { connectRedis, client } = require("./Config/redis");
 dotenv.config({path:"./Config/config.env"})
 app.use(helmet()); 
+
+// connectRedis()
+
+// client.on('error', (err) => console.log('Redis Client Error', err));
+
+
 
 const allowedOrigins = process.env.CORS_PORT
   ? process.env.CORS_PORT.split(",")
@@ -98,3 +105,4 @@ app.use('/admin', AdminRouter);
 app.use('/activity',ActivityRouter)
 app.use('/session',SessionDataRouter)
 app.use('/SystemAnnouncements',SystemAnnouncementsRouter)
+app.set("etag", false);

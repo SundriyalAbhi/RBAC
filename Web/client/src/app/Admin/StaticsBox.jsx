@@ -20,16 +20,22 @@ const roleConfigs = [
 const StaticsBox = ({ totalUsers }) => {
   const { onlineUsers } = useContext(SocketContext);
   const [roleCounts, setRoleCounts] = useState({});
+useEffect(() => {
+  const counts = {};
 
-  useEffect(() => {
-    const counts = {};
-    totalUsers?.forEach((user) => {
-      const role = user.role;
-      counts[role] = (counts[role] || 0) + 1;
-    });
-    counts["User Online"] = onlineUsers?.length || 0;
-    setRoleCounts(counts);
-  }, [totalUsers, onlineUsers]);
+  const usersArray = Array.isArray(totalUsers)
+    ? totalUsers
+    : totalUsers?.users || [];
+
+  usersArray.forEach((user) => {
+    const role = user.role || "Unknown";
+    counts[role] = (counts[role] || 0) + 1;
+  });
+
+  counts["User Online"] = onlineUsers?.length || 0;
+
+  setRoleCounts(counts);
+}, [totalUsers, onlineUsers]);
 
   return (
     <div className="w-full flex flex-wrap gap-4">
