@@ -63,13 +63,13 @@ export const AllTools = () => {
 const handleClick = async (feature) => {
   if (!AuthData) return;
 
-  const { token ,adminId } = AuthData;
+  const { token ,userId } = AuthData;
   const toolName = feature.name;
 
   try {
-     const res = await StoreSessionData({ userId:adminId, token, toolName })
+    console.log(userId);
+     const res = await StoreSessionData({ userId:userId, token, toolName })
     const sessionId = res.data._id
-    console.log(sessionId);
     
 
     if (feature.link && feature.link.startsWith("http") && sessionId !== undefined) {

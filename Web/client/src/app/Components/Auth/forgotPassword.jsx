@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { Bounce, toast } from 'react-toastify';
-import { NewPassword } from './NewPassword';
 import { AdminContext } from '@/app/Context/AdminContext';
 import { FaEnvelope, FaKey } from 'react-icons/fa';
+import { NewPassword } from './newPassword';
 
 const ForgotPass = ({ setMode }) => {
   const { findAccount, SENDOTP, VERIFYOTP } = useContext(AdminContext);

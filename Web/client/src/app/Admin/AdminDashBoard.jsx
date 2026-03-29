@@ -10,7 +10,7 @@ export default function AdminDashBoard() {
   const { GetUsersforAdmin, GetAllAdmins, AdminAuthData } = useContext(AdminContext);
   const companyId = AdminAuthData?.companyId;
 
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState();
   const [admins, setAdmins] = useState([]);
 
   useEffect(() => {

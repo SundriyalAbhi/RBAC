@@ -5,13 +5,14 @@ const CompanyMember = require('../Models/CompanyMemberModel');
 const AdminModel = require('../Models/AdminModel');
 const toolAccessByRole = require('../Config/ToolsAccess');
 const { logActivity } = require('./ActivityController');
+const { client } = require('../Config/redis');
 require('dotenv').config();
 
 
 exports.registerAdmin = async (req, res) => {
   try {
-    const { email, password, role ,companyId, firstName,
-  lastName} = req.body;
+    const { email, password, role, companyId, firstName,
+      lastName } = req.body;
 
     const existingAdmin = await AdminModel.findOne({ email });
     if (existingAdmin) {
@@ -20,8 +21,8 @@ exports.registerAdmin = async (req, res) => {
     const toolsaccess = toolAccessByRole[role] || []
     const hashedPassword = await bcrypt.hash(password, 10);
     const CompanyName = await Company.findById(companyId)
-    const newAdmin = new AdminModel({ email, password: hashedPassword, role , companyId, firstName, lastName,companyName:CompanyName.name,tollsAccess:toolsaccess});
-    
+    const newAdmin = new AdminModel({ email, password: hashedPassword, role, companyId, firstName, lastName, companyName: CompanyName.name, tollsAccess: toolsaccess });
+
     await newAdmin.save();
     res.status(201).json({ msg: 'Admin registered successfully' });
   } catch (err) {
@@ -32,10 +33,10 @@ exports.registerAdmin = async (req, res) => {
 
 exports.updateAdmin = async (req, res) => {
   try {
-    const { id } = req.params; 
-    const updates = req.body;  
+    const { id } = req.params;
+    const updates = req.body;
     console.log(id);
-    
+
     const updatedAdmin = await AdminModel.findByIdAndUpdate(id, updates);
 
     if (!updatedAdmin) {
@@ -56,14 +57,14 @@ exports.loginAdmin = async (req, res) => {
     if (!admin) return res.status(404).json({ msg: 'Admin not found' });
 
     const isMatch = await bcrypt.compare(password, admin.password);
-         if(isMatch){
-                    const token = jwt.sign({email,password},process.env.SECRET)
-    
-                    await logActivity({companyId:admin.companyId,userId:admin._id,role:admin.role,action:"login"})
-                    res.send({token,userId:admin._id,companyId:admin.companyId,ProfilePicture:admin.ProfilePicture,role:admin.role ,toolsaccess:admin.tollsAccess,msg:"Welcome"})
-                }else{
-                    res.status(401).send("Wrong Password")
-                }
+    if (isMatch) {
+      const token = jwt.sign({ email, password }, process.env.SECRET)
+
+      await logActivity({ companyId: admin.companyId, userId: admin._id, role: admin.role, action: "login" })
+      res.send({ token, userId: admin._id, companyId: admin.companyId, ProfilePicture: admin.ProfilePicture, role: admin.role, toolsaccess: admin.tollsAccess, msg: "Welcome" })
+    } else {
+      res.status(401).send("Wrong Password")
+    }
 
     const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.SECRET, {
       expiresIn: '7d',
@@ -73,8 +74,8 @@ exports.loginAdmin = async (req, res) => {
       token,
       adminId: admin._id,
       role: admin.role,
-      companyId:admin.companyId,
-      toolsaccess:admin.tollsAccess,
+      companyId: admin.companyId,
+      toolsaccess: admin.tollsAccess,
       msg: 'Login successful',
     });
   } catch (err) {
@@ -86,8 +87,8 @@ exports.loginAdmin = async (req, res) => {
 
 exports.getAllAdmins = async (req, res) => {
   try {
-    const {companyId} = req.query
-    const admins = await AdminModel.find({companyId:companyId}).select('-password');
+    const { companyId } = req.query
+    const admins = await AdminModel.find({ companyId: companyId }).select('-password');
     res.status(200).send(admins);
   } catch (err) {
     res.status(500).json({ msg: 'Failed to fetch admins' });
@@ -129,94 +130,101 @@ exports.deleteAdmin = async (req, res) => {
 
 
 exports.assignRole = async (req, res) => {
-    const { userId, role } = req.body;
-    try {
-      const validRoles = ['admin', 'ciso', 'analyst', 'auditor'];
-      if (!validRoles.includes(role)) {
-        return res.status(400).json({ msg: 'Invalid role' });
-      }
-      const user = await CompanyMember.findByIdAndUpdate(
-        userId,
-        { role },
-        { new: true }
-      );
-  
-      if (!user) {
-        return res.status(404).json({ msg: 'User not found' });
-      }
-  
-      res.status(200).json({ msg: 'Role assigned', user });
-    } catch (err) {
-      res.status(500).json({ msg: 'Server error', error: err.message });
+  const { userId, role } = req.body;
+  try {
+    const validRoles = ['admin', 'ciso', 'analyst', 'auditor'];
+    if (!validRoles.includes(role)) {
+      return res.status(400).json({ msg: 'Invalid role' });
     }
-  };
-  
+    const user = await CompanyMember.findByIdAndUpdate(
+      userId,
+      { role },
+      { new: true }
+    );
 
-  exports.getAllUsers = async (req, res) => {
-    try {
-      const {companyId} = req.query
-      let users = []
-      const members = await CompanyMember.find({companyId:companyId}, '-password'); 
-      const admins =  await AdminModel.find({companyId:companyId}, '-password');
-       users = [...members,...admins]
-      res.status(200).json(users);
-    } catch (err) {
-      res.status(500).json({ msg: 'Server error', error: err.message });
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
     }
-  };
-  
-  
-  exports.updateUser = async (req, res) => {
-    try {
-      const user = await CompanyMember.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-      );
-      res.status(200).json({ msg: 'User updated', user });
-    } catch (err) {
-      res.status(500).json({ msg: 'Server error', error: err.message });
-    }
-  };
-  
 
-  exports.deleteUser = async (req, res) => {
-    try {
-      await CompanyMember.findByIdAndDelete(req.params.id);
-      res.status(200).json({ msg: 'User deleted' });
-    } catch (err) {
-      res.status(500).json({ msg: 'Server error', error: err.message });
-    }
-  };
-
-  exports.GetAdminByName = async(req,res)=>{
-      try {
-          const {name} = req.query
-          const GetAdmin = await AdminModel.find({
-          name: { $regex: `^${name}`, $options: "i" }, 
-          }).limit(10); 
-          if(GetAdmin){
-              res.send(GetAdmin)
-          }else{
-              res.send({msg:"Found Nothing"})
-          }
-      } catch (error) {
-          console.log(error);
-      }
+    res.status(200).json({ msg: 'Role assigned', user });
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error', error: err.message });
   }
+};
 
-  exports.GetUserByName = async(req,res)=>{
-    try {
-        const {name} = req.query
-        const GetUser = await CompanyMember.find({
-        firstName: { $regex: `^${name}`, $options: "i" }, 
-        }).limit(10); 
-        if(GetUser){
-            res.send(GetUser)
-        }else{
-            res.send({msg:"Found Nothing"})
-        }
-    } catch (error) {
-        console.log(error);
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const { companyId } = req.query
+    const cacheKey = `users:${companyId}`;
+    const cacheData = await client.get(cacheKey)
+
+    if (cacheData) {
+      return res.status(200).json({ users: cacheData });
     }
+    let users = []
+    const members = await CompanyMember.find({ companyId: companyId }, '-password');
+    const admins = await AdminModel.find({ companyId: companyId }, '-password');
+    users = [...members, ...admins]
+    await client.set(cacheKey, JSON.stringify(users), { ex: 300 });
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error', error: err.message });
+  }
+};
+
+
+exports.updateUser = async (req, res) => {
+  try {
+    const user = await CompanyMember.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.status(200).json({ msg: 'User updated', user });
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error', error: err.message });
+  }
+};
+
+
+exports.deleteUser = async (req, res) => {
+  try {
+    await CompanyMember.findByIdAndDelete(req.params.id);
+    res.status(200).json({ msg: 'User deleted' });
+  } catch (err) {
+    res.status(500).json({ msg: 'Server error', error: err.message });
+  }
+};
+
+exports.GetAdminByName = async (req, res) => {
+  try {
+    const { name } = req.query
+    const GetAdmin = await AdminModel.find({
+      name: { $regex: `^${name}`, $options: "i" },
+    }).limit(10);
+    if (GetAdmin) {
+      res.send(GetAdmin)
+    } else {
+      res.send({ msg: "Found Nothing" })
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+exports.GetUserByName = async (req, res) => {
+  try {
+    const { name } = req.query
+    const GetUser = await CompanyMember.find({
+      firstName: { $regex: `^${name}`, $options: "i" },
+    }).limit(10);
+    if (GetUser) {
+      res.send(GetUser)
+    } else {
+      res.send({ msg: "Found Nothing" })
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
