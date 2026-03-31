@@ -12,28 +12,26 @@ const RecentActivity = ({ showAll = false }) => {
   const companyId = AdminAuthData?.companyId;
   const router = useRouter();
 
-  
- useEffect(() => {
-  const fetchActivity = async () => {
-    try {
-      const res = await Activitylog(companyId);
+  useEffect(() => {
+    const fetchActivity = async () => {
+      try {
+        const res = await Activitylog(companyId);
 
-      const rawData = Array.isArray(res.data) ? res.data : res.data?.data;
+        const rawData = Array.isArray(res.data) ? res.data : res.data?.data;
 
-      if (rawData && Array.isArray(rawData)) {
-        const sorted = rawData.sort(
-          (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
-        );
-        setActivity(sorted);
+        if (rawData && Array.isArray(rawData)) {
+          const sorted = rawData.sort(
+            (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+          );
+          setActivity(sorted);
+        }
+      } catch (error) {
+        console.error("Failed to fetch activity:", error);
       }
-    } catch (error) {
-      console.error("Failed to fetch activity:", error);
-    }
-  };
+    };
 
-  if (companyId) fetchActivity();
-}, [companyId]);
-
+    if (companyId) fetchActivity();
+  }, [companyId]);
 
   useEffect(() => {
     if (!socket) return;
@@ -45,6 +43,7 @@ const RecentActivity = ({ showAll = false }) => {
     socket.on("RecentActivity", handleRecentActivity);
     return () => socket.off("RecentActivity", handleRecentActivity);
   }, [socket]);
+
 
   const formatTimeAgo = (timestamp) => {
     const now = new Date();
@@ -97,7 +96,7 @@ const RecentActivity = ({ showAll = false }) => {
                     <p className="m-0">
                       <span className="font-semibold">
                         {item.firstName} {item.lastName}{" "}
-                        {item.AdminId === AdminAuthData.adminId ? "(You)" : ""}
+                        {item.role === AdminAuthData.role ? "(You)" : ""}
                       </span>{" "}
                       {item.toolName ? "accessed" : "performed"}{" "}
                       <span className="inline-block px-2 py-[1px] bg-blue-500/20 text-blue-300 text-[10px] rounded-full font-medium ml-1">

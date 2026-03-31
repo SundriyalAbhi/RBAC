@@ -6,11 +6,25 @@ import { AdminContext } from "@/app/Context/AdminContext";
 import { UserContext } from "@/app/Context/ManageUserContext";
 import { FaUserShield, FaLock } from "react-icons/fa";
 
+const DEMO_CREDENTIALS = {
+  email: "asd@123.com",
+  password: "123456",
+  role: "Admin",
+};
+
 export const SignIn = ({ setMode }) => {
   const [formData, setFormData] = useState({ role: "Admin" });
   const { Admindispatch, AdminLogin } = useContext(AdminContext);
   const { Userdispatch, UserSignIn } = useContext(UserContext);
   const router = useRouter();
+
+  const fillDemo = () => {
+    setFormData({
+      role: DEMO_CREDENTIALS.role,
+      email: DEMO_CREDENTIALS.email,
+      password: DEMO_CREDENTIALS.password,
+    });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -26,9 +40,10 @@ export const SignIn = ({ setMode }) => {
     }
 
     try {
-      let logindata = role === "Admin"
-        ? await AdminLogin(formData)
-        : await UserSignIn(formData);
+      let logindata =
+        role === "Admin"
+          ? await AdminLogin(formData)
+          : await UserSignIn(formData);
 
       if (!logindata || !logindata.status) {
         toast.error("Unexpected error during login.", {
@@ -46,7 +61,6 @@ export const SignIn = ({ setMode }) => {
             autoClose: 3000,
             transition: Bounce,
           });
-
           if (logindata.data.role === "admin") {
             Admindispatch({ type: "SIGN_IN", payload: logindata.data });
             router.push("/pages/Admin");
@@ -55,7 +69,6 @@ export const SignIn = ({ setMode }) => {
             router.push("/pages/Member");
           }
           break;
-
         case 401:
           toast.error("Wrong password", { position: "top-center" });
           break;
@@ -74,9 +87,36 @@ export const SignIn = ({ setMode }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#0f172a]">
       <div className="bg-white/10 backdrop-blur-sm border border-gray-700 rounded-2xl shadow-lg p-8 w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-teal-400 mb-6 tracking-tight">
+        <h2 className="text-3xl font-bold text-center text-teal-400 mb-4 tracking-tight">
           CyberSecure Login
         </h2>
+
+        {/* ── Demo Credentials Banner ── */}
+        <div className="mb-5 rounded-xl border border-teal-700/50 bg-teal-950/60 px-4 py-3 text-sm">
+          <p className="text-teal-300 font-semibold mb-1">🔑 Demo Account</p>
+          <div className="text-gray-300 space-y-0.5">
+            <p>
+              <span className="text-gray-400">Role:</span>{" "}
+              <span className="font-medium text-white">Administrator</span>
+            </p>
+            <p>
+              <span className="text-gray-400">Email:</span>{" "}
+              <span className="font-medium text-white">{DEMO_CREDENTIALS.email}</span>
+            </p>
+            <p>
+              <span className="text-gray-400">Password:</span>{" "}
+              <span className="font-medium text-white">{DEMO_CREDENTIALS.password}</span>
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={fillDemo}
+            className="mt-2 w-full bg-teal-700 hover:bg-teal-600 text-white text-xs font-semibold py-1.5 rounded-lg transition duration-200"
+          >
+            Use Demo Credentials
+          </button>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="text-sm text-white mb-1 block">Role</label>
@@ -101,6 +141,7 @@ export const SignIn = ({ setMode }) => {
             <input
               type="email"
               placeholder="Enter email"
+              value={formData.email || ""}
               className="w-full px-4 py-2 pl-10 bg-[#1e293b] text-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500"
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, email: e.target.value }))
@@ -114,6 +155,7 @@ export const SignIn = ({ setMode }) => {
             <input
               type="password"
               placeholder="Enter password"
+              value={formData.password || ""}
               className="w-full px-4 py-2 pl-10 bg-[#1e293b] text-white border border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500"
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, password: e.target.value }))
