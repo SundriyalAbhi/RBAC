@@ -42,7 +42,7 @@ const fetchUsers = async () => {
     const data = response.data;
 
     const usersArray = Array.isArray(data) ? data : data?.users || [];
-
+    
     setUsers(usersArray);
 
   } catch (error) {
@@ -51,8 +51,27 @@ const fetchUsers = async () => {
 };
 
 useEffect(() => {
-  fetchUsers();
-}, []);
+  const controller = new AbortController();
+  const handler = setTimeout(async () => {
+    try {
+      const response = search.trim()
+        ? await GetUsersforAdminByName(search, controller.signal)
+        : await GetUsersforAdmin(companyId);
+
+      const data = response.data;
+      const usersArray = Array.isArray(data) ? data : data?.users || [];
+      setUsers(usersArray);
+
+    } catch (err) {
+      if (err.name !== "AbortError") console.error("Search error:", err);
+    }
+  }, 300);
+
+  return () => {
+    controller.abort();
+    clearTimeout(handler);
+  };
+}, [search]);
 
   useEffect(() => {
     const controller = new AbortController();
